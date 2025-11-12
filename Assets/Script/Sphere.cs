@@ -117,17 +117,19 @@ public class Sphere : MonoBehaviour
 
     private void GameFinish()
     {
+        // インターネット通知入れる.
+
         if (winATag)
         {
-            winA.SetActiveAll(true);
-            winA.AnimateOpen(0.3f, this); // ← アニメーション追加
+            winA.AnimateOpen(0.3f, this);
+            if (winA.string1 != null) winA.string1.gameObject.SetActive(true);
+            if (winA.string2 != null) winA.string2.gameObject.SetActive(true);
         }
         else
         {
-            winB.SetActiveAll(true);
-            winB.AnimateOpen(0.3f, this); // ← アニメーション追加
+            winB.AnimateOpen(0.3f, this);
+            if (winB.string1 != null) winB.string1.gameObject.SetActive(true);
+            if (winB.string2 != null) winB.string2.gameObject.SetActive(true);
         }
-
-        // インターネットで通知.
     }
 }
