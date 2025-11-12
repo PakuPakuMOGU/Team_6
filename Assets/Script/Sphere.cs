@@ -21,6 +21,31 @@ public class Sphere : MonoBehaviour
             if (string1 != null) string1.gameObject.SetActive(isActive);
             if (string2 != null) string2.gameObject.SetActive(isActive);
         }
+
+        public void AnimateOpen(float duration, MonoBehaviour host)
+        {
+            if (image != null)
+            {
+                RectTransform rt = image.rectTransform;
+                rt.localScale = new Vector3(1, 0, 1);
+                host.StartCoroutine(AnimateScale(rt, duration));
+            }
+        }
+
+        private IEnumerator AnimateScale(RectTransform rt, float duration)
+        {
+            float time = 0f;
+            Vector3 start = new Vector3(1, 0, 1);
+            Vector3 end = new Vector3(1, 1, 1);
+
+            while (time < duration)
+            {
+                rt.localScale = Vector3.Lerp(start, end, time / duration);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            rt.localScale = end;
+        }
     }
 
     [System.Serializable]
@@ -36,6 +61,31 @@ public class Sphere : MonoBehaviour
             if (string1 != null) string1.gameObject.SetActive(isActive);
             if (string2 != null) string2.gameObject.SetActive(isActive);
         }
+
+        public void AnimateOpen(float duration, MonoBehaviour host)
+        {
+            if (image != null)
+            {
+                RectTransform rt = image.rectTransform;
+                rt.localScale = new Vector3(1, 0, 1);
+                host.StartCoroutine(AnimateScale(rt, duration));
+            }
+        }
+
+        private IEnumerator AnimateScale(RectTransform rt, float duration)
+        {
+            float time = 0f;
+            Vector3 start = new Vector3(1, 0, 1);
+            Vector3 end = new Vector3(1, 1, 1);
+
+            while (time < duration)
+            {
+                rt.localScale = Vector3.Lerp(start, end, time / duration);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            rt.localScale = end;
+        }
     }
 
     public WinAElements winA;
@@ -48,9 +98,7 @@ public class Sphere : MonoBehaviour
     {
         winA.SetActiveAll(false);
         winB.SetActiveAll(false);
-        // 設置時の処理は任せます.
-        // if(winATag) winA.SetActiveAll(true);
-        // else winB.SetActiveAll(true);
+        GameFinish();
     }
 
     void Update()
@@ -60,7 +108,6 @@ public class Sphere : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        // ダメージタグへの接触.
         if (other.gameObject.tag == "Damage" && !finish)
         {
             finish = true;
@@ -70,14 +117,15 @@ public class Sphere : MonoBehaviour
 
     private void GameFinish()
     {
-        // ゲーム終了時の内容を記載.
         if (winATag)
         {
             winA.SetActiveAll(true);
+            winA.AnimateOpen(0.3f, this); // ← アニメーション追加
         }
         else
         {
             winB.SetActiveAll(true);
+            winB.AnimateOpen(0.3f, this); // ← アニメーション追加
         }
 
         // インターネットで通知.
