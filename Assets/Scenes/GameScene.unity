@@ -5788,6 +5788,21 @@ PrefabInstance:
     - target: {fileID: 4910352700272845603, guid: b76f846b3379607468a593969b575654, type: 3}
       propertyPath: m_Name
       value: Catwalk Long (4)
+    - target: {fileID: 5689664258807986502, guid: 5ca2f4dab88472349b0678eff4865580, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5689664259023210247, guid: 5ca2f4dab88472349b0678eff4865580, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5689664259371238567, guid: 5ca2f4dab88472349b0678eff4865580, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5689664259400368998, guid: 5ca2f4dab88472349b0678eff4865580, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8250113047921840432, guid: b76f846b3379607468a593969b575654, type: 3}
       propertyPath: m_LocalScale.x
@@ -5892,6 +5907,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3418708187556559481, guid: a157851e6c66e1545ae48d5a470cdc64, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5689664259611681199, guid: 5ca2f4dab88472349b0678eff4865580, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5689664259971518062, guid: 5ca2f4dab88472349b0678eff4865580, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5689664260519024034, guid: 5ca2f4dab88472349b0678eff4865580, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5689664260586932725, guid: 5ca2f4dab88472349b0678eff4865580, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
