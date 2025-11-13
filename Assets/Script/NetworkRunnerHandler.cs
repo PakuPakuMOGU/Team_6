@@ -8,7 +8,7 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 {
     private NetworkRunner _runner;
 
-    [SerializeField] private NetworkPrefabRef _playerPrefab;
+    [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private NetworkProjectConfig _newNetworkConfig;
 
     async void Start()
@@ -26,37 +26,46 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager = sceneManager
         });
 
-        if (result.Ok)
-            Debug.Log("部屋参加成功！");
-        else
-            Debug.LogError($"参加失敗: {result.ShutdownReason}");
+        if (result.Ok)  Debug.Log("部屋参加成功！");
+        else            Debug.LogError($"参加失敗: {result.ShutdownReason}");
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (!runner.IsServer) return;
+        if (runner.IsServer)
+        {
+            Vector3 spawnPos = new Vector3(
+                UnityEngine.Random.Range(540f, 550f),
+                121f,
+                UnityEngine.Random.Range(-870f, -860f)
+            );
 
-        Vector3 spawnPos = new Vector3(
-            UnityEngine.Random.Range(540f, 550f),
-            122f,
-            UnityEngine.Random.Range(-860f, -870f)
-        );
+            var obj = runner.Spawn(_playerPrefab, spawnPos, Quaternion.identity, player);
+        }
+    }
 
-        // Host 自分プレイヤーに InputAuthority を渡す
-        PlayerRef authority = player == runner.LocalPlayer ? runner.LocalPlayer : player;
+    public void OnInput(NetworkRunner runner, NetworkInput input)
+    {
+        var data = new NetworkInputData();
 
-        runner.Spawn(_playerPrefab, spawnPos, Quaternion.identity, authority);
+        data.direction = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        data.jumpPressed = Input.GetKey(KeyCode.Space);
+
+        input.Set(data);
+    }
+
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+    {
+        Debug.Log($"Fusion shutdown: {shutdownReason}");
     }
 
     // ────── INetworkRunnerCallbacks の空実装 ──────
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
-    public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
