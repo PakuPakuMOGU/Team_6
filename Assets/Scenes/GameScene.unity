@@ -953,6 +953,118 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a157851e6c66e1545ae48d5a470cdc64, type: 3}
+--- !u!1 &177835868
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 177835870}
+  - component: {fileID: 177835869}
+  m_Layer: 0
+  m_Name: Net
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &177835869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177835868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24af1882441416747a69a9effd09178a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerPrefab:
+    RawGuidValue: d287d9480a4d5b349955e729ae757a17
+  _newNetworkConfig:
+    Version: 1
+    TypeId: NetworkProjectConfig
+    PeerMode: 0
+    LagCompensation:
+      Enabled: 0
+      HitboxBufferLengthInMs: 200
+      HitboxDefaultCapacity: 512
+      CachedStaticCollidersSize: 64
+    EnqueueIncompleteSynchronousSpawns: 0
+    InvokeRenderInBatchMode: 1
+    NetworkIdIsObjectName: 0
+    HideNetworkObjectInactivityGuard: 0
+    AllowClientServerModesInWebGL: 0
+    ClientsRecordFrameAndPacketTimingTraces: 0
+    Simulation:
+      InputDataWordCount: 0
+      ReplicationFeatures: 1
+      InputTransferMode: 0
+      SimulationUpdateTimeMode: 0
+      PlayerCount: 10
+      TickRateSelection:
+        Client: 64
+        ServerIndex: 0
+        ClientSendIndex: 1
+        ServerSendIndex: 1
+      MaxObjectDestroysSentPerPacket: 32
+      EnableExperimentalPacketLossRecovery: 0
+      EnableAdaptivePacketFragmentation: 0
+    Network:
+      ConnectionTimeout: 10
+      ConnectionShutdownTime: 1
+      ReliableDataTransferModes: 3
+    HostMigration:
+      EnableAutoUpdate: 0
+      UpdateDelay: 10
+    EncryptionConfig:
+      EnableEncryption: 0
+    NetworkConditions:
+      Enabled: 0
+      DelayShape: 0
+      DelayMin: 0.15
+      DelayMax: 0.15
+      DelayPeriod: 0
+      DelayThreshold: 0
+      AdditionalJitter: 0.05
+      LossChanceShape: 0
+      LossChanceMin: 0.05
+      LossChanceMax: 0.05
+      LossChanceThreshold: 0
+      LossChancePeriod: 0
+      AdditionalLoss: 0
+    Heap:
+      PageShift: 15
+      PageCount: 256
+      GlobalsSize: 0
+    AssembliesToWeave:
+    - Fusion.Unity
+    - Assembly-CSharp
+    - Assembly-CSharp-firstpass
+    - Fusion.Addons.Physics
+    - Fusion.Addons.FSM
+    UseSerializableDictionary: 1
+    NullChecksForNetworkedProperties: 1
+    CheckRpcAttributeUsage: 0
+    CheckNetworkedPropertiesBeingEmpty: 0
+--- !u!4 &177835870
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177835868}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 541.40875, y: 120.47304, z: -860.4282}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &186047425
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6897,6 +7009,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Soldier_demo
       objectReference: {fileID: 0}
+    - target: {fileID: 100060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -9386,3 +9502,4 @@ SceneRoots:
   - {fileID: 733873516}
   - {fileID: 584369774}
   - {fileID: 1338139673}
+  - {fileID: 177835870}
