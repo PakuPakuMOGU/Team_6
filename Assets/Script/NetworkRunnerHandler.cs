@@ -32,15 +32,22 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (player == runner.LocalPlayer)
+        if (runner.IsServer)
         {
             Vector3 spawnPos = new Vector3(
                 UnityEngine.Random.Range(540f, 550f),
                 121f,
-                UnityEngine.Random.Range(-860f, -870f)
+                UnityEngine.Random.Range(-870f, -860f)
             );
 
-            runner.Spawn(_playerPrefab, spawnPos, Quaternion.identity, player);
+            var obj = runner.Spawn(_playerPrefab, spawnPos, Quaternion.identity, player);
+            /*
+            // カメラの有効化はローカルプレイヤーのみ
+            if (player == runner.LocalPlayer)
+            {
+                var cam = obj.GetComponentInChildren<Camera>();
+                if (cam != null) cam.enabled = true;
+            }*/
         }
     }
 

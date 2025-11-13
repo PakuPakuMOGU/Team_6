@@ -14,13 +14,17 @@ public class See : NetworkBehaviour
 
     // 上下回転の制限
     float minX = -90f, maxX = 90f;
-
     void Start()
     {
         cameraRot = cam.transform.localRotation;
         characterRot = transform.localRotation;
-    }
 
+        // ローカルプレイヤー以外のカメラは無効化
+        if (!Object.HasInputAuthority && cam != null)
+        {
+            cam.SetActive(false);
+        }
+    }
     void Update()
     {
         if (!Object.HasInputAuthority) return;
