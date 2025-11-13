@@ -22,28 +22,25 @@ public class PlayerController : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
+        if (!Object.HasInputAuthority) return;
         if (!GetInput(out NetworkInputData data)) return;
 
-        Vector3 input = new Vector3(data.direction.x, 0, data.direction.y);
+        Vector3 input = new Vector3(data.direction.x, 0.0f, data.direction.y);
+        Vector3 horizontalMove = (transform.forward * input.z + transform.right * input.x) * speed;
+        moveDirection.x = horizontalMove.x;
+        moveDirection.z = horizontalMove.z;
 
-        if (controller.isGrounded)
+        if (controller != null && controller.isGrounded)
         {
-            Vector3 horizontalMove = transform.TransformDirection(input) * speed;
-            moveDirection.x = horizontalMove.x;
-            moveDirection.z = horizontalMove.z;
-
             moveDirection.y = data.jumpPressed ? jumpSpeed : 0f;
-        }
-        else
-        {
-            Vector3 horizontalMove = transform.TransformDirection(input) * speed;
-            moveDirection.x = horizontalMove.x;
-            moveDirection.z = horizontalMove.z;
         }
 
         moveDirection.y -= gravity * Runner.DeltaTime;
-        controller.Move(moveDirection * Runner.DeltaTime);
 
-        animator.SetFloat("speed", input.magnitude);
+        if (controller != null)
+            controller.Move(moveDirection * Runner.DeltaTime);
+
+        if (animator != null)
+            animator.SetFloat("speed", input.magnitude);
     }
 }

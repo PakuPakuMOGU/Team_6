@@ -982,8 +982,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24af1882441416747a69a9effd09178a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPrefab:
-    RawGuidValue: d287d9480a4d5b349955e729ae757a17
+  _playerPrefab: {fileID: 201370938361181771, guid: d287d9480a4d5b349955e729ae757a17, type: 3}
   _newNetworkConfig:
     Version: 1
     TypeId: NetworkProjectConfig
@@ -9250,6 +9249,7 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 177835870}
   - {fileID: 1271681610}
   - {fileID: 22195237}
   - {fileID: 705507995}
@@ -9262,4 +9262,3 @@ SceneRoots:
   - {fileID: 733873516}
   - {fileID: 584369774}
   - {fileID: 1338139673}
-  - {fileID: 177835870}

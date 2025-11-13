@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
 
-public class See : MonoBehaviour
+public class See : NetworkBehaviour
 {
     public GameObject cam;
     public float Xsensityvity = 3f; // 上下感度
@@ -22,17 +23,17 @@ public class See : MonoBehaviour
 
     void Update()
     {
+        if (!Object.HasInputAuthority) return;
+
         float xRot = Input.GetAxis("Mouse X") * Ysensityvity;
         float yRot = Input.GetAxis("Mouse Y") * Xsensityvity;
 
-        // 左右：プレイヤーの体を回す
+        characterRot = transform.localRotation; // ← 毎フレーム取得
         characterRot *= Quaternion.Euler(0f, xRot, 0f);
 
-        // 上下：カメラのX軸（縦）を回す
         cameraRot *= Quaternion.Euler(-yRot, 0f, 0f);
-        cameraRot = ClampRotation(cameraRot); // ここで角度制限
+        cameraRot = ClampRotation(cameraRot);
 
-        // 回転を反映
         transform.localRotation = characterRot;
         cam.transform.localRotation = cameraRot;
 

@@ -8,7 +8,7 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 {
     private NetworkRunner _runner;
 
-    [SerializeField] private NetworkPrefabRef _playerPrefab;
+    [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private NetworkProjectConfig _newNetworkConfig;
 
     async void Start()
@@ -26,10 +26,8 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager = sceneManager
         });
 
-        if (result.Ok)
-            Debug.Log("部屋参加成功！");
-        else
-            Debug.LogError($"参加失敗: {result.ShutdownReason}");
+        if (result.Ok)  Debug.Log("部屋参加成功！");
+        else            Debug.LogError($"参加失敗: {result.ShutdownReason}");
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -55,6 +53,7 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 
         input.Set(data);
     }
+
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
         Debug.Log($"Fusion shutdown: {shutdownReason}");
@@ -67,7 +66,6 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
-   // public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
