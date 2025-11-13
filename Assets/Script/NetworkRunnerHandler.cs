@@ -41,13 +41,6 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
             );
 
             var obj = runner.Spawn(_playerPrefab, spawnPos, Quaternion.identity, player);
-            /*
-            // カメラの有効化はローカルプレイヤーのみ
-            if (player == runner.LocalPlayer)
-            {
-                var cam = obj.GetComponentInChildren<Camera>();
-                if (cam != null) cam.enabled = true;
-            }*/
         }
     }
 

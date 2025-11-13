@@ -27,8 +27,10 @@ public class PlayerController : NetworkBehaviour
 
         Vector3 input = new Vector3(data.direction.x, 0.0f, data.direction.y);
         Vector3 horizontalMove = (transform.forward * input.z + transform.right * input.x) * speed;
-        moveDirection.x = horizontalMove.x;
-        moveDirection.z = horizontalMove.z;
+
+        // êÖïΩï˚å¸ÇæÇØçXêV
+        Vector3 move = new Vector3(horizontalMove.x, moveDirection.y, horizontalMove.z);
+        moveDirection = move;
 
         if (controller != null && controller.isGrounded)
         {

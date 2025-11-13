@@ -149,6 +149,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 01c577f7a0a174b4c986b6834ff11f1f, type: 2}
@@ -236,6 +240,7 @@ MonoBehaviour:
   cam: {fileID: 1586652175677974933}
   Xsensityvity: 0.5
   Ysensityvity: 0.5
+  playerBody: {fileID: 201370938361342507}
 --- !u!114 &-8183503373930131801
 MonoBehaviour:
   m_ObjectHideFlags: 0

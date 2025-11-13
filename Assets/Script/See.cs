@@ -6,70 +6,52 @@ using Fusion;
 public class See : NetworkBehaviour
 {
     public GameObject cam;
-    public float Xsensityvity = 3f; // 上下感度
-    public float Ysensityvity = 3f; // 左右感度
+    public float Xsensityvity = 3f;
+    public float Ysensityvity = 3f;
+    private Animator animator;
+    private CharacterController controller;
 
-    Quaternion cameraRot, characterRot;
+    float xRotation = 1f;
     bool cursorLock = true;
 
-    // 上下回転の制限
-    float minX = -90f, maxX = 90f;
+    private NetworkObject netObj;
+
     void Start()
     {
-        cameraRot = cam.transform.localRotation;
-        characterRot = transform.localRotation;
+        controller = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
 
-        // ローカルプレイヤー以外のカメラは無効化
-        if (!Object.HasInputAuthority && cam != null)
+        if (animator != null)
+            animator.applyRootMotion = false;
+
+        netObj = GetComponentInParent<NetworkObject>();
+        if (netObj == null || !netObj.HasInputAuthority)
         {
             cam.SetActive(false);
+            enabled = false;
+            return;
         }
     }
+
     void Update()
     {
         if (!Object.HasInputAuthority) return;
 
-        float xRot = Input.GetAxis("Mouse X") * Ysensityvity;
-        float yRot = Input.GetAxis("Mouse Y") * Xsensityvity;
+        float mouseX = Input.GetAxis("Mouse X") * Xsensityvity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * Ysensityvity;
 
-        characterRot = transform.localRotation; // ← 毎フレーム取得
-        characterRot *= Quaternion.Euler(0f, xRot, 0f);
+        transform.Rotate(Vector3.up * mouseX);
 
-        cameraRot *= Quaternion.Euler(-yRot, 0f, 0f);
-        cameraRot = ClampRotation(cameraRot);
-
-        transform.localRotation = characterRot;
-        cam.transform.localRotation = cameraRot;
-
-        UpdateCursorLock();
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
 
     void UpdateCursorLock()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            cursorLock = false;
-        }
-        else if (Input.GetMouseButton(0))
-        {
-            cursorLock = true;
-        }
+        if (Input.GetKeyDown(KeyCode.Escape)) cursorLock = false;
+        else if (Input.GetMouseButton(0)) cursorLock = true;
 
         Cursor.lockState = cursorLock ? CursorLockMode.Locked : CursorLockMode.None;
-    }
-
-    // 上下の回転を制限する関数
-    Quaternion ClampRotation(Quaternion q)
-    {
-        q.x /= q.w;
-        q.y /= q.w;
-        q.z /= q.w;
-        q.w = 1.0f;
-
-        float angleX = Mathf.Atan(q.x) * Mathf.Rad2Deg * 2.0f;
-        angleX = Mathf.Clamp(angleX, minX, maxX);
-        q.x = Mathf.Tan(angleX * Mathf.Deg2Rad * 0.5f);
-
-        return q;
     }
 }
