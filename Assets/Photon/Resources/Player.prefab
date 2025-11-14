@@ -150,7 +150,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_Controller
@@ -169,9 +169,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6306135733685190680}
-    - targetCorrespondingSourceObject: {fileID: 100060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8065094403047463544}
     - targetCorrespondingSourceObject: {fileID: 100060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8183503373930131801}
@@ -199,6 +196,9 @@ MonoBehaviour:
   speed: 6
   jumpSpeed: 8
   gravity: 20
+  cam: {fileID: 1586652175677974933}
+  Xsensityvity: 3
+  Ysensityvity: 3
 --- !u!143 &6306135733685190680
 CharacterController:
   m_ObjectHideFlags: 0
@@ -225,21 +225,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1.09, z: 0}
---- !u!114 &8065094403047463544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 201370938361181771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8292040e2f94a745a1d76ff62606488, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 1586652175677974933}
-  Xsensityvity: 0.5
-  Ysensityvity: 0.5
 --- !u!114 &-8183503373930131801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,7 +243,6 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 5650638524865823062}
-  - {fileID: 8065094403047463544}
   - {fileID: -7827171463740893645}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-7827171463740893645

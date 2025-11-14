@@ -47,13 +47,12 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         var data = new NetworkInputData();
-
         data.direction = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         data.jumpPressed = Input.GetKey(KeyCode.Space);
+        data.rotation = Input.GetAxis("Mouse X");
 
         input.Set(data);
     }
-
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
         Debug.Log($"Fusion shutdown: {shutdownReason}");
