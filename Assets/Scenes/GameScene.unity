@@ -782,10 +782,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetFPS: 60
-  wave1Duration: 1
+  wave1Duration: 120
+  ViewWave_1: {fileID: 22195241}
   wave2Duration: 120
+  ViewWave_2: {fileID: 22195240}
   wave3Duration: 120
   intervalBetweenWaves: 60
+  ViewBetweenWave_A: {fileID: 22195239}
+  ViewBetweenWave_B: {fileID: 22195238}
   sphere: {fileID: 119915641}
 --- !u!1001 &22856861
 PrefabInstance:

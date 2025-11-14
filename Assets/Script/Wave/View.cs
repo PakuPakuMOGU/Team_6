@@ -70,4 +70,9 @@ public class View : MonoBehaviour
         SetActiveAll(true);
         AnimateOpen(0.8f, this);
     }
+
+    public void WindowClose()
+    {
+        SetActiveAll(false);
+    }
 }
