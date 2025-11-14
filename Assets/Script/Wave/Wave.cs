@@ -7,9 +7,13 @@ public class Wave : MonoBehaviour
 
     [Header("ウェーブ時間（秒）")]
     [SerializeField] private int wave1Duration = 120;
+    [SerializeField] private View ViewWave_1;
     [SerializeField] private int wave2Duration = 120;
+    [SerializeField] private View ViewWave_2;
     [SerializeField] private int wave3Duration = 120;
     [SerializeField] private int intervalBetweenWaves = 60;
+    [SerializeField] private View ViewBetweenWave_A;
+    [SerializeField] private View ViewBetweenWave_B;
 
     [Header("ゲーム終了処理")]
     public Sphere sphere;
@@ -42,22 +46,34 @@ public class Wave : MonoBehaviour
         {
             case WaveState.Wave1:
                 if (frameCounter >= wave1Duration)
+                {
                     TransitionTo(WaveState.Interval1);
+                    ViewWave_1.WindowView();
+                }
                 break;
 
             case WaveState.Interval1:
                 if (frameCounter >= intervalBetweenWaves)
+                {
                     TransitionTo(WaveState.Wave2);
+                    // 準備フェーズ終了.チームごとに表示分け.
+                }
                 break;
 
             case WaveState.Wave2:
                 if (frameCounter >= wave2Duration)
+                {
                     TransitionTo(WaveState.Interval2);
+                    ViewWave_2.WindowView();
+                }
                 break;
 
             case WaveState.Interval2:
                 if (frameCounter >= intervalBetweenWaves)
+                {
                     TransitionTo(WaveState.Wave3);
+                    // 準備フェーズ終了.チームごとに表示分け.
+                }
                 break;
 
             case WaveState.Wave3:
