@@ -25,7 +25,7 @@ public class View : MonoBehaviour
 
         AnimateOne(image, duration, 0f, host);
         AnimateOne(string1, duration - 0.7f, 0.8f, host);
-        AnimateOne(string2, duration - 0.7f, 1.0f, host);
+        if (string2 != null) AnimateOne(string2, duration - 0.7f, 1.0f, host);
     }
 
     // ウィンドウを上下に開いて表示.
@@ -65,12 +65,14 @@ public class View : MonoBehaviour
         SetActiveAll(false);
     }
 
+    // ウィンドウを開く.
     public void WindowView()
     {
         SetActiveAll(true);
         AnimateOpen(0.8f, this);
     }
 
+    // ウィンドウを消す.
     public void WindowClose()
     {
         SetActiveAll(false);
