@@ -53,6 +53,7 @@ public class Wave : MonoBehaviour
                 break;
 
             case WaveState.Interval1:
+                if(frameCounter >= 300) ViewWave_1.WindowClose();
                 if (frameCounter >= intervalBetweenWaves)
                 {
                     TransitionTo(WaveState.Wave2);
@@ -69,6 +70,7 @@ public class Wave : MonoBehaviour
                 break;
 
             case WaveState.Interval2:
+                if (frameCounter >= 300) ViewWave_2.WindowClose();
                 if (frameCounter >= intervalBetweenWaves)
                 {
                     TransitionTo(WaveState.Wave3);
