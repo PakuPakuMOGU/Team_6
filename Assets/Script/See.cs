@@ -35,16 +35,24 @@ public class See : NetworkBehaviour
 
     void Update()
     {
-        if (!Object.HasInputAuthority) return;
+        UpdateCursorLock();
 
-        // マウスの入力を取得.
-        float mouseX = Input.GetAxis("Mouse X") * Xsensityvity;// * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * Ysensityvity;
+        if (!GetInput(out NetworkInputData data)) return;
+
+        Debug.Log("a");
 
         // プレイヤー自体を回転.
-        transform.Rotate(Vector3.up * mouseX);
-        
-        // カメラのみを回転.
+        //transform.Rotate(0, data.rotation * Xsensityvity * Time.deltaTime, 0);
+        float newY = transform.eulerAngles.y + data.rotation * Xsensityvity * Time.deltaTime;
+        transform.rotation = Quaternion.Euler(0, newY, 0);
+        var netTransform = GetComponent<NetworkTransform>();
+        if (netTransform != null)
+        {
+            netTransform.Teleport(rotation: transform.rotation); // 強制同期
+        }
+
+        // カメラのみを回転（マウスYはローカルで処理）
+        float mouseY = Input.GetAxis("Mouse Y") * Ysensityvity;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
