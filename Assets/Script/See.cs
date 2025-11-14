@@ -37,11 +37,14 @@ public class See : NetworkBehaviour
     {
         if (!Object.HasInputAuthority) return;
 
-        float mouseX = Input.GetAxis("Mouse X") * Xsensityvity * Time.deltaTime;
+        // マウスの入力を取得.
+        float mouseX = Input.GetAxis("Mouse X") * Xsensityvity;// * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * Ysensityvity;
 
+        // プレイヤー自体を回転.
         transform.Rotate(Vector3.up * mouseX);
-
+        
+        // カメラのみを回転.
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
