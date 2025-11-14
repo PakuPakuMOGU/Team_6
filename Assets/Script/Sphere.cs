@@ -9,7 +9,7 @@ public class Sphere : MonoBehaviour
     public View viewScA;
     public View viewScB;
     private bool finish = false;
-    private bool winATag = false;
+    private bool winATag = true;
 
     void Start()
     {
@@ -22,11 +22,12 @@ public class Sphere : MonoBehaviour
         if (other.gameObject.tag == "Damage" && !finish)
         {
             finish = true;
+            winATag = false;
             GameFinish();
         }
     }
 
-    private void GameFinish()
+    public void GameFinish()
     {
         // インターネット通知入れる.
 
