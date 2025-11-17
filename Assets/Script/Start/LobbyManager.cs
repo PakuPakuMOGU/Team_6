@@ -36,7 +36,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         PlayerPrefs.SetString("RoomName", roomName);
         PlayerPrefs.SetInt("IsHost", 1);
 
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("LobbyScene");
     }
 
     // ルーム一覧のボタンを押したときだけゲームシーンへ移動.
@@ -45,7 +45,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         PlayerPrefs.SetString("RoomName", roomName);
         PlayerPrefs.SetInt("IsHost", 0);
 
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("LobbyScene");
     }
 
     // ルーム一覧.
