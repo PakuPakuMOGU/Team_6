@@ -21,12 +21,34 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
         await _runner.StartGame(new StartGameArgs()
         {
-            GameMode = GameMode.Shared, // ロビー用
+            GameMode = GameMode.Shared,
             SessionName = "",
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
     }
 
+    // ルーム作製.
+    public void CreateRoom()
+    {
+        string roomName = roomNameInput.text;
+        if (string.IsNullOrEmpty(roomName)) roomName = "DefaultRoom";
+
+        PlayerPrefs.SetString("RoomName", roomName);
+        PlayerPrefs.SetInt("IsHost", 1);
+
+        SceneManager.LoadScene("GameScene");
+    }
+
+    // ルーム一覧のボタンを押したときだけゲームシーンへ移動.
+    public void JoinRoom(string roomName)
+    {
+        PlayerPrefs.SetString("RoomName", roomName);
+        PlayerPrefs.SetInt("IsHost", 0);
+
+        SceneManager.LoadScene("GameScene");
+    }
+
+    // ルーム一覧.
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
         foreach (Transform child in roomListParent)
@@ -45,29 +67,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // ルーム作成.
-    // LobbyManager.cs
-    public void CreateRoom()
-    {
-        string roomName = roomNameInput.text;
-        if (string.IsNullOrEmpty(roomName)) roomName = "DefaultRoom";
-
-        PlayerPrefs.SetString("RoomName", roomName);
-        PlayerPrefs.SetInt("IsHost", 1);
-
-        SceneManager.LoadScene("GameScene"); 
-    }
-
-    public void JoinRoom(string roomName)
-    {
-        PlayerPrefs.SetString("RoomName", roomName);
-        PlayerPrefs.SetInt("IsHost", 0);
-
-        SceneManager.LoadScene("GameScene");
-    }
-
-
-    // ────── INetworkRunnerCallbacks 空実装 ──────
+    // INetworkRunnerCallbacks 空実装
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }

@@ -33,23 +33,28 @@ public class View : MonoBehaviour
     {
         if (target == null) return;
         RectTransform rt = target.rectTransform;
-        rt.localScale = new Vector3(150, 0, 1);
-        host.StartCoroutine(AnimateScaleWithDelay(rt, duration, delay));
+
+        // 現在のスケールを取得
+        Vector3 originalScale = rt.localScale;
+
+        // 初期状態は高さ0
+        rt.localScale = new Vector3(originalScale.x, 0, originalScale.z);
+
+        host.StartCoroutine(AnimateScaleWithDelay(rt, duration, delay, originalScale));
     }
 
     // 一拍おきたいとき用.
-    private IEnumerator AnimateScaleWithDelay(RectTransform rt, float duration, float delay)
+    private IEnumerator AnimateScaleWithDelay(RectTransform rt, float duration, float delay, Vector3 originalScale)
     {
         yield return new WaitForSeconds(delay);
-        yield return AnimateScale(rt, duration);
+        yield return AnimateScale(rt, duration, originalScale);
     }
 
-    private IEnumerator AnimateScale(RectTransform rt, float duration)
+    private IEnumerator AnimateScale(RectTransform rt, float duration, Vector3 originalScale)
     {
-        // スタート時のサイズ、終了時のサイズを設定.
         float time = 0f;
-        Vector3 start = new Vector3(150, 0, 1);
-        Vector3 end = new Vector3(150, 150, 1);
+        Vector3 start = new Vector3(originalScale.x, 0, originalScale.z);
+        Vector3 end = originalScale; // 設定済みのスケールまで拡大
 
         while (time < duration)
         {
