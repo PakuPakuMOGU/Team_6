@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -15,40 +16,86 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     async void Start()
     {
-        _runner = gameObject.AddComponent<NetworkRunner>();
+        await StartLobbyRunner();
+    }
+
+    // ロビー用RunnerをSharedモードで起動
+    private async Task StartLobbyRunner()
+    {
+        if (_runner != null)
+        {
+            await _runner.Shutdown();
+        }
+
+        GameObject runnerObj = new GameObject("NetworkRunner");
+        DontDestroyOnLoad(runnerObj);
+
+        _runner = runnerObj.AddComponent<NetworkRunner>();
         _runner.ProvideInput = true;
         _runner.AddCallbacks(this);
 
-        await _runner.StartGame(new StartGameArgs()
+        var sceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>();
+
+        var result = await _runner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Shared,
             SessionName = "",
-            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+            SceneManager = sceneManager
         });
+
+        if (!result.Ok)
+        {
+            Debug.LogError($"ロビーRunner起動失敗: {result.ShutdownReason}");
+        }
     }
 
-    // ルーム作製.
-    public void CreateRoom()
+    // Runnerを再起動して指定モードで開始
+    private async Task RestartRunner(GameMode mode, string sessionName)
     {
-        string roomName = roomNameInput.text;
-        if (string.IsNullOrEmpty(roomName)) roomName = "DefaultRoom";
+        if (_runner != null)
+        {
+            await _runner.Shutdown();
+        }
 
-        PlayerPrefs.SetString("RoomName", roomName);
-        PlayerPrefs.SetInt("IsHost", 1);
+        // Runner専用GameObjectを作成
+        GameObject runnerObj = new GameObject("NetworkRunner");
+        DontDestroyOnLoad(runnerObj);
 
-        SceneManager.LoadScene("LobbyScene");
+        _runner = runnerObj.AddComponent<NetworkRunner>();
+        _runner.ProvideInput = true;
+        _runner.AddCallbacks(this);
+
+        var sceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>();
+
+        var result = await _runner.StartGame(new StartGameArgs()
+        {
+            GameMode = mode,
+            SessionName = sessionName,
+            SceneManager = sceneManager
+        });
+
+        if (!result.Ok)
+        {
+            Debug.LogError($"Runner起動失敗: {result.ShutdownReason}");
+        }
     }
 
-    // ルーム一覧のボタンを押したときだけゲームシーンへ移動.
-    public void JoinRoom(string roomName)
+    // ルーム作成（ホスト）
+    public async void CreateRoom()
     {
-        PlayerPrefs.SetString("RoomName", roomName);
-        PlayerPrefs.SetInt("IsHost", 0);
-
-        SceneManager.LoadScene("LobbyScene");
+        string roomName = string.IsNullOrEmpty(roomNameInput.text) ? "DefaultRoom" : roomNameInput.text;
+        await RestartRunner(GameMode.Host, roomName);
+        SceneManager.LoadScene("RoomScene"); // ルーム画面へ
     }
 
-    // ルーム一覧.
+    // ルーム参加（クライアント）
+    public async void JoinRoom(string roomName)
+    {
+        await RestartRunner(GameMode.Client, roomName);
+        SceneManager.LoadScene("RoomScene");
+    }
+
+    // セッション一覧更新
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
         foreach (Transform child in roomListParent)
