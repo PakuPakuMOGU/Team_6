@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private GameObject roomButtonPrefab;
+    [SerializeField] private GameObject createRoomButtonPrefab;
+    [SerializeField] private GameObject RoomNamePrefab;
     [SerializeField] private Transform roomListParent;
     [SerializeField] private TMP_InputField roomNameInput;
 
@@ -16,17 +18,24 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     async void Start()
     {
-        await StartLobbyRunner();
+        if (roomNameInput?.placeholder != null)
+        {
+            var placeholderText = roomNameInput.placeholder.GetComponent<TextMeshProUGUI>();
+            if (placeholderText != null)
+            {
+                placeholderText.text = "RoomName";
+            }
+        }
     }
 
-    // ロビー用RunnerをSharedモードで起動
-    private async Task StartLobbyRunner()
+    // ロビー用Runnerをで起動.    
+    private async Task StartLobbyRunner(string sessionName)
     {
+        // runnerが存在している場合はシャットダウン.
         if (_runner != null)
-        {
             await _runner.Shutdown();
-        }
 
+        // Scene以降によるrunnnerの破棄を防止.
         GameObject runnerObj = new GameObject("NetworkRunner");
         DontDestroyOnLoad(runnerObj);
 
@@ -36,28 +45,28 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
         var sceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>();
 
+        // セッション開始.
         var result = await _runner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Shared,
-            SessionName = "",
+            SessionName = sessionName,
             SceneManager = sceneManager
         });
 
         if (!result.Ok)
-        {
             Debug.LogError($"ロビーRunner起動失敗: {result.ShutdownReason}");
-        }
     }
 
-    // Runnerを再起動して指定モードで開始
+    // Runnerを再起動.
     private async Task RestartRunner(GameMode mode, string sessionName)
     {
+        // runnerが存在している場合はシャットダウン.
         if (_runner != null)
         {
             await _runner.Shutdown();
         }
 
-        // Runner専用GameObjectを作成
+        // Scene以降によるrunnnerの破棄を防止.
         GameObject runnerObj = new GameObject("NetworkRunner");
         DontDestroyOnLoad(runnerObj);
 
@@ -67,6 +76,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
         var sceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>();
 
+        // セッション開始.
         var result = await _runner.StartGame(new StartGameArgs()
         {
             GameMode = mode,
@@ -81,11 +91,19 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     // ルーム作成（ホスト）
+    // ルームの名前決め.
+    public void ShowRoomNameInputPanel()
+    {
+        RoomNamePrefab.SetActive(true);
+    }
+    // ルーム名決定.
     public async void CreateRoom()
     {
         string roomName = string.IsNullOrEmpty(roomNameInput.text) ? "DefaultRoom" : roomNameInput.text;
+
         await RestartRunner(GameMode.Host, roomName);
-        SceneManager.LoadScene("RoomScene"); // ルーム画面へ
+
+        SceneManager.LoadScene("RoomScene");
     }
 
     // ルーム参加（クライアント）
@@ -95,7 +113,14 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         SceneManager.LoadScene("RoomScene");
     }
 
-    // セッション一覧更新
+    // ロビーへ参加.
+    public async void EnterLobby()
+    {
+        string roomName = string.IsNullOrEmpty(roomNameInput.text) ? "Lobby" : roomNameInput.text;
+        await StartLobbyRunner(roomName);
+    }
+
+    // セッション一覧更新.
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
         foreach (Transform child in roomListParent)
