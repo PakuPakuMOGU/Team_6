@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Door
+  - Land
+  - Fence1
+  - Fence2
+  - Camera
   layers:
   - Default
   - TransparentFX
