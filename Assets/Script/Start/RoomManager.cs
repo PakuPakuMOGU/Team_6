@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
+// RoomSceneはStartSceneから移動しないと動作しません.
 public class Room : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private Transform playerListParent;
@@ -20,23 +21,27 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         _runner = FindObjectOfType<NetworkRunner>();
         if (_runner == null)
         {
-            Debug.LogError("NetworkRunnerが見つかりません。ロビーから遷移しているか確認してください。");
+            Debug.LogError("NetworkRunnerが見つかりません。スタートシーンから遷移しているか確認してください。");
             return;
         }
 
-        startButton.SetActive(_runner.IsServer); // ホストのみ表示
-        leaveButton.SetActive(true);
+        startButton.SetActive(_runner.IsServer);    // スタートボタンはホストのみ表示.
+        leaveButton.SetActive(true);                // 退出ボタンの表示.
     }
 
+    // ルームに参加.
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        // プレイヤーリストにプレイヤー名を表示する予定.
         var item = Instantiate(playerItemPrefab, playerListParent);
         item.GetComponentInChildren<TextMeshProUGUI>().text = $"Player {player.PlayerId}";
         _playerItems[player] = item;
     }
 
+    // ルームから退出.
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
+        // プレイヤー名をプレイヤーリストから削除.
         if (_playerItems.TryGetValue(player, out var item))
         {
             Destroy(item);
@@ -44,12 +49,12 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // ゲーム開始（ホストのみ）
+    // ゲーム開始（ホストのみ可）
     public void StartGame()
     {
         if (_runner.IsServer)
         {
-            _runner.LoadScene("GameScene"); // 全員をGameSceneへ移動
+            _runner.LoadScene("GameScene"); // ルーム内全員をGameSceneへ移動.
         }
     }
 
@@ -57,10 +62,10 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     public void LeaveRoom()
     {
         _runner.Shutdown();
-        SceneManager.LoadScene("StartScene"); // ロビー画面に戻る
+        SceneManager.LoadScene("StartScene"); // ロビー画面に戻る.
     }
 
-    // 他のINetworkRunnerCallbacksは空実装
+    // INetworkRunnerCallbacks空実装.
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
