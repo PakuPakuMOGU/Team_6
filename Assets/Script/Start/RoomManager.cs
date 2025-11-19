@@ -12,9 +12,12 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private GameObject playerItemPrefab;
     [SerializeField] private GameObject startButton;
     [SerializeField] private GameObject leaveButton;
+    [SerializeField] private GameObject playerPrefab;   // プレイヤー名保持用.
 
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, GameObject> _playerItems = new Dictionary<PlayerRef, GameObject>();
+    private Dictionary<PlayerRef, string> _playerNames = new();
+    private Dictionary<NetAddress, string> _pendingNames = new();
 
     void Start()
     {
@@ -29,12 +32,37 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         leaveButton.SetActive(true);                // 退出ボタンの表示.
     }
 
+    // プレイヤー名の受取.
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+    {
+        if (token != null && token.Length > 0)
+        {
+            string name = System.Text.Encoding.UTF8.GetString(token);
+            _pendingNames[request.RemoteAddress] = name;
+        }
+    }
+
     // ルームに参加.
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        // プレイヤーリストにプレイヤー名を表示する予定.
+        runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
+
+        string name = $"Player {player.PlayerId}";
+
+        foreach (var obj in runner.ActivePlayers)
+        {
+            if (obj == player)
+            {
+                var playerObj = runner.GetPlayerObject(player);
+                if (playerObj != null && playerObj.TryGetComponent<StartPlayer>(out var startPlayer))
+                {
+                    name = startPlayer.PlayerName;
+                }
+            }
+        }
+
         var item = Instantiate(playerItemPrefab, playerListParent);
-        item.GetComponentInChildren<TextMeshProUGUI>().text = $"Player {player.PlayerId}";
+        item.GetComponentInChildren<TextMeshProUGUI>().text = name;
         _playerItems[player] = item;
     }
 
@@ -61,8 +89,13 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     // ルームから抜ける
     public void LeaveRoom()
     {
+        foreach (var item in _playerItems.Values)
+            Destroy(item);
+        _playerItems.Clear();
+        _playerNames.Clear();
+        _pendingNames.Clear();
         _runner.Shutdown();
-        SceneManager.LoadScene("StartScene"); // ロビー画面に戻る.
+        SceneManager.LoadScene("StartScene");
     }
 
     // INetworkRunnerCallbacks空実装.
@@ -72,7 +105,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
-    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }

@@ -11,15 +11,20 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private GameObject roomButtonPrefab;
     [SerializeField] private GameObject createRoomButtonPrefab;
     [SerializeField] private GameObject RoomNamePrefab;
-    [SerializeField] private Transform roomListParent;
+    [SerializeField] private GameObject PlayerNamePrefab;
     [SerializeField] private TMP_InputField roomNameInput;
+    [SerializeField] private Transform roomListParent;
+    [SerializeField] private TMP_InputField playerNameInput;
     [SerializeField] private View maxPlayerView;
+    [SerializeField] private View playerNameView;
 
     private List<SessionInfo> _cachedSessionList = new List<SessionInfo>();
     private NetworkRunner _runner;
 
-    async void Start()
+
+    private void Start()
     {
+        // ルーム名入力.
         if (roomNameInput?.placeholder != null)
         {
             var placeholderText = roomNameInput.placeholder.GetComponent<TextMeshProUGUI>();
@@ -28,9 +33,18 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
                 placeholderText.text = "RoomName";
             }
         }
+        // プレイヤー名入力.
+        if (playerNameInput?.placeholder != null)
+        {
+            var placeholderText = playerNameInput.placeholder.GetComponent<TextMeshProUGUI>();
+            if (placeholderText != null)
+            {
+                placeholderText.text = "PlayerName";
+            }
+        }
     }
 
-    // ロビー用Runnerをで起動.    
+    // ロビー用Runnerの起動.    
     private async Task StartLobbyRunner(string sessionName)
     {
         // runnerが存在している場合はシャットダウン.
@@ -46,20 +60,22 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         _runner.AddCallbacks(this);
 
         var sceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>();
+        var token = System.Text.Encoding.UTF8.GetBytes(PlayerInfo.PlayerName);
 
         // セッション開始.
         var result = await _runner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Shared,
             SessionName = sessionName,
-            SceneManager = sceneManager
+            SceneManager = sceneManager,
+            ConnectionToken = token
         });
 
         if (!result.Ok)
             Debug.LogError($"ロビーRunner起動失敗: {result.ShutdownReason}");
     }
 
-    // Runnerを再起動.
+    // Runnerの再起動.
     private async Task RestartRunner(GameMode mode, string sessionName)
     {
         // runnerが存在している場合はシャットダウン.
@@ -77,13 +93,15 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         _runner.AddCallbacks(this);
 
         var sceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>();
+        var token = System.Text.Encoding.UTF8.GetBytes(PlayerInfo.PlayerName);
 
         // セッション開始.
         var result = await _runner.StartGame(new StartGameArgs()
         {
             GameMode = mode,
             SessionName = sessionName,
-            SceneManager = sceneManager
+            SceneManager = sceneManager,
+            ConnectionToken = token
         });
 
         if (!result.Ok)
@@ -92,10 +110,59 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    // プレイヤー名の決定.
+    public void ConfirmPlayerName()
+    {
+        string name = playerNameInput.text.Trim();
+
+        if (string.IsNullOrEmpty(name))
+        {
+            playerNameView.WindowView();
+            Debug.LogWarning("プレイヤー名が空です");
+            return;
+        }
+    }
+    // 名前決定ボタンを押したら.
+    public void CloseConfirmPlayerName()
+    {
+        string name = playerNameInput.text.Trim();
+
+        if (string.IsNullOrEmpty(name))
+        {
+            Debug.LogWarning("プレイヤー名が空です");
+            return;
+        }
+
+        PlayerInfo.PlayerName = name;
+        playerNameView.WindowClose();
+    }
+
     // ルーム作成（ホスト）
     // ルームの名前決め.
     public void ShowRoomNameInputPanel()
     {
+        Debug.Log("ShowRoomNameInputPanel called");
+
+        PlayerNamePrefab.SetActive(true);
+
+        if (playerNameInput == null)
+        {
+            Debug.LogError("playerNameInput is null");
+            return;
+        }
+
+        string trimmedName = playerNameInput.text.Trim();
+        Debug.Log($"playerNameInput.text = '{trimmedName}'");
+
+        if (string.IsNullOrEmpty(trimmedName))
+        {
+            Debug.LogWarning("プレイヤー名が空です。WindowViewを呼びます");
+            playerNameView.WindowView();
+            return;
+        }
+
+        Debug.Log("aaa");
+        PlayerInfo.PlayerName = trimmedName;
         RoomNamePrefab.SetActive(true);
     }
     // ルーム名決定.
@@ -128,6 +195,22 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     // ロビーへ参加.
     public async void EnterLobby()
     {
+        if (playerNameInput == null)
+        {
+            Debug.LogWarning("playerNameInput is null");
+        }
+        else
+        {
+            Debug.Log($"playerNameInput.text = '{playerNameInput.text}'");
+        }
+        if (string.IsNullOrEmpty(playerNameInput.text.Trim()))
+        {
+            playerNameView.WindowView(); // 名前入力ウィンドウを表示
+            return;
+        }
+
+        PlayerInfo.PlayerName = playerNameInput.text.Trim();
+
         string roomName = string.IsNullOrEmpty(roomNameInput.text) ? "Lobby" : roomNameInput.text;
         await StartLobbyRunner(roomName);
     }
