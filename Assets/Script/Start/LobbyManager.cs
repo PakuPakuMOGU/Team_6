@@ -13,7 +13,9 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private GameObject RoomNamePrefab;
     [SerializeField] private Transform roomListParent;
     [SerializeField] private TMP_InputField roomNameInput;
+    [SerializeField] private View maxPlayerView;
 
+    private List<SessionInfo> _cachedSessionList = new List<SessionInfo>();
     private NetworkRunner _runner;
 
     async void Start()
@@ -109,6 +111,16 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     // ルーム参加（クライアント）
     public async void JoinRoom(string roomName)
     {
+        SessionInfo targetSession = _cachedSessionList.Find(s => s.Name == roomName);
+
+        // 定員オーバー.
+        if (targetSession != null && targetSession.PlayerCount >= targetSession.MaxPlayers)
+        {
+            if (maxPlayerView != null)
+                maxPlayerView.WindowView();
+            return;
+        }
+
         await RestartRunner(GameMode.Client, roomName);
         SceneManager.LoadScene("RoomScene");
     }
@@ -123,6 +135,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     // セッション一覧更新.
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
+        _cachedSessionList = sessionList;
+
         foreach (Transform child in roomListParent)
             Destroy(child.gameObject);
 
