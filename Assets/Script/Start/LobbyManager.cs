@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using System.Linq;
 
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -152,12 +153,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         string trimmedName = playerNameInput.text.Trim();
-        Debug.Log($"playerNameInput.text = '{trimmedName}'");
 
         if (string.IsNullOrEmpty(trimmedName))
         {
-            Debug.LogWarning("プレイヤー名が空です。WindowViewを呼びます");
-            playerNameView.WindowView();
+            Debug.LogWarning("プレイヤー名が空です");
             return;
         }
 
@@ -170,8 +169,15 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         string roomName = string.IsNullOrEmpty(roomNameInput.text) ? "DefaultRoom" : roomNameInput.text;
 
-        await RestartRunner(GameMode.Host, roomName);
+        // セッション名の衝突チェック.
+        bool nameExists = _cachedSessionList.Any(s => s.Name == roomName);
+        if (nameExists)
+        {
+            Debug.LogWarning("同名のルームが既に存在します");
+            return;
+        }
 
+        await RestartRunner(GameMode.Host, roomName);
         SceneManager.LoadScene("RoomScene");
     }
 

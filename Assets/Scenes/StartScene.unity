@@ -377,6 +377,7 @@ GameObject:
   m_Component:
   - component: {fileID: 197843052}
   - component: {fileID: 197843051}
+  - component: {fileID: 197843053}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -461,6 +462,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &197843053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197843050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &247272334
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,9 +568,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 247272339}
-        m_TargetAssemblyTypeName: View, Assembly-CSharp
-        m_MethodName: WindowView
+      - m_Target: {fileID: 580829026}
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+        m_MethodName: EnterLobby
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -785,7 +809,7 @@ GameObject:
   - component: {fileID: 580829023}
   - component: {fileID: 580829022}
   - component: {fileID: 580829021}
-  - component: {fileID: 580829024}
+  - component: {fileID: 580829026}
   - component: {fileID: 580829019}
   - component: {fileID: 580829025}
   m_Layer: 5
@@ -899,27 +923,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &580829024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 580829018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3480c7b4590fbd5429ebd53b2ee37185, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomButtonPrefab: {fileID: 247272334}
-  createRoomButtonPrefab: {fileID: 1666453010}
-  RoomNamePrefab: {fileID: 1819728381}
-  PlayerNamePrefab: {fileID: 46519854}
-  roomNameInput: {fileID: 1819728383}
-  roomListParent: {fileID: 908719112}
-  playerNameInput: {fileID: 2090417866}
-  maxPlayerView: {fileID: 1411735867}
-  playerNameView: {fileID: 580829025}
 --- !u!114 &580829025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -937,6 +940,27 @@ MonoBehaviour:
   string1: {fileID: 2090417868}
   string2: {fileID: 871286836}
   string3: {fileID: 0}
+--- !u!114 &580829026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 580829018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3480c7b4590fbd5429ebd53b2ee37185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomButtonPrefab: {fileID: 247272334}
+  createRoomButtonPrefab: {fileID: 1373127556}
+  RoomNamePrefab: {fileID: 1666453010}
+  PlayerNamePrefab: {fileID: 46519854}
+  roomNameInput: {fileID: 1819728383}
+  roomListParent: {fileID: 908719112}
+  playerNameInput: {fileID: 2090417866}
+  maxPlayerView: {fileID: 1411735867}
+  playerNameView: {fileID: 580829025}
 --- !u!1 &609588457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1227,7 +1251,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 580829024}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
         m_MethodName: CreateRoom
         m_Mode: 1
@@ -1445,9 +1469,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 580829024}
-        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
-        m_MethodName: CloseConfirmPlayerName
+      - m_Target: {fileID: 580829025}
+        m_TargetAssemblyTypeName: View, Assembly-CSharp
+        m_MethodName: WindowClose
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
