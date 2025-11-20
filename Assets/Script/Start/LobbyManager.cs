@@ -18,6 +18,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private TMP_InputField playerNameInput;
     [SerializeField] private View maxPlayerView;
     [SerializeField] private View playerNameView;
+    [SerializeField] private View noRoomView;
 
     private List<SessionInfo> _cachedSessionList = new List<SessionInfo>();
     private NetworkRunner _runner;
@@ -226,9 +227,19 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         _cachedSessionList = sessionList;
 
+        // 既存のルームボタンをすべて削除.
         foreach (Transform child in roomListParent)
             Destroy(child.gameObject);
 
+        // ルームが存在しない場合は画像を表示.
+        if (sessionList.Count == 0)
+        {
+            if (noRoomView != null)
+                noRoomView.WindowView();
+            return;
+        }
+        
+        // ルームがある場合はボタンを生成.
         foreach (var session in sessionList)
         {
             var button = Instantiate(roomButtonPrefab, roomListParent);
