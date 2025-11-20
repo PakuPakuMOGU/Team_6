@@ -3,12 +3,13 @@ using System.Collections;
 
 public class Shot : MonoBehaviour
 {
-    private UnityEngine.Camera mainCam;
+    public UnityEngine.Camera mainCam;
 
     public AudioClip gunshotClip; // 銃声
     public AudioClip echoClip;    // 2秒後に鳴らす音（例：反響音、リロード音など）
 
     private AudioSource audioSource;
+    private Animator animator;
 
     void Start()
     {
@@ -17,6 +18,8 @@ public class Shot : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+
+        animator = GetComponent<Animator>();
 
         audioSource.playOnAwake = false;
         audioSource.volume = 1.0f;
@@ -31,8 +34,6 @@ public class Shot : MonoBehaviour
 
     void Update()
     {
-        if (mainCam == null) return;
-
         if (Input.GetMouseButtonDown(0))
         {
             // 🔊 銃声を再生
@@ -41,10 +42,20 @@ public class Shot : MonoBehaviour
                 audioSource.PlayOneShot(gunshotClip);
             }
 
+            Debug.Log("ばーん");
+
+            // 🎬 アニメーション再生
+            if (animator != null)
+            {
+                animator.SetTrigger("Shot");
+                animator.ResetTrigger("Shot");
+
+            }
+
             // ⏱ 2秒後に別の音を再生
             if (echoClip != null)
             {
-                StartCoroutine(PlayDelayedSound(2f, echoClip));
+                StartCoroutine(PlayDelayedSound(1f, echoClip));
             }
 
             // 画面中央からRayを飛ばす
@@ -58,6 +69,8 @@ public class Shot : MonoBehaviour
             }
         }
     }
+
+
 
     IEnumerator PlayDelayedSound(float delay, AudioClip clip)
     {
