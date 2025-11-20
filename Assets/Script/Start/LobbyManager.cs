@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using System.Linq;
 
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -17,6 +18,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private TMP_InputField playerNameInput;
     [SerializeField] private View maxPlayerView;
     [SerializeField] private View playerNameView;
+    [SerializeField] private View noRoomView;
 
     private List<SessionInfo> _cachedSessionList = new List<SessionInfo>();
     private NetworkRunner _runner;
@@ -152,12 +154,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         string trimmedName = playerNameInput.text.Trim();
-        Debug.Log($"playerNameInput.text = '{trimmedName}'");
 
         if (string.IsNullOrEmpty(trimmedName))
         {
-            Debug.LogWarning("プレイヤー名が空です。WindowViewを呼びます");
-            playerNameView.WindowView();
+            Debug.LogWarning("プレイヤー名が空です");
             return;
         }
 
@@ -170,8 +170,15 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         string roomName = string.IsNullOrEmpty(roomNameInput.text) ? "DefaultRoom" : roomNameInput.text;
 
-        await RestartRunner(GameMode.Host, roomName);
+        // セッション名の衝突チェック.
+        bool nameExists = _cachedSessionList.Any(s => s.Name == roomName);
+        if (nameExists)
+        {
+            Debug.LogWarning("同名のルームが既に存在します");
+            return;
+        }
 
+        await RestartRunner(GameMode.Host, roomName);
         SceneManager.LoadScene("RoomScene");
     }
 
@@ -220,9 +227,19 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         _cachedSessionList = sessionList;
 
+        // 既存のルームボタンをすべて削除.
         foreach (Transform child in roomListParent)
             Destroy(child.gameObject);
 
+        // ルームが存在しない場合は画像を表示.
+        if (sessionList.Count == 0)
+        {
+            if (noRoomView != null)
+                noRoomView.WindowView();
+            return;
+        }
+        
+        // ルームがある場合はボタンを生成.
         foreach (var session in sessionList)
         {
             var button = Instantiate(roomButtonPrefab, roomListParent);
