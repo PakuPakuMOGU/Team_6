@@ -168,6 +168,18 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     // ルーム名決定.
     public async void CreateRoom()
     {
+        // プレイヤー名チェック.
+        if (playerNameInput == null)
+        {
+            Debug.LogWarning("playerNameInput is null");
+        }
+        if (string.IsNullOrEmpty(playerNameInput.text.Trim()))
+        {
+            playerNameView.WindowView(); // 名前入力ウィンドウを表示
+            return;
+        }
+
+        PlayerInfo.PlayerName = playerNameInput.text.Trim();
         string roomName = string.IsNullOrEmpty(roomNameInput.text) ? "DefaultRoom" : roomNameInput.text;
 
         // セッション名の衝突チェック.
