@@ -1,10 +1,11 @@
 using Fusion;
 using Fusion.Sockets;
-using System.Collections.Generic;
+using Fusion.Photon.Realtime;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using System.Collections.Generic;
 
 public class Room : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -14,6 +15,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private GameObject leaveButton;
     [SerializeField] private NetworkObject playerPrefab;
     [SerializeField] private View SelectPanelView;
+    [SerializeField] private SceneRef gameScene;
 
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, GameObject> _playerItems = new();
@@ -100,15 +102,13 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     // ゲーム開始（ホストのみ可）
     public void StartGame()
     {
-        int playerCount = _runner.ActivePlayers.Count();
-
         if (!_runner.IsServer)
         {
             Debug.Log("ホストのみ開始可能です");
             return;
         }
 
-        if (playerCount < 2)
+        if (_runner.ActivePlayers.Count() < 2)
         {
             Debug.Log("プレイヤーが2人未満のため開始できません");
             return;
@@ -122,7 +122,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         // 全員をゲームシーンへ移行
-        SceneManager.LoadScene("GameScene");
+        _runner.SceneManager.LoadScene(gameScene, new NetworkLoadSceneParameters());
     }
 
     // ルームから抜ける
