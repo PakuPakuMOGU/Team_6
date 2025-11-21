@@ -114,12 +114,15 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        // ホストが2人以上いる場合のみ開始
+        // 陣営選択開始
         var netRoom = _runner.GetComponent<RoomNetwork>();
         if (netRoom != null)
         {
             netRoom.RpcStartFactionSelection();
         }
+
+        // 全員をゲームシーンへ移行
+        SceneManager.LoadScene("GameScene");
     }
 
     // ルームから抜ける
