@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class Room : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -99,9 +100,25 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     // ゲーム開始（ホストのみ可）
     public void StartGame()
     {
-        if (_runner.IsServer)
+        int playerCount = _runner.ActivePlayers.Count();
+
+        if (!_runner.IsServer)
         {
-            _runner.LoadScene("GameScene"); // ルーム内全員をGameSceneへ移動.
+            Debug.Log("ホストのみ開始可能です");
+            return;
+        }
+
+        if (playerCount < 2)
+        {
+            Debug.Log("プレイヤーが2人未満のため開始できません");
+            return;
+        }
+
+        // ホストが2人以上いる場合のみ開始
+        var netRoom = _runner.GetComponent<RoomNetwork>();
+        if (netRoom != null)
+        {
+            netRoom.RpcStartFactionSelection();
         }
     }
 
@@ -134,16 +151,4 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
     public void OnSceneLoadStart(NetworkRunner runner) { }
     public void OnSceneLoadDone(NetworkRunner runner) { }
-}
-
-// ネットワーク処理専用クラス.
-public class RoomNetwork : NetworkBehaviour
-{
-    // 陣営選択をサーバーに伝えるRPC
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RpcSetFaction(PlayerRef player, string faction)
-    {
-        Debug.Log($"{player.PlayerId} が {faction} を希望しました");
-        // 必要ならNetworked変数に保持して全員に同期
-    }
 }
