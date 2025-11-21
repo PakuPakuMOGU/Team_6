@@ -1,11 +1,12 @@
 using Fusion;
 using Fusion.Sockets;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
-using System.Threading.Tasks;
-using System.Linq;
 
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -47,13 +48,11 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     // ロビー用Runnerの起動.    
-    private async Task StartLobbyRunner(string sessionName)
+    private async Task StartLobbyRunner()
     {
-        // runnerが存在している場合はシャットダウン.
         if (_runner != null)
             await _runner.Shutdown();
 
-        // Scene以降によるrunnnerの破棄を防止.
         GameObject runnerObj = new GameObject("NetworkRunner");
         DontDestroyOnLoad(runnerObj);
 
@@ -64,11 +63,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         var sceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>();
         var token = System.Text.Encoding.UTF8.GetBytes(PlayerInfo.PlayerName);
 
-        // セッション開始.
         var result = await _runner.StartGame(new StartGameArgs()
         {
-            GameMode = GameMode.Shared,
-            SessionName = sessionName,
+            GameMode = GameMode.AutoHostOrClient,
+            SessionName = "", // ←ここを空文字にする
             SceneManager = sceneManager,
             ConnectionToken = token
         });
@@ -78,15 +76,13 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     // Runnerの再起動.
-    private async Task RestartRunner(GameMode mode, string sessionName)
+    private async Task<StartGameResult> RestartRunner(GameMode mode, string sessionName)
     {
-        // runnerが存在している場合はシャットダウン.
+        if (_runner == null)
+            _runner = FindObjectOfType<NetworkRunner>();
         if (_runner != null)
-        {
             await _runner.Shutdown();
-        }
 
-        // Scene以降によるrunnnerの破棄を防止.
         GameObject runnerObj = new GameObject("NetworkRunner");
         DontDestroyOnLoad(runnerObj);
 
@@ -97,7 +93,6 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         var sceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>();
         var token = System.Text.Encoding.UTF8.GetBytes(PlayerInfo.PlayerName);
 
-        // セッション開始.
         var result = await _runner.StartGame(new StartGameArgs()
         {
             GameMode = mode,
@@ -108,8 +103,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (!result.Ok)
         {
-            Debug.LogError($"Runner起動失敗: {result.ShutdownReason}");
+            Debug.Log($"Runner起動失敗: {result.ShutdownReason}");
         }
+
+        return result;
     }
 
     // プレイヤー名の決定.
@@ -143,27 +140,18 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     // ルームの名前決め.
     public void ShowRoomNameInputPanel()
     {
-        Debug.Log("ShowRoomNameInputPanel called");
-
-        PlayerNamePrefab.SetActive(true);
-
         if (playerNameInput == null)
         {
             Debug.LogError("playerNameInput is null");
             return;
         }
-
-        string trimmedName = playerNameInput.text.Trim();
-
-        if (string.IsNullOrEmpty(trimmedName))
+        if (string.IsNullOrEmpty(playerNameInput.text.Trim()))
         {
-            Debug.LogWarning("プレイヤー名が空です");
+            playerNameView.WindowView(); // 名前入力ウィンドウを表示
             return;
         }
 
-        Debug.Log("aaa");
-        PlayerInfo.PlayerName = trimmedName;
-        RoomNamePrefab.SetActive(true);
+        PlayerInfo.PlayerName = playerNameInput.text.Trim();
     }
     // ルーム名決定.
     public async void CreateRoom()
@@ -197,75 +185,83 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     // ルーム参加（クライアント）
     public async void JoinRoom(string roomName)
     {
-        SessionInfo targetSession = _cachedSessionList.Find(s => s.Name == roomName);
-
-        // 定員オーバー.
-        if (targetSession != null && targetSession.PlayerCount >= targetSession.MaxPlayers)
+        var targetSession = _cachedSessionList.FirstOrDefault(s => s.Name.Equals(roomName, StringComparison.OrdinalIgnoreCase));
+        if (targetSession == null)
         {
-            if (maxPlayerView != null)
-                maxPlayerView.WindowView();
+            Debug.LogWarning($"指定されたルーム {roomName} が見つかりません");
+            return;
+        }
+
+        if (targetSession.PlayerCount >= targetSession.MaxPlayers)
+        {
+            maxPlayerView?.WindowView();
             return;
         }
 
         await RestartRunner(GameMode.Client, roomName);
-        SceneManager.LoadScene("RoomScene");
+        SceneManager.LoadScene("RoomScene"); // Runnerを引き継ぐ.
     }
 
     // ロビーへ参加.
     public async void EnterLobby()
     {
-        if (playerNameInput == null)
-        {
-            Debug.LogWarning("playerNameInput is null");
-        }
-        else
-        {
-            Debug.Log($"playerNameInput.text = '{playerNameInput.text}'");
-        }
         if (string.IsNullOrEmpty(playerNameInput.text.Trim()))
         {
-            playerNameView.WindowView(); // 名前入力ウィンドウを表示
+            playerNameView.WindowView();
             return;
         }
 
         PlayerInfo.PlayerName = playerNameInput.text.Trim();
 
-        string roomName = string.IsNullOrEmpty(roomNameInput.text) ? "Lobby" : roomNameInput.text;
-        await StartLobbyRunner(roomName);
+        await StartLobbyRunner();   // ←セッション名は渡さない
+        noRoomView?.WindowView();   // 初期状態は NoRoom を表示
     }
 
-    // セッション一覧更新.
-    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
+    // ルームに参加.
+    public async void OnClickJoinByNameDirect()
     {
-        _cachedSessionList = sessionList;
-
-        // 既存のルームボタンをすべて削除.
-        foreach (Transform child in roomListParent)
-            Destroy(child.gameObject);
-
-        // ルームが存在しない場合は画像を表示.
-        if (sessionList.Count == 0)
+        if (string.IsNullOrEmpty(playerNameInput.text.Trim()))
         {
-            if (noRoomView != null)
-                noRoomView.WindowView();
+            playerNameView.WindowView();
             return;
         }
-        
-        // ルームがある場合はボタンを生成.
-        foreach (var session in sessionList)
-        {
-            var button = Instantiate(roomButtonPrefab, roomListParent);
-            button.GetComponentInChildren<TextMeshProUGUI>().text =
-                $"{session.Name} ({session.PlayerCount}/{session.MaxPlayers})";
+        PlayerInfo.PlayerName = playerNameInput.text.Trim();
 
-            button.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() =>
-            {
-                JoinRoom(session.Name);
-            });
+        string inputName = roomNameInput.text.Trim();
+        if (string.IsNullOrEmpty(inputName))
+        {
+            Debug.LogWarning("ルーム名が空です");
+            return;
+        }
+
+        // 接続を試みる
+        var result = await RestartRunner(GameMode.Client, inputName);
+
+        if (result != null && result.Ok)
+        {
+            // 成功した場合のみシーン遷移
+            SceneManager.LoadScene("RoomScene");
+        }
+        else
+        {
+            // 失敗時はウィンドウ表示に留める
+            Debug.Log($"接続失敗: {result?.ShutdownReason}");
+            noRoomView?.WindowView();
+        }
+    }
+
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+    {
+        if (token != null && token.Length > 0)
+        {
+            string name = System.Text.Encoding.UTF8.GetString(token);
+            PlayerInfo.PendingName = name;
         }
     }
 
     // INetworkRunnerCallbacks 空実装
+    public void OnConnectFailed(NetworkRunner runner, NetAddress address, NetConnectFailedReason failed) { }
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> session) { }
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
@@ -273,8 +269,6 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
-    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
-    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
