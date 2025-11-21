@@ -9,6 +9,7 @@ TagManager:
   - Fence1
   - Fence2
   - Camera
+  - UIButton
   layers:
   - Default
   - TransparentFX
