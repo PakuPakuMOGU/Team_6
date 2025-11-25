@@ -114,15 +114,15 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        // 陣営選択開始
+        // 陣営選択開始.
         var netRoom = _runner.GetComponent<RoomNetwork>();
         if (netRoom != null)
         {
             netRoom.RpcStartFactionSelection();
         }
 
-        // 全員をゲームシーンへ移行
-        SceneManager.LoadScene("GameScene");
+        // 全員をゲームシーンへ移行.
+        _runner.LoadScene("GameScene");
     }
 
     // ルームから抜ける
