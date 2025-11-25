@@ -5,17 +5,17 @@ using UnityEngine;
 public class Shop : MonoBehaviour
 {
     public GameObject Kagu;
+    public Camera targetCamera;
+
 
     public void OnButtonClick()
     {
-            Camera cam = Camera.main;
+        Vector3 spawnPos = targetCamera.transform.position + targetCamera.transform.forward * 2f;
+        Quaternion spawnRot = targetCamera.transform.rotation;
 
-            Vector3 spawnPos = cam.transform.position + cam.transform.forward * 2f;
+        Instantiate(Kagu, spawnPos, spawnRot);
 
-            Quaternion spawnRot = cam.transform.rotation;
 
-            Instantiate(Kagu, spawnPos, spawnRot);
-        
     }
 }
 
