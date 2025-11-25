@@ -927,9 +927,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1815559300359708979}
-        m_TargetAssemblyTypeName: Shop, Assembly-CSharp
-        m_MethodName: OnButtonClick
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FurnitureSelectorByTag, Assembly-CSharp
+        m_MethodName: SelectByButtonTag
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1061,9 +1061,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 103004651541749680}
-        m_TargetAssemblyTypeName: Shop, Assembly-CSharp
-        m_MethodName: OnButtonClick
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FurnitureSelectorByTag, Assembly-CSharp
+        m_MethodName: SelectByButtonTag
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1577,9 +1577,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2835668930547679488}
-        m_TargetAssemblyTypeName: Shop, Assembly-CSharp
-        m_MethodName: OnButtonClick
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FurnitureSelectorByTag, Assembly-CSharp
+        m_MethodName: SelectByButtonTag
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
