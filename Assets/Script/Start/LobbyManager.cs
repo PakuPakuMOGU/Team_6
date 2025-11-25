@@ -259,6 +259,23 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    // ゲーム終了用関数
+    public async void QuitGame()
+    {
+        if (_runner != null)
+        {
+            await _runner.Shutdown();
+            _runner = null;
+        }
+
+        // アプリケーション終了（エディタとビルドで挙動を分ける）
+#if UNITY_EDITOR
+    UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
     // INetworkRunnerCallbacks 空実装
     public void OnConnectFailed(NetworkRunner runner, NetAddress address, NetConnectFailedReason failed) { }
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> session) { }
