@@ -6,18 +6,16 @@ using UnityEngine.UI;
 public class View : MonoBehaviour
 {
     public Image BackImage;
-    public Image image;
-    public Image string1;
-    public Image string2;
-    public Image string3;
+    public List<Image> images = new();
 
     // 必要な画像を表示.
     public void SetActiveAll(bool isActive)
     {
-        if (image   != null) image.gameObject.SetActive(isActive);
-        if (string1 != null) string1.gameObject.SetActive(isActive);
-        if (string2 != null) string2.gameObject.SetActive(isActive);
-        if (string3 != null) string3.gameObject.SetActive(isActive);
+        foreach (var img in images)
+        {
+            if (img != null) img.gameObject.SetActive(isActive);
+        }
+        if (BackImage != null) BackImage.gameObject.SetActive(isActive);
     }
 
     // ウィンドウを上下に開いて表示する数値設定.
@@ -25,28 +23,27 @@ public class View : MonoBehaviour
     {
         SetActiveAll(true);
 
-        AnimateOne(image, duration, 0f, host);
-        AnimateOne(string1, duration - 0.7f, 0.8f, host);
-        if (string2 != null) AnimateOne(string2, duration - 0.7f, 1.0f, host);
-        if (string3 != null) AnimateOne(string3, duration - 0.7f, 1.0f, host);
+        // 最初の画像はすぐ表示.
+        if (images.Count > 0)
+            AnimateOne(images[0], duration, 0f, host);
+
+        // 2枚目以降は少し遅らせて表示.
+        for (int i = 1; i < images.Count; i++)
+        {
+            AnimateOne(images[i], duration - 0.7f, 0.8f + (i * 0.2f), host);
+        }
     }
 
-    // ウィンドウを上下に開いて表示.
     private void AnimateOne(Image target, float duration, float delay, MonoBehaviour host)
     {
         if (target == null) return;
         RectTransform rt = target.rectTransform;
-
-        // 現在のスケールを取得
         Vector3 originalScale = rt.localScale;
-
-        // 初期状態は高さ0
         rt.localScale = new Vector3(originalScale.x, 0, originalScale.z);
 
         host.StartCoroutine(AnimateScaleWithDelay(rt, duration, delay, originalScale));
     }
 
-    // 一拍おきたいとき用.
     private IEnumerator AnimateScaleWithDelay(RectTransform rt, float duration, float delay, Vector3 originalScale)
     {
         yield return new WaitForSeconds(delay);
@@ -57,7 +54,7 @@ public class View : MonoBehaviour
     {
         float time = 0f;
         Vector3 start = new Vector3(originalScale.x, 0, originalScale.z);
-        Vector3 end = originalScale; // 設定済みのスケールまで拡大
+        Vector3 end = originalScale;
 
         while (time < duration)
         {
@@ -73,14 +70,14 @@ public class View : MonoBehaviour
         SetActiveAll(false);
     }
 
-    // ウィンドウを開く.
+    // ウィンドウを表示.
     public void WindowView()
     {
         SetActiveAll(true);
         AnimateOpen(0.8f, this);
     }
 
-    // ウィンドウを消す.
+    // ウィンドウを閉じる.
     public void WindowClose()
     {
         SetActiveAll(false);

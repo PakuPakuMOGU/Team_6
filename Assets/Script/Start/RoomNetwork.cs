@@ -77,6 +77,18 @@ public class RoomNetwork : NetworkBehaviour
     private void RpcNotifyProtecter(PlayerRef protecter)
     {
         Debug.Log($"Protecterは {protecter.PlayerId} に決定しました");
-        // UI更新やゲーム開始処理をここで呼ぶ
+
+        // 陣営の通知.
+        var room = Runner.GetComponent<Room>();
+        if (room != null)
+        {
+            room.OnFactionAssigned(protecter);
+        }
+
+        // 陣営決定が終わったらシーン遷移を開始
+        if (Runner.IsServer)
+        {
+            Runner.LoadScene("GameScene");
+        }
     }
 }

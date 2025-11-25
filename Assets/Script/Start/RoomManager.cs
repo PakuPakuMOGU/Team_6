@@ -16,6 +16,8 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkObject playerPrefab;
     [SerializeField] private View SelectPanelView;
     [SerializeField] private SceneRef gameScene;
+    [SerializeField] private View protecterView;
+    [SerializeField] private View attackerView;
 
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, GameObject> _playerItems = new();
@@ -56,6 +58,21 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         SelectPanelView.WindowClose();
+    }
+
+    public void OnFactionAssigned(PlayerRef protecter)
+    {
+        // ローカルプレイヤーが Protecter かどうか判定
+        if (_runner.LocalPlayer == protecter)
+        {
+            protecterView.WindowView();
+            Debug.Log("あなたは Protecter です！");
+        }
+        else
+        {
+            attackerView.WindowView();
+            Debug.Log("あなたは Attacker です！");
+        }
     }
 
     // 接続要求時に名前受け取り.
@@ -122,7 +139,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         // 全員をゲームシーンへ移行.
-        _runner.LoadScene("GameScene");
+        //_runner.LoadScene("GameScene");
     }
 
     // ルームから抜ける
