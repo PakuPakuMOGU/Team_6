@@ -6,102 +6,87 @@ public class Shop_Maneger : MonoBehaviour
 {
     [Header("罠の在庫（1つずつ設置）")]
     [SerializeField] private Transform[] targets;
-    private int targetIndex = 0; // 次に置くインデックス
-
-    
-
-    [Header("キャンセルボタン（任意）")]
-    [SerializeField] private GameObject cancelButton;
+    private int targetIndex = 0;
 
     [Header("レイキャスト設定")]
     [SerializeField] private UnityEngine.Camera cam;
     [SerializeField] private float maxDistance = 100f;
-    [SerializeField] private float upOffset = 0.0f;     // 地面からの浮き上がり量（食い込み防止）
     [SerializeField] private bool alignToNormal = true; // 傾斜面に合わせる
+
+    [Tooltip("Pivotが底面なら0のままでOK。Pivotが中心の場合、モデルの半径を自動計算して補正します。")]
+    [SerializeField] private float extraLift = 0.01f; // わずかな浮かせ（食い込み防止）
 
     private LayerMask layerMask;
 
-    // 中心レイの結果（毎フレーム更新）
+    // レイ結果
     public Vector3 HitPoint { get; private set; }
     public Vector3 HitNormal { get; private set; }
 
-    // 直近の配置を元に戻すための履歴（最後に置いたものから戻す）
+    // 直近の設置を戻す履歴
     private Stack<(Transform t, Vector3 pos, Quaternion rot)> placedHistory = new Stack<(Transform, Vector3, Quaternion)>();
 
     void Awake()
     {
         if (cam == null) cam = UnityEngine.Camera.main;
-        layerMask = LayerMask.GetMask("Ground"); // Groundレイヤーのみ
-        if (cancelButton != null) cancelButton.SetActive(false);
+        layerMask = LayerMask.GetMask("Ground");
     }
 
     void Update()
     {
         if (cam == null) return;
 
-        // 画面中心からレイ生成
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-
-        // Groundに対してレイキャスト
         if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask, QueryTriggerInteraction.Ignore))
         {
-            HitPoint = hit.point;     // 当たった座標
-            HitNormal = hit.normal;   // 当たった面の法線
+            HitPoint = hit.point;
+            HitNormal = hit.normal;
         }
         else
         {
-            // ヒットなし → 中心方向のフォールバック（必要なら無効化ロジックに変更可）
             HitPoint = ray.GetPoint(maxDistance);
             HitNormal = -ray.direction;
         }
     }
 
     /// <summary>
-    /// 購入・設置。次の targets[targetIndex] を中心レイの座標に置く。
-    /// （UIボタンなどから呼び出し）
+    /// 1つ設置（UIボタンやキーから呼び出し）
     /// </summary>
     public void BuyKagu()
     {
-        // 置くものがない
         if (targets == null || targetIndex >= targets.Length) return;
 
         Transform t = targets[targetIndex];
-        if (t == null)
-        {
-            // nullはスキップ
-            targetIndex++;
-            return;
-        }
+        if (t == null) { targetIndex++; return; }
 
-        // 置く前の位置・回転を履歴として保存（キャンセル用）
+        // 設置前の状態を保存（Cancel用）
         placedHistory.Push((t, t.position, t.rotation));
 
-        // 設置位置
-        Vector3 p = HitPoint + HitNormal * upOffset;
+        // モデルの「半径（半サイズ）」を法線方向に投影した長さを計算
+        float halfSizeAlongNormal = ComputeHalfExtentAlongNormal(t, HitNormal);
 
-        // 実際に設置
-        t.position = p;
+        // 設置位置：地面ヒット点 + 法線方向へ半サイズ + 微小リフト
+        Vector3 placePos = HitPoint + HitNormal * (halfSizeAlongNormal + extraLift);
 
+        // 位置
+        t.position = placePos;
+
+        // 回転（傾斜に合わせる）
         if (alignToNormal)
         {
-            // オブジェクトの上方向（t.up）を地面法線に合わせる
+            // 既存のupを地面法線へ合わせる
             t.rotation = Quaternion.FromToRotation(t.up, HitNormal) * t.rotation;
 
-            // 前向き（forward）も制御したい場合は以下のようにLookRotationを使って調整できます：
+            // 「前向き」をカメラの水平前方に揃えたい場合は以下を追加（必要なら）
             // Vector3 forward = Vector3.ProjectOnPlane(cam.transform.forward, HitNormal).normalized;
-            // if (forward.sqrMagnitude > 1e-6f) t.rotation = Quaternion.LookRotation(forward, HitNormal);
+            // if (forward.sqrMagnitude > 1e-6f)
+            //     t.rotation = Quaternion.LookRotation(forward, HitNormal);
         }
 
-        // 次のターゲットへ
         targetIndex++;
-
-        // キャンセルボタンがあれば有効化
-        if (cancelButton != null) cancelButton.SetActive(true);
     }
 
     /// <summary>
-    /// 直前の設置をキャンセルして元に戻す。
-    /// （UIボタンから呼び出し）
+    /// 直前の設置を取り消して元の位置へ戻す
     /// </summary>
     public void Cancel()
     {
@@ -111,11 +96,31 @@ public class Shop_Maneger : MonoBehaviour
         last.t.position = last.pos;
         last.t.rotation = last.rot;
 
-        // キャンセルした分、次に置くインデックスも戻す
         targetIndex = Mathf.Max(targetIndex - 1, 0);
+    }
 
-        // 履歴が空になったらボタンを無効化
-        if (placedHistory.Count == 0 && cancelButton != null)
-            cancelButton.SetActive(false);
+    /// <summary>
+    /// モデルの半サイズ（bounds.extents）を法線方向に投影した長さを返す。
+    /// Pivotが中心でも底面でも、だいたい正しい接地オフセットが得られる。
+    /// </summary>
+    private float ComputeHalfExtentAlongNormal(Transform t, Vector3 normal)
+    {
+        // 優先：Collider → 次点：Renderer
+        Collider col = t.GetComponentInChildren<Collider>();
+        if (col != null)
+        {
+            var e = col.bounds.extents;
+            return Mathf.Abs(normal.x) * e.x + Mathf.Abs(normal.y) * e.y + Mathf.Abs(normal.z) * e.z;
+        }
+
+        Renderer rend = t.GetComponentInChildren<Renderer>();
+        if (rend != null)
+        {
+            var e = rend.bounds.extents;
+            return Mathf.Abs(normal.x) * e.x + Mathf.Abs(normal.y) * e.y + Mathf.Abs(normal.z) * e.z;
+        }
+
+        // 見つからない場合は0（Pivotが底面だと仮定）
+        return 0f;
     }
 }
