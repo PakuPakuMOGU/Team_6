@@ -802,7 +802,6 @@ GameObject:
   - component: {fileID: 4052117973194986344}
   - component: {fileID: 5980594537867320963}
   - component: {fileID: 8593908416829548479}
-  - component: {fileID: 1815559300359708979}
   - component: {fileID: 1486449690959020970}
   m_Layer: 5
   m_Name: Button (1)
@@ -869,20 +868,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1815559300359708979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5357204683636740159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fe584b405ae3f24a88a158dfc9bd575, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Kagu: {fileID: 1384855096779578521, guid: 2b597ee3f9e5fb945bb9ebac20c45ade, type: 3}
-  targetCamera: {fileID: 3198805544840392961}
 --- !u!114 &1486449690959020970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -951,7 +936,6 @@ GameObject:
   - component: {fileID: 5510847990176671110}
   - component: {fileID: 754021268339921769}
   - component: {fileID: 2567124345666477018}
-  - component: {fileID: 103004651541749680}
   m_Layer: 5
   m_Name: Button (2)
   m_TagString: Land
@@ -1073,20 +1057,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &103004651541749680
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5613613387090611006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fe584b405ae3f24a88a158dfc9bd575, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Kagu: {fileID: 391824255638446806, guid: a73b14d31dfaa0e46914296b820b9f34, type: 3}
-  targetCamera: {fileID: 3198805544840392961}
 --- !u!1 &7071189776441601325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1452,7 +1422,6 @@ GameObject:
   - component: {fileID: 4483748980522608642}
   - component: {fileID: 2170478995879583933}
   - component: {fileID: 5826095540803916007}
-  - component: {fileID: 2835668930547679488}
   - component: {fileID: 5343812847571002674}
   m_Layer: 5
   m_Name: Button
@@ -1519,20 +1488,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2835668930547679488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8241105830908762450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fe584b405ae3f24a88a158dfc9bd575, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Kagu: {fileID: 2882518631665276887, guid: a2273c7fad011b04b8d71585f0fd5cf1, type: 3}
-  targetCamera: {fileID: 3198805544840392961}
 --- !u!114 &5343812847571002674
 MonoBehaviour:
   m_ObjectHideFlags: 0

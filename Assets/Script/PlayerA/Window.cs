@@ -36,7 +36,7 @@ public class Window : MonoBehaviour
         image.transform.localPosition = Vector3.Lerp(image.transform.localPosition, targetPosition, Time.deltaTime * moveSpeed);
     }
 
-    void ToggleWindow()
+    public void ToggleWindow()
     {
         WindowOpen = !WindowOpen;
 
