@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +20,7 @@ public class Shop_Maneger : MonoBehaviour
     public float maxSlopeDeg = 45f;   // 設置許容斜面角
 
 
+    public CenterRaycastSpaceApply cast;
 
 
     // レイ結果
@@ -81,29 +81,27 @@ public class Shop_Maneger : MonoBehaviour
 
 
 
-        // 1) 1回だけ Raycast。床レイヤに限定し、トリガー無視。
-        if (!Physics.Raycast(ray, out RaycastHit hit, maxDistance, groundMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, groundMask, QueryTriggerInteraction.Ignore))
         {
-            Debug.LogWarning("Raycast missed. Skip placement.");
-            return; // ヒットなしなら HitPoint/Normal を更新しない＆配置もしない
+            HitPoint = hit.point;
+            HitNormal = hit.normal;
         }
-
-        // 2) 成功時のみ、同フレームの hit から直接使う
-        HitPoint = hit.point;
-        HitNormal = hit.normal;
-
-        // 3) 以降の配置処理は必ずこの hit に従属させる（例：PlaceOnHit など）
-        //PlacementUtil.PlaceOnHit(targetTransform, hit, extraLift: 0.002f);
+        else
+        {
+            HitPoint = ray.GetPoint(maxDistance);
+            HitNormal = -ray.direction;
+        }
 
     }
 
     /// <summary>
     /// 1つ設置（UIボタンやキーから呼び出し）
     /// </summary>
+
     public void BuyKagu()
     {
         Cancel_Button.SetActive(true);
-
+        cast.kono();
 
         while (targets != null && targetIndex < targets.Length && targets[targetIndex] == null)
             targetIndex++;
@@ -115,32 +113,39 @@ public class Shop_Maneger : MonoBehaviour
         // Undo用：設置前の状態を保存
         placedHistory.Push((t, t.position, t.rotation));
 
-        // 1) 回転させない（元の回転を保持）
-        // ※ ここまでのコードでは回転を変更していないため t.rotation はそのまま
+        // --- ここまではそのまま ---
 
-        // 2) BoxCollider を使って法線方向の半径を正確に求める
+        // ここから「savedPositionsの最後の位置」を使って設置
+        if (cast != null && cast.savedPositions != null && cast.savedPositions.Count > 0)
+        {
+            Vector3 lastPos = cast.savedPositions[cast.savedPositions.Count - 1];
+
+            // 直接ワールド座標に適用（center/normalの計算は使わず）
+            t.position = lastPos;
+
+            // 必要なら回転も保存してあるなら適用（なければコメントアウトのまま）
+            // t.rotation = cast.savedRotations[cast.savedRotations.Count - 1];
+
+            targetIndex++;
+            return;
+        }
+
+        // フォールバック：savedPositionsが無い/空の場合は従来ロジックで設置（現在のコード）
+        // ----- 以降はあなたの既存の half/lift 計算と delta適用 -----
         var box = t.GetComponentInChildren<BoxCollider>();
         float half = 0f;
-        Vector3 currentCenterWorld = t.position; // フォールバック
+        Vector3 currentCenterWorld = t.position;
         if (box != null)
         {
-            // コライダ中心（ローカル）→ワールド
             currentCenterWorld = t.TransformPoint(box.center);
-
-            // ローカル半サイズをワールドスケールへ
             Vector3 ext = Vector3.Scale(box.size * 0.5f, t.lossyScale);
-
-            // 直方体の支持関数：法線方向半径（※現在の回転を維持したままの t.right/up/forward を使用）
             Vector3 n = HitNormal.normalized;
-            half =
-                Mathf.Abs(Vector3.Dot(n, t.right)) * ext.x +
-                Mathf.Abs(Vector3.Dot(n, t.up)) * ext.y +
-                Mathf.Abs(Vector3.Dot(n, t.forward)) * ext.z;
+            half = Mathf.Abs(Vector3.Dot(n, t.right)) * ext.x +
+                   Mathf.Abs(Vector3.Dot(n, t.up)) * ext.y +
+                   Mathf.Abs(Vector3.Dot(n, t.forward)) * ext.z;
         }
         else
         {
-            // BoxColliderがない場合の近似（必要ならSphere/Capsuleに分岐）
-            // Renderer.boundsベースの近似：過大になりがち → extraLiftは極小に
             var renderers = t.GetComponentsInChildren<Renderer>();
             if (renderers.Length > 0)
             {
@@ -152,14 +157,14 @@ public class Shop_Maneger : MonoBehaviour
 
                 Vector3[] corners = new Vector3[]
                 {
-            c + new Vector3( e.x,  e.y,  e.z),
-            c + new Vector3( e.x,  e.y, -e.z),
-            c + new Vector3( e.x, -e.y,  e.z),
-            c + new Vector3( e.x, -e.y, -e.z),
-            c + new Vector3(-e.x,  e.y,  e.z),
-            c + new Vector3(-e.x,  e.y, -e.z),
-            c + new Vector3(-e.x, -e.y,  e.z),
-            c + new Vector3(-e.x, -e.y, -e.z)
+                c + new Vector3( e.x,  e.y,  e.z),
+                c + new Vector3( e.x,  e.y, -e.z),
+                c + new Vector3( e.x, -e.y,  e.z),
+                c + new Vector3( e.x, -e.y, -e.z),
+                c + new Vector3(-e.x,  e.y,  e.z),
+                c + new Vector3(-e.x,  e.y, -e.z),
+                c + new Vector3(-e.x, -e.y,  e.z),
+                c + new Vector3(-e.x, -e.y, -e.z)
                 };
                 float maxProj = 0f;
                 Vector3 n = HitNormal.normalized;
@@ -172,28 +177,19 @@ public class Shop_Maneger : MonoBehaviour
             }
             else
             {
-                // 最終フォールバック
                 half = 0.5f;
                 currentCenterWorld = t.position;
             }
         }
 
-        // ※ このあと、設置位置を「接地点 + 法線 * (half + 余裕分)」で決める処理を続けます。
-        // 例：
-        // Vector3 placePos = HitPoint + HitNormal.normalized * (half + extraLift)
-
-
-
-        // 3) 目標の「コライダ中心」位置を決める：地面ヒット点 + 法線方向に half + 極小リフト
-        float lift = Mathf.Max(0f, extraLift); // まずは 0.001 ～ 0.01 で試して
+        float lift = Mathf.Max(0f, extraLift);
         Vector3 desiredCenterWorld = HitPoint + HitNormal.normalized * (half + lift);
-
-        // 4) 現在中心→目標中心の差分を t.position に適用（中心基準で動かす）
         Vector3 delta = desiredCenterWorld - currentCenterWorld;
         t.position += delta;
 
         targetIndex++;
     }
+
 
 
 
