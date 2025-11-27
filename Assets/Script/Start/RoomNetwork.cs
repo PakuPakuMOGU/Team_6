@@ -18,14 +18,13 @@ public class RoomNetwork : NetworkBehaviour
 
     // ホストが開始ボタンを押したときに呼ぶRPC
     // RPC->ナットワーク上など離れたところにある関数を持ってくる.
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcStartFactionSelection()
     {
-        // ホストだけが開始できるように制御
-        if (!Runner.IsServer)
-            return;
+        // ホストだけが開始可能.
+        if (!Runner.IsServer)   return;
 
-        // プレイヤー数をチェック
+        // プレイヤー数チェック.
         int playerCount = Runner.ActivePlayers.Count();
 
         if (playerCount < 2)
@@ -55,19 +54,19 @@ public class RoomNetwork : NetworkBehaviour
         {
             var allPlayers = Runner.ActivePlayers.ToList();
             chosenProtecter = allPlayers[UnityEngine.Random.Range(0, allPlayers.Count)];
-            Debug.Log($"Protecter希望者なし → ランダムで {chosenProtecter.PlayerId} を選出");
+            Debug.Log($"Protecter希望者なし、ランダムで {chosenProtecter.PlayerId} を選出");
         }
         // 防衛者の希望者が一人.
         else if (protecterCandidates.Count == 1)
         {
             chosenProtecter = protecterCandidates[0];
-            Debug.Log($"Protecter希望者1人 → {chosenProtecter.PlayerId} を選出");
+            Debug.Log($"Protecter希望者1人、{chosenProtecter.PlayerId} を選出");
         }
         // 防衛者の希望者が二人以上.
         else
         {
             chosenProtecter = protecterCandidates[UnityEngine.Random.Range(0, protecterCandidates.Count)];
-            Debug.Log($"Protecter希望者複数 → ランダムで {chosenProtecter.PlayerId} を選出");
+            Debug.Log($"Protecter希望者複数、ランダムで {chosenProtecter.PlayerId} を選出");
         }
 
         RpcNotifyProtecter(chosenProtecter);

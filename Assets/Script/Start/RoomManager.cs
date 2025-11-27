@@ -30,6 +30,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         _runner = FindObjectOfType<NetworkRunner>();
         if (_runner == null)
         {
+            // NetWorkRunnerが見つからない場合、ロビーへ遷移.
             Debug.Log("NetworkRunnerが見つかりません。スタートシーンから遷移しているか確認してください。");
             SceneManager.LoadScene("StartScene");
             return;

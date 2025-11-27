@@ -44,6 +44,7 @@ public class LobbyNetwork : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    // ƒ‹[ƒ€‚ğì».
     public async void CreateRoom()
     {
         string roomName = roomNameInput.text;
@@ -59,6 +60,7 @@ public class LobbyNetwork : MonoBehaviour, INetworkRunnerCallbacks
         Debug.Log(result.Ok ? "•”‰®ì¬¬Œ÷" : $"¸”s: {result.ShutdownReason}");
     }
 
+    // ƒ‹[ƒ€‚ÉQ‰Á.
     public async void JoinRoom(string roomName)
     {
         var result = await _runner.StartGame(new StartGameArgs()
