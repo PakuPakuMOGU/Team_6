@@ -62,22 +62,12 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         SelectPanelView.WindowClose();
     }
 
-    /* 表示されない */
     public void OnFactionAssigned(PlayerRef protecter)
     {
-        // ローカルプレイヤーが Protecter かどうか判定
-        if (_runner.LocalPlayer == protecter)
-        {
-            protecterView.WindowView();
-            Debug.Log("あなたは Protecter です！");
-        }
-        else
-        {
-            attackerView.WindowView();
-            Debug.Log("あなたは Attacker です！");
-        }
+        // 陣営ごとにウィンドウを表示.
+        if (_runner.LocalPlayer == protecter)   protecterView.WindowView();      
+        else                                    attackerView.WindowView();
     }
-    /* 表示されない */
 
     // 接続要求時に名前受け取り.
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
