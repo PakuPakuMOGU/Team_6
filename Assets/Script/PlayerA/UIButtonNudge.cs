@@ -1,0 +1,77 @@
+
+using UnityEngine;
+
+public class UIButtonNudge : MonoBehaviour
+{
+    [Header("参照")]
+    public Shop_Maneger shop;       // 必須：マネージャをアサイン
+    public Transform overrideTarget; // 任意：手動で直接対象を指定したい場合
+
+    [Header("移動ステップ")]
+    [Tooltip("1クリックあたりの移動量（メートル）")]
+    public float moveStep = 0.1f;
+
+    [Tooltip("ローカル空間で動かすなら true、ワールドなら false")]
+    public bool useLocalSpace = false;
+
+    [Header("回転ステップ")]
+    [Tooltip("1クリックあたりの回転角度（度）")]
+    public float rotationStepDegrees = 15f;
+
+    [Tooltip("回転軸（通常はY軸で水平回転）")]
+    public Axis rotateAxis = Axis.Y;
+    public enum Axis { X, Y, Z }
+
+    // 上下左右（＋前後）が必要ならUI側でボタンに割り当て
+    public void NudgeUp() => Nudge(new Vector3(0f, +14f, 0f));
+    public void NudgeDown() => Nudge(new Vector3(0f, -14f, 0f));
+    public void NudgeLeft() => Nudge(new Vector3(-14f, 0f, 0f));
+    public void NudgeRight() => Nudge(new Vector3(+7f, 0f, 0f));
+    public void NudgeForward() => Nudge(new Vector3(0f, 0f, +14f));
+    public void NudgeBack() => Nudge(new Vector3(0f, 0f, -14f));
+
+    public void RotateClockwise() => Rotate(+rotationStepDegrees);
+    public void RotateCounterClockwise() => Rotate(-rotationStepDegrees);
+
+    // -----------------------------
+    // 内部：対象の解決と適用
+    // -----------------------------
+    private Transform ResolveTarget()
+    {
+        // 手動指定があればそれを優先
+        if (overrideTarget != null) return overrideTarget;
+
+        // マネージャの現在対象を使う（推奨）
+        if (shop != null && shop.CurrentTarget != null) return shop.CurrentTarget;
+
+        Debug.LogWarning("[UIButtonNudge] 対象がありません。直前に設置した後、編集UIを閉じていないか確認してください。");
+        return null;
+    }
+
+    private void Nudge(Vector3 dirUnit)
+    {
+        var t = ResolveTarget();
+        if (t == null) return;
+
+        Vector3 delta = dirUnit.normalized * moveStep;
+        if (useLocalSpace) t.localPosition += delta;
+        else t.position += delta;
+    }
+
+    private void Rotate(float degrees)
+    {
+        var t = ResolveTarget();
+        if (t == null) return;
+
+        Vector3 axis = Vector3.up;
+        switch (rotateAxis)
+        {
+            case Axis.X: axis = Vector3.right; break;
+            case Axis.Y: axis = Vector3.up; break;
+            case Axis.Z: axis = Vector3.forward; break;
+        }
+
+        var space = useLocalSpace ? Space.Self : Space.World;
+        t.Rotate(axis, degrees, space);
+    }
+}
