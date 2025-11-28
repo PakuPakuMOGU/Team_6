@@ -2,13 +2,14 @@ using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 public class RoomNetwork : NetworkBehaviour
 {
     private Dictionary<PlayerRef, string> _playerFactions = new();
 
-    // 陣営選択をサーバーに伝えるRPC（記録だけ）
+    // 陣営選択をサーバーに伝えるRPC.
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcSetFaction(PlayerRef player, string faction)
     {
@@ -16,16 +17,15 @@ public class RoomNetwork : NetworkBehaviour
         Debug.Log($"{player.PlayerId} が {faction} を希望しました");
     }
 
-    // ホストが開始ボタンを押したときに呼ぶRPC
-    // RPC->ナットワーク上など離れたところにある関数を持ってくる.
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    // ホストが開始ボタンを押したときに呼ぶRPC.
+    // RPC->ネットワーク上など離れたところにある関数を持ってくる.
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcStartFactionSelection()
     {
-        // ホストだけが開始できるように制御
-        if (!Runner.IsServer)
-            return;
+        // ホストのみ開始可能.
+        if (!Runner.IsServer)   return;
 
-        // プレイヤー数をチェック
+        // プレイヤー数チェック.
         int playerCount = Runner.ActivePlayers.Count();
 
         if (playerCount < 2)
@@ -55,19 +55,19 @@ public class RoomNetwork : NetworkBehaviour
         {
             var allPlayers = Runner.ActivePlayers.ToList();
             chosenProtecter = allPlayers[UnityEngine.Random.Range(0, allPlayers.Count)];
-            Debug.Log($"Protecter希望者なし → ランダムで {chosenProtecter.PlayerId} を選出");
+            Debug.Log($"Protecter希望者なし、ランダムで {chosenProtecter.PlayerId} を選出");
         }
         // 防衛者の希望者が一人.
         else if (protecterCandidates.Count == 1)
         {
             chosenProtecter = protecterCandidates[0];
-            Debug.Log($"Protecter希望者1人 → {chosenProtecter.PlayerId} を選出");
+            Debug.Log($"Protecter希望者1人、{chosenProtecter.PlayerId} を選出");
         }
         // 防衛者の希望者が二人以上.
         else
         {
             chosenProtecter = protecterCandidates[UnityEngine.Random.Range(0, protecterCandidates.Count)];
-            Debug.Log($"Protecter希望者複数 → ランダムで {chosenProtecter.PlayerId} を選出");
+            Debug.Log($"Protecter希望者複数、ランダムで {chosenProtecter.PlayerId} を選出");
         }
 
         RpcNotifyProtecter(chosenProtecter);
@@ -78,17 +78,22 @@ public class RoomNetwork : NetworkBehaviour
     {
         Debug.Log($"Protecterは {protecter.PlayerId} に決定しました");
 
-        // 陣営の通知.
-        var room = Runner.GetComponent<Room>();
+        var room = FindObjectOfType<Room>();
         if (room != null)
         {
             room.OnFactionAssigned(protecter);
         }
 
-        // 陣営決定が終わったらシーン遷移を開始
         if (Runner.IsServer)
         {
-            Runner.LoadScene("GameScene");
+            // ウィンドウを見せるために2秒待ってからシーン遷移.
+            StartCoroutine(DelayedSceneLoad(2f));
         }
+    }
+
+    private IEnumerator DelayedSceneLoad(float second)
+    {
+        yield return new WaitForSeconds(second); // 2秒待つ
+        Runner.LoadScene("GameScene");
     }
 }
