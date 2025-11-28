@@ -8,7 +8,7 @@ public class RoomNetwork : NetworkBehaviour
 {
     private Dictionary<PlayerRef, string> _playerFactions = new();
 
-    // 陣営選択をサーバーに伝えるRPC（記録だけ）
+    // 陣営選択をサーバーに伝えるRPC.
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcSetFaction(PlayerRef player, string faction)
     {
@@ -16,12 +16,12 @@ public class RoomNetwork : NetworkBehaviour
         Debug.Log($"{player.PlayerId} が {faction} を希望しました");
     }
 
-    // ホストが開始ボタンを押したときに呼ぶRPC
-    // RPC->ナットワーク上など離れたところにある関数を持ってくる.
+    // ホストが開始ボタンを押したときに呼ぶRPC.
+    // RPC->ネットワーク上など離れたところにある関数を持ってくる.
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcStartFactionSelection()
     {
-        // ホストだけが開始可能.
+        // ホストのみ開始可能.
         if (!Runner.IsServer)   return;
 
         // プレイヤー数チェック.
@@ -78,13 +78,13 @@ public class RoomNetwork : NetworkBehaviour
         Debug.Log($"Protecterは {protecter.PlayerId} に決定しました");
 
         // 陣営の通知.
-        var room = Runner.GetComponent<Room>();
+        var room = FindObjectOfType<Room>(); // ← 修正ポイント
         if (room != null)
         {
             room.OnFactionAssigned(protecter);
         }
 
-        // 陣営決定が終わったらシーン遷移を開始
+        // 陣営決定が終わったらシーン遷移を開始.
         if (Runner.IsServer)
         {
             Runner.LoadScene("GameScene");

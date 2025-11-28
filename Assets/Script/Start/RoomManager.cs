@@ -18,7 +18,9 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private SceneRef gameScene;
     [SerializeField] private View protecterView;
     [SerializeField] private View attackerView;
+    [SerializeField] private NetworkObject roomNetworkPrefab;
 
+    private RoomNetwork _netRoom;
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, GameObject> _playerItems = new();
     private Dictionary<PlayerRef, string> _playerNames = new();
@@ -28,13 +30,11 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     void Start()
     {
         _runner = FindObjectOfType<NetworkRunner>();
-        if (_runner == null)
-        {
-            // NetWorkRunnerが見つからない場合、ロビーへ遷移.
-            Debug.Log("NetworkRunnerが見つかりません。スタートシーンから遷移しているか確認してください。");
-            SceneManager.LoadScene("StartScene");
-            return;
-        }
+        if (_runner == null) return;
+
+        // RoomNetwork を Spawn して保持.
+        var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
+        _netRoom = netObj.GetComponent<RoomNetwork>();
 
         startButton.SetActive(_runner.IsServer);    // スタートボタンはホストのみ表示.
         leaveButton.SetActive(true);                // 退出ボタンの表示.
@@ -47,20 +47,20 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     // 陣営選択処理.
+    // 陣営選択処理
     public void OnSelectFaction(string faction)
     {
         Debug.Log($"選択された陣営: {faction}");
 
-        // RPC呼び出しはNetworkBehaviour経由
-        var netRoom = _runner.GetComponent<RoomNetwork>();
-        if (netRoom != null)
+        if (_netRoom != null)
         {
-            netRoom.RpcSetFaction(_runner.LocalPlayer, faction);
+            _netRoom.RpcSetFaction(_runner.LocalPlayer, faction);
         }
 
         SelectPanelView.WindowClose();
     }
 
+    /* 表示されない */
     public void OnFactionAssigned(PlayerRef protecter)
     {
         // ローカルプレイヤーが Protecter かどうか判定
@@ -75,6 +75,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
             Debug.Log("あなたは Attacker です！");
         }
     }
+    /* 表示されない */
 
     // 接続要求時に名前受け取り.
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
@@ -125,25 +126,23 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
             Debug.Log("ホストのみ開始可能です");
             return;
         }
-
         if (_runner.ActivePlayers.Count() < 2)
         {
             Debug.Log("プレイヤーが2人未満のため開始できません");
             return;
         }
 
-        // 陣営選択開始.
-        var netRoom = _runner.GetComponent<RoomNetwork>();
-        if (netRoom != null)
+        if (_netRoom != null)
         {
-            netRoom.RpcStartFactionSelection();
+            _netRoom.RpcStartFactionSelection();
         }
-
-        // 全員をゲームシーンへ移行.
-        //_runner.LoadScene("GameScene");
+        else
+        {
+            Debug.Log("RoomNetwork が見つかりません");
+        }
     }
 
-    // ルームから抜ける
+    // ルームから抜ける.
     public void LeaveRoom()
     {
         foreach (var item in _playerItems.Values)
