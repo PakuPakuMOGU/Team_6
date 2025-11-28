@@ -30,9 +30,8 @@ public class Shop_Maneger : MonoBehaviour
    
     private Stack<(Transform t, Vector3 pos, Quaternion rot)> placedHistory = new Stack<(Transform, Vector3, Quaternion)>();
 
-    public GameObject Cancel_Button;
-    public GameObject Kaku_Button;
-
+    public GameObject Button_Canbus;
+ 
  
 
     
@@ -61,9 +60,9 @@ public class Shop_Maneger : MonoBehaviour
 
 
     void Start()
-    { 
-        Cancel_Button.SetActive(false);
-        Kaku_Button.SetActive(false);
+    {
+        Button_Canbus.SetActive(false);
+        
 
     }
 
@@ -180,8 +179,8 @@ public class Shop_Maneger : MonoBehaviour
         Vector3 delta = desiredCenterWorld - currentCenterWorld;
         t.position += delta;
 
-        Cancel_Button.SetActive(true);
-        Kaku_Button.SetActive(true);
+        Button_Canbus.SetActive(true);
+       
 
     }
 
@@ -189,8 +188,7 @@ public class Shop_Maneger : MonoBehaviour
     public void Hensyu()
     {
          targetIndex++;
-         Cancel_Button.SetActive(false);
-         Kaku_Button.SetActive(false);
+        Button_Canbus.SetActive(false);
 
     }
 
@@ -206,7 +204,7 @@ public class Shop_Maneger : MonoBehaviour
 
         targetIndex = Mathf.Max(targetIndex - 1, 0);
 
-        Cancel_Button.SetActive(false);
+        Button_Canbus.SetActive(false);
 
     }
 
