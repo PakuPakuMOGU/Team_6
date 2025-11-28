@@ -32,9 +32,11 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         _runner = FindObjectOfType<NetworkRunner>();
         if (_runner == null) return;
 
-        // RoomNetwork を Spawn して保持.
-        var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
-        _netRoom = netObj.GetComponent<RoomNetwork>();
+        if (_runner.IsServer) // ホストだけがSpawn可能.
+        {
+            var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
+            _netRoom = netObj.GetComponent<RoomNetwork>();
+        }
 
         startButton.SetActive(_runner.IsServer);    // スタートボタンはホストのみ表示.
         leaveButton.SetActive(true);                // 退出ボタンの表示.

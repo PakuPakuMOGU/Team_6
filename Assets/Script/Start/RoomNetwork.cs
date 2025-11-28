@@ -2,6 +2,7 @@ using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 public class RoomNetwork : NetworkBehaviour
@@ -77,17 +78,22 @@ public class RoomNetwork : NetworkBehaviour
     {
         Debug.Log($"Protecterは {protecter.PlayerId} に決定しました");
 
-        // 陣営の通知.
-        var room = FindObjectOfType<Room>(); // ← 修正ポイント
+        var room = FindObjectOfType<Room>();
         if (room != null)
         {
             room.OnFactionAssigned(protecter);
         }
 
-        // 陣営決定が終わったらシーン遷移を開始.
         if (Runner.IsServer)
         {
-            Runner.LoadScene("GameScene");
+            // ウィンドウを見せるために2秒待ってからシーン遷移.
+            StartCoroutine(DelayedSceneLoad(2f));
         }
+    }
+
+    private IEnumerator DelayedSceneLoad(float second)
+    {
+        yield return new WaitForSeconds(second); // 2秒待つ
+        Runner.LoadScene("GameScene");
     }
 }
