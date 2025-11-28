@@ -4,49 +4,47 @@ using UnityEngine;
 public class Shop_Maneger : MonoBehaviour
 {
     [Header("罠の在庫（1つずつ設置）")]
-    [SerializeField] private Transform[] targets;
-    private int targetIndex = 0;
+    [SerializeField] public Transform[] targets;
+    public int targetIndex = 0;
 
     [Header("レイキャスト設定")]
     [SerializeField] private UnityEngine.Camera cam;
     [SerializeField] private float maxDistance = 100f;
-    [SerializeField] private bool alignToNormal = true; // 傾斜面に合わせる
+    [SerializeField] private bool alignToNormal = true; 
 
     [Tooltip("Pivotが底面なら0のままでOK。Pivotが中心の場合、モデルの半径を自動計算して補正します。")]
-    [SerializeField] private float extraLift = 0.01f; // わずかな浮かせ（食い込み防止）
+    [SerializeField] private float extraLift = 0.01f; 
 
 
-    public LayerMask groundMask;      // Ground レイヤーのみ
-    public float maxSlopeDeg = 45f;   // 設置許容斜面角
+    public LayerMask groundMask;      
+    public float maxSlopeDeg = 45f;   
 
 
     public CenterRaycastSpaceApply cast;
 
 
-    // レイ結果
+   
     public Vector3 HitPoint { get; private set; }
     public Vector3 HitNormal { get; private set; }
 
-    // 直近の設置を戻す履歴
+   
     private Stack<(Transform t, Vector3 pos, Quaternion rot)> placedHistory = new Stack<(Transform, Vector3, Quaternion)>();
 
     public GameObject Cancel_Button;
+    public GameObject Kaku_Button;
 
+ 
 
-   /* private System.Collections.Generic.Stack<(Transform t, Vector3 pos, Quaternion rot)> placedHistory
-           = new System.Collections.Generic.Stack<(Transform, Vector3, Quaternion)>();*/
-
-    // クリック位置から地面を狙って Raycast（例）
+    
     public bool TryGetGroundHit(out Vector3 hitPoint, out Vector3 hitNormal)
     {
         hitPoint = default;
         hitNormal = default;
 
-        // 例：画面中央から前方へ。用途に応じてマウス座標や任意の原点に合わせてください。
         Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f));
         if (Physics.Raycast(ray, out RaycastHit hit, 1000f, groundMask, QueryTriggerInteraction.Ignore))
         {
-            // 法線が上向きか（斜度チェック）
+            
             float cos = Vector3.Dot(hit.normal.normalized, Vector3.up);
             float slopeDeg = Mathf.Acos(Mathf.Clamp(cos, -1f, 1f)) * Mathf.Rad2Deg;
             if (slopeDeg <= maxSlopeDeg)
@@ -61,9 +59,11 @@ public class Shop_Maneger : MonoBehaviour
 
 
 
+
     void Start()
-    {
+    { 
         Cancel_Button.SetActive(false);
+        Kaku_Button.SetActive(false);
 
     }
 
@@ -94,13 +94,11 @@ public class Shop_Maneger : MonoBehaviour
 
     }
 
-    /// <summary>
-    /// 1つ設置（UIボタンやキーから呼び出し）
-    /// </summary>
+
 
     public void BuyKagu()
     {
-        Cancel_Button.SetActive(true);
+        
         cast.kono();
 
         while (targets != null && targetIndex < targets.Length && targets[targetIndex] == null)
@@ -110,28 +108,23 @@ public class Shop_Maneger : MonoBehaviour
         Transform t = targets[targetIndex];
         if (t == null) return;
 
-        // Undo用：設置前の状態を保存
+        
         placedHistory.Push((t, t.position, t.rotation));
 
-        // --- ここまではそのまま ---
-
-        // ここから「savedPositionsの最後の位置」を使って設置
         if (cast != null && cast.savedPositions != null && cast.savedPositions.Count > 0)
         {
             Vector3 lastPos = cast.savedPositions[cast.savedPositions.Count - 1];
 
-            // 直接ワールド座標に適用（center/normalの計算は使わず）
-            t.position = lastPos;
+            
+           t.position = lastPos;
 
-            // 必要なら回転も保存してあるなら適用（なければコメントアウトのまま）
-            // t.rotation = cast.savedRotations[cast.savedRotations.Count - 1];
+          
 
             targetIndex++;
             return;
         }
 
-        // フォールバック：savedPositionsが無い/空の場合は従来ロジックで設置（現在のコード）
-        // ----- 以降はあなたの既存の half/lift 計算と delta適用 -----
+     
         var box = t.GetComponentInChildren<BoxCollider>();
         float half = 0f;
         Vector3 currentCenterWorld = t.position;
@@ -187,11 +180,19 @@ public class Shop_Maneger : MonoBehaviour
         Vector3 delta = desiredCenterWorld - currentCenterWorld;
         t.position += delta;
 
-        targetIndex++;
+        Cancel_Button.SetActive(true);
+        Kaku_Button.SetActive(true);
+
     }
 
 
+    public void Hensyu()
+    {
+         targetIndex++;
+         Cancel_Button.SetActive(false);
+         Kaku_Button.SetActive(false);
 
+    }
 
 
 
@@ -209,13 +210,9 @@ public class Shop_Maneger : MonoBehaviour
 
     }
 
-    /// <summary>
-    /// モデルの半サイズ（bounds.extents）を法線方向に投影した長さを返す。
-    /// Pivotが中心でも底面でも、だいたい正しい接地オフセットが得られる。
-    /// </summary>
     private float ComputeHalfExtentAlongNormal(Transform t, Vector3 normal)
     {
-        // 優先：Collider → 次点：Renderer
+
         Collider col = t.GetComponentInChildren<Collider>();
         if (col != null)
         {
@@ -230,7 +227,7 @@ public class Shop_Maneger : MonoBehaviour
             return Mathf.Abs(normal.x) * e.x + Mathf.Abs(normal.y) * e.y + Mathf.Abs(normal.z) * e.z;
         }
 
-        // 見つからない場合は0（Pivotが底面だと仮定）
+
         return 0f;
     }
 }
