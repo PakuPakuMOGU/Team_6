@@ -19,6 +19,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private View protecterView;
     [SerializeField] private View attackerView;
     [SerializeField] private NetworkObject roomNetworkPrefab;
+    [SerializeField] private TextMeshPro playerCountText;
 
     private RoomNetwork _netRoom;
     private NetworkRunner _runner;
@@ -48,8 +49,17 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         SelectPanelView.WindowView();
     }
 
+    // プレイヤー人数表示.
+    private void UpdatePlayerCount()
+    {
+        if (_runner != null)
+        {
+            int count = _runner.ActivePlayers.Count();
+            playerCountText.text = $"Players: {count}";
+        }
+    }
+
     // 陣営選択処理.
-    // 陣営選択処理
     public void OnSelectFaction(string faction)
     {
         Debug.Log($"選択された陣営: {faction}");
@@ -95,6 +105,8 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         item.GetComponentInChildren<TextMeshProUGUI>().text = name;
         _playerItems[player] = item;
         _playerNames[player] = name;
+
+        UpdatePlayerCount();
     }
 
     // ルームから退出.
@@ -108,6 +120,8 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         }
         _playerNames.Remove(player);
         _playerFactions.Remove(player);
+
+        UpdatePlayerCount();
     }
 
     // ゲーム開始（ホストのみ可）
