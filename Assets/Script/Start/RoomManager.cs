@@ -33,6 +33,8 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         _runner = FindObjectOfType<NetworkRunner>();
         if (_runner == null) return;
 
+        _runner.AddCallbacks(this);
+
         if (_runner.IsServer) // ホストだけがSpawn可能.
         {
             var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
@@ -52,10 +54,12 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     // プレイヤー人数表示.
     private void UpdatePlayerCount()
     {
+        Debug.Log("UpdatePlayerCount called");
         if (_runner != null)
         {
             int count = _runner.ActivePlayers.Count();
-            playerCountText.text = $"Players: {count}";
+            Debug.Log("Player count: " + count);
+            playerCountText.text = $"{count}";
         }
     }
 
