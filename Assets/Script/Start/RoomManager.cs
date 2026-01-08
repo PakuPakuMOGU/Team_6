@@ -43,6 +43,8 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
         startButton.SetActive(_runner.IsServer);    // スタートボタンはホストのみ表示.
         leaveButton.SetActive(true);                // 退出ボタンの表示.
+
+        UpdatePlayerCount();
     }
 
     // 陣営選択画面表示.
