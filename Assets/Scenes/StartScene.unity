@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &46519855
 RectTransform:
   m_ObjectHideFlags: 0
@@ -178,6 +178,7 @@ MonoBehaviour:
   - {fileID: 1228556005}
   - {fileID: 2090417868}
   - {fileID: 871286836}
+  canvasGroup: {fileID: 0}
 --- !u!1 &197843050
 GameObject:
   m_ObjectHideFlags: 0
@@ -714,12 +715,9 @@ MonoBehaviour:
   roomButtonPrefab: {fileID: 247272334}
   createRoomButtonPrefab: {fileID: 1373127556}
   RoomNamePrefab: {fileID: 1666453010}
-  PlayerNamePrefab: {fileID: 46519854}
   roomNameInput: {fileID: 1819728383}
   roomListParent: {fileID: 908719112}
-  playerNameInput: {fileID: 2090417866}
   maxPlayerView: {fileID: 1411735867}
-  playerNameView: {fileID: 46519856}
   noRoomView: {fileID: 1414118479}
 --- !u!1 &609588457
 GameObject:
@@ -1325,6 +1323,7 @@ MonoBehaviour:
   - {fileID: 1819728384}
   - {fileID: 1577381991}
   - {fileID: 1702508153}
+  canvasGroup: {fileID: 0}
 --- !u!1 &963892869
 GameObject:
   m_ObjectHideFlags: 0
@@ -2440,6 +2439,7 @@ MonoBehaviour:
   - {fileID: 1433190221}
   - {fileID: 454162575}
   - {fileID: 1618728826}
+  canvasGroup: {fileID: 0}
 --- !u!224 &1411735868
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2518,6 +2518,7 @@ MonoBehaviour:
   - {fileID: 1321452269}
   - {fileID: 1809668526}
   - {fileID: 1326961564}
+  canvasGroup: {fileID: 0}
 --- !u!1 &1433190219
 GameObject:
   m_ObjectHideFlags: 0
@@ -2988,6 +2989,7 @@ MonoBehaviour:
   - {fileID: 1819728384}
   - {fileID: 860587121}
   - {fileID: 1086371473}
+  canvasGroup: {fileID: 0}
 --- !u!1 &1702508150
 GameObject:
   m_ObjectHideFlags: 0

@@ -1032,6 +1032,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BackImage: {fileID: 0}
   images:
+  - {fileID: 838500052}
   - {fileID: 447746982}
   - {fileID: 407456988}
   canvasGroup: {fileID: 0}
@@ -2192,6 +2193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BackImage: {fileID: 0}
   images:
+  - {fileID: 838500052}
   - {fileID: 447746982}
   - {fileID: 1278825958}
   canvasGroup: {fileID: 0}
@@ -2594,13 +2596,13 @@ MonoBehaviour:
   playerItemPrefab: {fileID: 663761519}
   startButton: {fileID: 1162736038}
   leaveButton: {fileID: 239139012}
-  playerPrefab: {fileID: 6676721589596491722, guid: 34f16b0d73d8dfd4ea99ecd07989deb9, type: 3}
+  playerPrefab: {fileID: 4622391750409403407, guid: 34f16b0d73d8dfd4ea99ecd07989deb9, type: 3}
   SelectPanelView: {fileID: 365080104}
   gameScene:
     RawValue: 3
   protecterView: {fileID: 1278825960}
   attackerView: {fileID: 407456987}
-  roomNetworkPrefab: {fileID: 6676721589596491722, guid: 34f16b0d73d8dfd4ea99ecd07989deb9, type: 3}
+  roomNetworkPrefab: {fileID: 2907213434081533471, guid: ec142bbf8b4c40c46af91cdaa488619b, type: 3}
   playerCountText: {fileID: 83192872}
 --- !u!114 &2101852470
 MonoBehaviour:

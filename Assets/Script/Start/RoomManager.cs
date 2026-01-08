@@ -24,7 +24,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     private RoomNetwork _netRoom;
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, GameObject> _playerItems = new();
-    private Dictionary<PlayerRef, string> _playerNames = new();
     private Dictionary<NetAddress, string> _pendingNames = new();
     private Dictionary<PlayerRef, string> _playerFactions = new(); // 陣営保持用.
 
@@ -85,32 +84,12 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         else                                    attackerView.WindowView();
     }
 
-    // 接続要求時に名前受け取り.
-    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
-    {
-        if (token != null && token.Length > 0)
-        {
-            string name = System.Text.Encoding.UTF8.GetString(token);
-            // Spawn時にStartPlayerへ渡す.
-            PlayerInfo.PendingName = name;
-        }
-    }
-
-    // プレイヤー参加時に名前反映.
+    // プレイヤー参加時に人数反映.
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         var obj = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
-
-        string name = $"Player {player.PlayerId}";
-        if (obj.TryGetComponent<StartPlayer>(out var startPlayer))
-        {
-            name = startPlayer.PlayerName;
-        }
-
         var item = Instantiate(playerItemPrefab, playerListParent);
-        item.GetComponentInChildren<TextMeshProUGUI>().text = name;
         _playerItems[player] = item;
-        _playerNames[player] = name;
 
         UpdatePlayerCount();
     }
@@ -124,7 +103,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
             Destroy(item);
             _playerItems.Remove(player);
         }
-        _playerNames.Remove(player);
         _playerFactions.Remove(player);
 
         UpdatePlayerCount();
@@ -160,7 +138,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         foreach (var item in _playerItems.Values)
             Destroy(item);
         _playerItems.Clear();
-        _playerNames.Clear();
         _pendingNames.Clear();
         _runner.Shutdown();
         SceneManager.LoadScene("StartScene");
@@ -168,6 +145,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
     // INetworkRunnerCallbacks空実装
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
