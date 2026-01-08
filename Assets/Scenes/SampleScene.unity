@@ -695,11 +695,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1989696135263229317, guid: fc4939dd6464a7d46a601cc059648b00, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1989696135263229317, guid: fc4939dd6464a7d46a601cc059648b00, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 155
+      value: 117
       objectReference: {fileID: 0}
     - target: {fileID: 4721132177290361946, guid: fc4939dd6464a7d46a601cc059648b00, type: 3}
       propertyPath: targets.Array.data[0]
