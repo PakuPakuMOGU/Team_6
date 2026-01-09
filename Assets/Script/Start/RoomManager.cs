@@ -46,6 +46,17 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         UpdatePlayerCount();
     }
 
+
+    // RoomNetworkをクライアント側から取得.
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
+    {
+        if (obj.TryGetComponent<RoomNetwork>(out var rn))
+        {
+            _netRoom = rn;
+            Debug.Log("RoomNetwork をクライアント側で取得しました");
+        }
+    }
+
     // 陣営選択画面表示.
     public void OnSelectFactionPanel()
     {
@@ -71,7 +82,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_netRoom != null)
         {
-            _netRoom.RpcSetFaction(_runner.LocalPlayer, faction);
+            _netRoom.RpcSetFaction(faction);
         }
 
         SelectPanelView.WindowClose();
@@ -158,7 +169,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, System.ArraySegment<byte> data) { }
     public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
-    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
     public void OnSceneLoadStart(NetworkRunner runner) { }
     public void OnSceneLoadDone(NetworkRunner runner) { }
 }

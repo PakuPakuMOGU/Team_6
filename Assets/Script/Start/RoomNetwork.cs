@@ -11,9 +11,11 @@ public class RoomNetwork : NetworkBehaviour
 
     // 陣営選択をサーバーに伝えるRPC.
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RpcSetFaction(PlayerRef player, string faction)
+    public void RpcSetFaction(string faction, RpcInfo info = default)
     {
+        var player = info.Source; // 送信者の PlayerRef を取得
         _playerFactions[player] = faction;
+
         Debug.Log($"{player.PlayerId} が {faction} を希望しました");
     }
 

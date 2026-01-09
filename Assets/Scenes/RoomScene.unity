@@ -2602,7 +2602,7 @@ MonoBehaviour:
     RawValue: 3
   protecterView: {fileID: 1278825960}
   attackerView: {fileID: 407456987}
-  roomNetworkPrefab: {fileID: 2907213434081533471, guid: ec142bbf8b4c40c46af91cdaa488619b, type: 3}
+  roomNetworkPrefab: {fileID: 8333486415759965496, guid: ec142bbf8b4c40c46af91cdaa488619b, type: 3}
   playerCountText: {fileID: 83192872}
 --- !u!114 &2101852470
 MonoBehaviour:
