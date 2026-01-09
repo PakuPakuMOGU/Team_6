@@ -29,7 +29,6 @@ public class RoomNetwork : NetworkBehaviour
 
         // プレイヤー数チェック.
         int playerCount = Runner.ActivePlayers.Count();
-
         if (playerCount < 2)
         {
             Debug.Log("プレイヤーが2人未満のため陣営選択を開始できません");
