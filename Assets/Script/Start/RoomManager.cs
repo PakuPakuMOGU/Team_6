@@ -34,7 +34,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
         _runner.AddCallbacks(this);
 
-        if (_runner.IsServer) // ホストだけがSpawn可能.
+        if (_runner.IsServer) // ホストがRoomNetworkをスポーン.
         {
             var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
             _netRoom = netObj.GetComponent<RoomNetwork>();
@@ -46,7 +46,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         UpdatePlayerCount();
     }
 
-
     // RoomNetworkをクライアント側から取得.
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {
@@ -55,12 +54,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
             _netRoom = rn;
             Debug.Log("RoomNetwork をクライアント側で取得しました");
         }
-    }
-
-    // 陣営選択画面表示.
-    public void OnSelectFactionPanel()
-    {
-        SelectPanelView.WindowView();
     }
 
     // プレイヤー人数表示.
@@ -73,6 +66,12 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
             Debug.Log("Player count: " + count);
             playerCountText.text = $"{count}";
         }
+    }
+
+    // 陣営選択画面表示.
+    public void OnSelectFactionPanel()
+    {
+        SelectPanelView.WindowView();
     }
 
     // 陣営選択処理.
