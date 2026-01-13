@@ -68,6 +68,9 @@ public class EnemyShooter : MonoBehaviour
 
     void FixedUpdate()
     {
+
+        animator.applyRootMotion = false;
+
         if (player == null) return;
 
         float distance = Vector3.Distance(transform.position, player.position);
