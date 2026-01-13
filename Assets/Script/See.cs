@@ -40,6 +40,8 @@ public class See : NetworkBehaviour
         if (!GetInput(out NetworkInputData data)) return;
 
         // 多分ここが死んでる.クライアント側だけプレイヤーが横回転してない.
+        // ちがう、最初に入室したプレイヤー以外？
+        // そもそも最初に入室したらホストだった.
         // プレイヤー自体を回転.
         //transform.Rotate(0, data.rotation * Xsensityvity * Time.deltaTime, 0);
         float newY = transform.eulerAngles.y + data.rotation * Xsensityvity * Time.deltaTime;

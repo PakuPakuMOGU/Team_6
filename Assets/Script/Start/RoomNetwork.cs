@@ -19,7 +19,6 @@ public class RoomNetwork : NetworkBehaviour
         Debug.Log($"{player.PlayerId} が {faction} を希望しました");
     }
     
-
     // ホストが開始ボタンを押したときに呼ぶRPC.
     // RPC->ネットワーク上など離れたところにある関数を持ってくる.
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
@@ -74,25 +73,6 @@ public class RoomNetwork : NetworkBehaviour
 
         RpcNotifyProtecter(chosenProtecter.PlayerId);
     }
-    /*
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RpcNotifyProtecter(PlayerRef protecter)
-    {
-        Debug.Log($"Protecterは {protecter.PlayerId} に決定しました");
-
-        var room = FindObjectOfType<Room>();
-        if (room != null)
-        {
-            room.OnFactionAssigned(protecter);
-        }
-
-        if (Runner.IsServer)
-        {
-            // ウィンドウを見せるために2秒待ってからシーン遷移.
-            StartCoroutine(DelayedSceneLoad(2f));
-        }
-    }*/
-
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RpcNotifyProtecter(int protecterId)
@@ -107,6 +87,7 @@ public class RoomNetwork : NetworkBehaviour
 
         if (Runner.IsServer)
         {
+            // 決定陣営のウィンドウを見せるために2秒待ってからシーン遷移.
             StartCoroutine(DelayedSceneLoad(2f));
         }
     }
