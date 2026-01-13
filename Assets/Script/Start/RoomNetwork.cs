@@ -13,7 +13,7 @@ public class RoomNetwork : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcSetFaction(string faction, RpcInfo info = default)
     {
-        var player = info.Source; // ‘—MÒ‚Ì PlayerRef ‚ğæ“¾
+        var player = info.Source; // ‘—MÒ‚ÌPlayerRef‚ğæ“¾.
         _playerFactions[player] = faction;
 
         Debug.Log($"{player.PlayerId} ‚ª {faction} ‚ğŠó–]‚µ‚Ü‚µ‚½");
