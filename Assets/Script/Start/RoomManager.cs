@@ -39,9 +39,8 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_runner.IsServer)
         {
-            // ホストだけ RoomNetwork を Spawn
+            // ホストだけRoomNetworkをSpawn.
             var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
-            // Spawned() の中で Room に SetRoomNetwork が飛んでくる
         }
 
         startButton.SetActive(_runner.IsServer);    // スタートボタンはホストのみ表示.
@@ -96,12 +95,39 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
         SelectPanelView.WindowClose();
     }
-
+    /*
     public void OnFactionAssigned(PlayerRef protecter)
     {
-        // 陣営ごとにウィンドウを表示.
-        if (_runner.LocalPlayer == protecter)   protecterView.WindowView();      
-        else                                    attackerView.WindowView();
+        Debug.Log($"[OnFactionAssigned] LocalPlayer={_runner.LocalPlayer.PlayerId}, Protecter={protecter.PlayerId}");
+
+        if (_runner.LocalPlayer == protecter)
+        {
+            Debug.Log("→ この端末は Protecter");
+            protecterView.WindowView();
+        }
+        else
+        {
+            Debug.Log("→ この端末は Attacker");
+            attackerView.WindowView();
+        }
+    }*/
+
+    public void OnFactionAssigned(int protecterId)
+    {
+        var localId = _runner.LocalPlayer.PlayerId;
+
+        Debug.Log($"[OnFactionAssigned] Local={localId}, Protecter={protecterId}");
+
+        if (localId == protecterId)
+        {
+            Debug.Log("→ この端末は Protecter");
+            protecterView.WindowView();
+        }
+        else
+        {
+            Debug.Log("→ この端末は Attacker");
+            attackerView.WindowView();
+        }
     }
 
     // プレイヤー参加時に人数反映.
