@@ -95,22 +95,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
         SelectPanelView.WindowClose();
     }
-    /*
-    public void OnFactionAssigned(PlayerRef protecter)
-    {
-        Debug.Log($"[OnFactionAssigned] LocalPlayer={_runner.LocalPlayer.PlayerId}, Protecter={protecter.PlayerId}");
-
-        if (_runner.LocalPlayer == protecter)
-        {
-            Debug.Log("→ この端末は Protecter");
-            protecterView.WindowView();
-        }
-        else
-        {
-            Debug.Log("→ この端末は Attacker");
-            attackerView.WindowView();
-        }
-    }*/
 
     public void OnFactionAssigned(int protecterId)
     {
@@ -118,7 +102,9 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
         Debug.Log($"[OnFactionAssigned] Local={localId}, Protecter={protecterId}");
 
-        if (localId == protecterId)
+        // こんなひどいプログラムは本来組むべきじゃない.
+        // ホストのprotectedIdが-1になっちゃうから直打ちで合わせた.
+        if (localId == protecterId || (localId == 1 && -1 == protecterId)) 
         {
             Debug.Log("→ この端末は Protecter");
             protecterView.WindowView();
