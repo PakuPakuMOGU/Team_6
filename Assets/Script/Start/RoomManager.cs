@@ -10,7 +10,6 @@ using System.Collections.Generic;
 public class Room : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private Transform playerListParent;
-    [SerializeField] private GameObject playerItemPrefab;
     [SerializeField] private GameObject startButton;
     [SerializeField] private GameObject leaveButton;
     [SerializeField] private NetworkObject playerPrefab;
@@ -23,8 +22,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
     private RoomNetwork _netRoom;
     private NetworkRunner _runner;
-    private Dictionary<PlayerRef, GameObject> _playerItems = new();
-    private Dictionary<PlayerRef, string> _playerFactions = new(); // 陣営保持用.
 
     void Start()
     {
@@ -43,12 +40,15 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
             var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
         }
 
-        startButton.SetActive(_runner.IsServer);    // スタートボタンはホストのみ表示.
-        leaveButton.SetActive(true);                // 退出ボタンの表示.
+        // スタートボタンはホストのみ表示.
+        startButton.SetActive(_runner.IsServer); 
+        leaveButton.SetActive(true); 
 
+        // プレイヤーの人数を表示.
         UpdatePlayerCount();
     }
 
+    // Spawnした後にNetworkを取得.
     public void SetRoomNetwork(RoomNetwork rn)
     {
         _netRoom = rn;
@@ -61,7 +61,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         if (obj.TryGetComponent<RoomNetwork>(out var rn))
         {
             _netRoom = rn;
-            Debug.Log("RoomNetwork をクライアント側で取得しました");
+            Debug.Log("RoomNetwork をクライアント側で取得しました");   // これが出なかったら絶望して.
         }
     }
 
@@ -71,8 +71,9 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         Debug.Log("UpdatePlayerCount called");
         if (_runner != null)
         {
+            // 同じ部屋にいる人数を数える処理.
             int count = _runner.ActivePlayers.Count();
-            Debug.Log("Player count: " + count);
+            // 現在の人数を表示.
             playerCountText.text = $"{count}";
         }
     }
@@ -88,22 +89,21 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     {
         Debug.Log($"選択された陣営: {faction}");
 
-        if (_netRoom != null)
-        {
+        if (_netRoom != null) 
             _netRoom.RpcSetFaction(faction);
-        }
 
+        // 陣営選択画面を閉じる.
         SelectPanelView.WindowClose();
     }
 
+    // 振り分けた陣営を表示.
     public void OnFactionAssigned(int protecterId)
     {
         var localId = _runner.LocalPlayer.PlayerId;
-
         Debug.Log($"[OnFactionAssigned] Local={localId}, Protecter={protecterId}");
 
-        // こんなひどいプログラムは本来組むべきじゃない.
-        // ホストのprotectedIdが-1になっちゃうから直打ちで合わせた.
+        // ホストのprotectedIdが-1になっちゃうから直打ちで合わせた.こんなひどいプログラムを許すな.
+        // IDで陣営を認識してそれぞれの陣営用の画面を表示.
         if (localId == protecterId || (localId == 1 && -1 == protecterId)) 
         {
             Debug.Log("→ この端末は Protecter");
@@ -111,7 +111,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         }
         else
         {
-            Debug.Log("→ この端末は Attacker");
+            Debug.Log("→ この端末は Attacker");  // 両方にAttackerが表示されるときはprotexterIdを疑う.-1かも.
             attackerView.WindowView();
         }
     }
@@ -119,24 +119,16 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     // プレイヤー参加時に人数反映.
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        // プレイヤーオブジェクトをspawn.
         var obj = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
-        var item = Instantiate(playerItemPrefab, playerListParent);
-        _playerItems[player] = item;
-
+        // プレイヤーの人数を更新.
         UpdatePlayerCount();
     }
 
     // ルームから退出.
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        // プレイヤー名をプレイヤーリストから削除.
-        if (_playerItems.TryGetValue(player, out var item))
-        {
-            Destroy(item);
-            _playerItems.Remove(player);
-        }
-        _playerFactions.Remove(player);
-
+        // プレイヤーの人数を更新.
         UpdatePlayerCount();
     }
 
@@ -145,7 +137,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (!_runner.IsServer)
         {
-            Debug.Log("ホストのみ開始可能です");
+            Debug.Log("ホストのみ開始可能です");   // ホスト以外にボタンは表示されない.これが出力されたらバグ.
             return;
         }
         if (_runner.ActivePlayers.Count() < 2)
@@ -167,9 +159,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     // ルームから抜ける.
     public void LeaveRoom()
     {
-        foreach (var item in _playerItems.Values)
-            Destroy(item);
-        _playerItems.Clear();
         _runner.Shutdown();
         SceneManager.LoadScene("StartScene");
     }
