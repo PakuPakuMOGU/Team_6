@@ -12,7 +12,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private Transform playerListParent;
     [SerializeField] private GameObject startButton;
     [SerializeField] private GameObject leaveButton;
-    [SerializeField] private NetworkObject playerPrefab;
     [SerializeField] private View SelectPanelView;
     [SerializeField] private SceneRef gameScene;
     [SerializeField] private View protecterView;
@@ -34,12 +33,10 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
         _runner.AddCallbacks(this);
 
+        // ホストだけRoomNetworkをSpawn.
         if (_runner.IsServer)
-        {
-            // ホストだけRoomNetworkをSpawn.
             var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
-        }
-
+        
         // スタートボタンはホストのみ表示.
         startButton.SetActive(_runner.IsServer); 
         leaveButton.SetActive(true); 
@@ -116,19 +113,15 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // プレイヤー参加時に人数反映.
+    // プレイヤー参加時にプレイヤーの人数表示を更新.
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        // プレイヤーオブジェクトをspawn.
-        var obj = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
-        // プレイヤーの人数を更新.
         UpdatePlayerCount();
     }
 
-    // ルームから退出.
+    // ルームから退出時にプレイヤーの人数表示を更新.
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        // プレイヤーの人数を更新.
         UpdatePlayerCount();
     }
 
