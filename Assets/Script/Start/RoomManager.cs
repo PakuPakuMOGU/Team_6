@@ -24,20 +24,23 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     private RoomNetwork _netRoom;
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, GameObject> _playerItems = new();
-    private Dictionary<NetAddress, string> _pendingNames = new();
     private Dictionary<PlayerRef, string> _playerFactions = new(); // 陣営保持用.
 
     void Start()
     {
         _runner = FindObjectOfType<NetworkRunner>();
-        if (_runner == null) return;
+        if (_runner == null)
+        {
+            Debug.Log("NetworkRunner が見つかりません");
+            return;
+        }
 
         _runner.AddCallbacks(this);
 
-        if (_runner.IsServer) // ホストだけがSpawn可能.
+        if (_runner.IsServer)
         {
+            // ホストだけRoomNetworkをSpawn.
             var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
-            _netRoom = netObj.GetComponent<RoomNetwork>();
         }
 
         startButton.SetActive(_runner.IsServer);    // スタートボタンはホストのみ表示.
@@ -46,6 +49,11 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         UpdatePlayerCount();
     }
 
+    public void SetRoomNetwork(RoomNetwork rn)
+    {
+        _netRoom = rn;
+        Debug.Log("RoomNetwork を Room にセットしました");
+    }
 
     // RoomNetworkをクライアント側から取得.
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
@@ -55,12 +63,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
             _netRoom = rn;
             Debug.Log("RoomNetwork をクライアント側で取得しました");
         }
-    }
-
-    // 陣営選択画面表示.
-    public void OnSelectFactionPanel()
-    {
-        SelectPanelView.WindowView();
     }
 
     // プレイヤー人数表示.
@@ -73,6 +75,12 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
             Debug.Log("Player count: " + count);
             playerCountText.text = $"{count}";
         }
+    }
+
+    // 陣営選択画面表示.
+    public void OnSelectFactionPanel()
+    {
+        SelectPanelView.WindowView();
     }
 
     // 陣営選択処理.
@@ -88,11 +96,24 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         SelectPanelView.WindowClose();
     }
 
-    public void OnFactionAssigned(PlayerRef protecter)
+    public void OnFactionAssigned(int protecterId)
     {
-        // 陣営ごとにウィンドウを表示.
-        if (_runner.LocalPlayer == protecter)   protecterView.WindowView();      
-        else                                    attackerView.WindowView();
+        var localId = _runner.LocalPlayer.PlayerId;
+
+        Debug.Log($"[OnFactionAssigned] Local={localId}, Protecter={protecterId}");
+
+        // こんなひどいプログラムは本来組むべきじゃない.
+        // ホストのprotectedIdが-1になっちゃうから直打ちで合わせた.
+        if (localId == protecterId || (localId == 1 && -1 == protecterId)) 
+        {
+            Debug.Log("→ この端末は Protecter");
+            protecterView.WindowView();
+        }
+        else
+        {
+            Debug.Log("→ この端末は Attacker");
+            attackerView.WindowView();
+        }
     }
 
     // プレイヤー参加時に人数反映.
@@ -149,7 +170,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         foreach (var item in _playerItems.Values)
             Destroy(item);
         _playerItems.Clear();
-        _pendingNames.Clear();
         _runner.Shutdown();
         SceneManager.LoadScene("StartScene");
     }
