@@ -39,8 +39,7 @@ public class See : NetworkBehaviour
 
         if (!GetInput(out NetworkInputData data)) return;
 
-        Debug.Log("a");
-
+        // 多分ここが死んでる.クライアント側だけプレイヤーが横回転してない.
         // プレイヤー自体を回転.
         //transform.Rotate(0, data.rotation * Xsensityvity * Time.deltaTime, 0);
         float newY = transform.eulerAngles.y + data.rotation * Xsensityvity * Time.deltaTime;
