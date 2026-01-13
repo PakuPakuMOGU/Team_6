@@ -11,6 +11,7 @@ public class Landwin : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Debug.Log("’n—‹ÚGI");
             Bom.Play();
             Destroy(gameObject, 2f);
         }

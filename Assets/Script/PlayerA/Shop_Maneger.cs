@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 設置時は「回転を絶対に変えず」、位置のみ
+/// ・まずは savedPositions があるならそこに復元（回転維持）
+/// ・なければ cameraAnchor（カメラに付随する空オブジェクト）の位置へ 1 回スナップ
+/// フォールバックとして HitPoint/HitNormal による床合わせも可能
+/// </summary>
 public class Shop_Maneger : MonoBehaviour
 {
     [Header("在庫（罠）")]
@@ -19,11 +25,14 @@ public class Shop_Maneger : MonoBehaviour
     [Header("レイキャスト設定")]
     [SerializeField] private UnityEngine.Camera cam;
     [SerializeField] private float maxDistance = 100f;
-    [SerializeField] private bool alignToNormal = false;
-    [Tooltip("Pivotが底面でない場合の持ち上げ補正")]
+    [SerializeField] private bool alignToNormal = false; // ※方針的に使わない（常に回転固定）
+    [Tooltip("Pivotが底面でない場合の持ち上げ補正（めり込み防止）")]
     [SerializeField] private float extraLift = 0.01f;
     public LayerMask groundMask;
     public float maxSlopeDeg = 45f;
+
+    [Header("配置アンカー（カメラの子にした空オブジェクト）")]
+    [SerializeField] private Transform cameraAnchor;
 
     public CenterRaycastSpaceApply cast;
 
@@ -33,22 +42,22 @@ public class Shop_Maneger : MonoBehaviour
     private struct PlacedRecord
     {
         public Transform t;
-        public Vector3 pos;
-        public Quaternion rot;
+        public Vector3 pos;      // Cancelで戻すための「設置前の位置」
+        public Quaternion rot;   // Cancelで戻すための「設置前の回転」
         public string tagName;
     }
     private readonly Stack<PlacedRecord> placedHistory = new();
 
     public GameObject Button_Canbus;
 
-    // ★ 直近に設置・編集中の対象（UIButtonNudgeから参照）
+    // 直近に設置・編集中の対象（UIButtonNudgeなどから参照）
     public Transform CurrentTarget { get; private set; }
 
-    // ------------------ 基本ライフサイクル ------------------
+    // ------------------ ライフサイクル ------------------
     void Awake()
     {
         if (cam == null) cam = UnityEngine.Camera.main;
-        // Ground レイヤー運用なら明示
+        // Ground レイヤーが未指定ならデフォルトで "Ground"
         if (groundMask.value == 0) groundMask = LayerMask.GetMask("Ground");
     }
 
@@ -74,15 +83,16 @@ public class Shop_Maneger : MonoBehaviour
             }
             else
             {
-                // 急斜面はとりあえず位置だけ更新
+                // 急斜面はノーマルを上向き扱い
                 HitPoint = hit.point;
                 HitNormal = Vector3.up;
             }
         }
         else
         {
+            // 非ヒット時は見通し線の先端位置＋ノーマルは上向き
             HitPoint = ray.GetPoint(maxDistance);
-            HitNormal = -ray.direction;
+            HitNormal = Vector3.up;
         }
     }
 
@@ -99,18 +109,18 @@ public class Shop_Maneger : MonoBehaviour
 
         bool placed = false;
 
-        // ★ タグ名で配列を選ぶ（タグ名はボタン側と一致させてください）
+        // タグ名で在庫配列を選択
         switch (tagName)
         {
-            case "Fence2":       
+            case "Fence2":
                 placed = TryPlaceFromArray(targets, ref targetIndex, tagName);
                 break;
 
-            case "Fence1":      
+            case "Fence1":
                 placed = TryPlaceFromArray(targets1, ref targetIndex1, tagName);
                 break;
 
-            case "Land":      
+            case "Land":
                 placed = TryPlaceFromArray(targets2, ref targetIndex2, tagName);
                 break;
 
@@ -122,13 +132,14 @@ public class Shop_Maneger : MonoBehaviour
         if (!placed && Button_Canbus != null) Button_Canbus.SetActive(false);
     }
 
+    // 編集終了（UIを閉じる）
     public void Hensyu()
     {
-        // 編集UIを閉じる際は対象をクリア（誤操作防止）
         CurrentTarget = null;
         if (Button_Canbus != null) Button_Canbus.SetActive(false);
     }
 
+    // 直前の設置を取り消す（Cancel）
     public void Cancel()
     {
         if (placedHistory.Count == 0) return;
@@ -136,11 +147,10 @@ public class Shop_Maneger : MonoBehaviour
         var last = placedHistory.Pop();
         if (last.t != null)
         {
-            last.t.position = last.pos;
-            last.t.rotation = last.rot;
+            last.t.SetPositionAndRotation(last.pos, last.rot);
         }
 
-        // 種類ごとにインデックスを戻す
+        // 種類ごとに在庫インデックスを戻す（下限保護）
         switch (last.tagName)
         {
             case "Fence2":
@@ -154,40 +164,54 @@ public class Shop_Maneger : MonoBehaviour
                 break;
         }
 
-        // 取り消し後は編集中対象をクリア
         CurrentTarget = null;
-
         if (Button_Canbus != null) Button_Canbus.SetActive(false);
     }
 
-    // ------------------ 共通：在庫配列から設置 ------------------
-
+    // ------------------ 共通：在庫配列から設置（A: アンカーへ1回スナップ） ------------------
     private bool TryPlaceFromArray(Transform[] arr, ref int index, string tagNameForHistory)
     {
-        // ...（nullスキップなど既存処理）
+        // 在庫が空／存在しない
+        if (arr == null || arr.Length == 0)
+        {
+            Debug.LogWarning($"[Shop_Maneger] 在庫がありません（{tagNameForHistory}）");
+            return false;
+        }
+
+        // null在庫スキップ（連続null対応）
+        while (index < arr.Length && arr[index] == null) index++;
+
+        // インデックス境界チェック
+        if (index >= arr.Length)
+        {
+            Debug.Log($"[Shop_Maneger] {tagNameForHistory} は在庫切れです");
+            return false;
+        }
 
         Transform t = arr[index];
         if (t == null) return false;
 
-        // ★ 1) 現在のワールド回転を保存
-        Quaternion originalRotation = t.rotation;
+        // ★ 設置前の状態を保持（Cancel用）
+        Vector3 prePos = t.position;
+        Quaternion preRot = t.rotation;
 
-        // 履歴（Cancel用）にも元回転を保存
-        placedHistory.Push(new PlacedRecord
-        {
-            t = t,
-            pos = t.position,
-            rot = originalRotation,
-            tagName = tagNameForHistory
-        });
+        // ★ 回転は固定（設置後も preRot のまま）
+        Quaternion originalRotation = preRot;
 
-        // savedPositions がある場合は位置のみ復元（回転は維持）
+        // --- savedPositions がある場合は位置のみ復元（回転は維持） ---
         if (cast != null && cast.savedPositions != null && cast.savedPositions.Count > 0)
         {
             Vector3 lastPos = cast.savedPositions[^1];
-
-            // ★ 2) 回転は originalRotation のまま、位置だけ変更
             t.SetPositionAndRotation(lastPos, originalRotation);
+
+            // 成功として履歴に積む（設置前の位置・回転）
+            placedHistory.Push(new PlacedRecord
+            {
+                t = t,
+                pos = prePos,
+                rot = preRot,
+                tagName = tagNameForHistory
+            });
 
             CurrentTarget = t;
             index++;
@@ -195,25 +219,39 @@ public class Shop_Maneger : MonoBehaviour
             return true;
         }
 
-        // --- 半径・中心の算出（あなたの既存コードのままでOK） ---
-        float half = 0f;
-        Vector3 currentCenterWorld = t.position;
-        // （BoxCollider / Renderer から center や extents を計算する既存部分をそのまま使ってください）
+        // --- 合成Boundsで中心・高さ半分を取得（底面めり込み対策に利用） ---
+        Bounds worldBounds;
+        if (!TryGetWorldBounds(t, out worldBounds))
+        {
+            // 取得できない場合はPivotベース
+            worldBounds = new Bounds(t.position, Vector3.zero);
+        }
 
+        float halfHeight = Mathf.Max(worldBounds.extents.y, 0f);
         float lift = Mathf.Max(0f, extraLift);
-        Vector3 desiredCenterWorld = HitPoint + HitNormal.normalized * (half + lift);
+
+        // ★ A: アンカーへ 1 回スナップ（アンカー未設定なら HitPoint へフォールバック）
+        Vector3 basePoint = (cameraAnchor != null) ? cameraAnchor.position : HitPoint;
+        Vector3 upNormal = Vector3.up; // 回転固定方針なのでノーマルは上向きで扱う
+
+        Vector3 desiredCenterWorld = basePoint + upNormal * (halfHeight + lift);
+        Vector3 currentCenterWorld = worldBounds.center;
         Vector3 delta = desiredCenterWorld - currentCenterWorld;
 
-        // ★ 3) 位置のみ更新、回転は originalRotation に固定
+        // ★ 位置のみ更新、回転は originalRotation に固定
         t.SetPositionAndRotation(t.position + delta, originalRotation);
 
-        // ★ 4) ここで自動回転は絶対にしない（ブロックを完全コメントアウト）
-        // if (alignToNormal)
-        // {
-        //     Vector3 forward = Vector3.ProjectOnPlane(cam.transform.forward, HitNormal).normalized;
-        //     if (forward.sqrMagnitude < 1e-4f) forward = Vector3.forward;
-        //     t.rotation = Quaternion.LookRotation(forward, HitNormal);
-        // }
+        // ※ alignToNormal は使わない（回転固定方針）
+        // if (alignToNormal) { ... } // 完全無効
+
+        // 成功として履歴に積む（設置前の位置・回転）
+        placedHistory.Push(new PlacedRecord
+        {
+            t = t,
+            pos = prePos,    // Cancelで元位置に戻せる
+            rot = preRot,
+            tagName = tagNameForHistory
+        });
 
         CurrentTarget = t;
         index++;
@@ -221,4 +259,45 @@ public class Shop_Maneger : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// 対象Transform配下の Renderer / Collider から合成Boundsを取得
+    /// ワールドAABBとして Encapsulate していきます
+    /// </summary>
+    private static bool TryGetWorldBounds(Transform root, out Bounds bounds)
+    {
+        bounds = default;
+        bool initialized = false;
+
+        var renderers = root.GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            var r = renderers[i];
+            if (!initialized)
+            {
+                bounds = r.bounds;
+                initialized = true;
+            }
+            else
+            {
+                bounds.Encapsulate(r.bounds);
+            }
+        }
+
+        var colliders = root.GetComponentsInChildren<Collider>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            var c = colliders[i];
+            if (!initialized)
+            {
+                bounds = c.bounds;
+                initialized = true;
+            }
+            else
+            {
+                bounds.Encapsulate(c.bounds);
+            }
+        }
+
+        return initialized;
+    }
 }

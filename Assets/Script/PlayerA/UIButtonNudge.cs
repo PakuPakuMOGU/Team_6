@@ -9,26 +9,26 @@ public class UIButtonNudge : MonoBehaviour
 
     [Header("移動ステップ")]
     [Tooltip("1クリックあたりの移動量（メートル）")]
-    public float moveStep = 0.1f;
+    public float moveStep = 80f;
 
     [Tooltip("ローカル空間で動かすなら true、ワールドなら false")]
-    public bool useLocalSpace = false;
+    public bool useLocalSpace =false ;
 
     [Header("回転ステップ")]
     [Tooltip("1クリックあたりの回転角度（度）")]
-    public float rotationStepDegrees = 15f;
+    float rotationStepDegrees = 12f;
 
     [Tooltip("回転軸（通常はY軸で水平回転）")]
     public Axis rotateAxis = Axis.Y;
     public enum Axis { X, Y, Z }
 
     // 上下左右（＋前後）が必要ならUI側でボタンに割り当て
-    public void NudgeUp() => Nudge(new Vector3(0f, +14f, 0f));
-    public void NudgeDown() => Nudge(new Vector3(0f, -14f, 0f));
-    public void NudgeLeft() => Nudge(new Vector3(-14f, 0f, 0f));
-    public void NudgeRight() => Nudge(new Vector3(+7f, 0f, 0f));
-    public void NudgeForward() => Nudge(new Vector3(0f, 0f, +14f));
-    public void NudgeBack() => Nudge(new Vector3(0f, 0f, -14f));
+    public void NudgeUp() => Nudge(new Vector3(0f, +30f, 0f));
+    public void NudgeDown() => Nudge(new Vector3(0f, -30f, 0f));
+    public void NudgeLeft() => Nudge(new Vector3(-30f, 0f, 0f));
+    public void NudgeRight() => Nudge(new Vector3(+30f, 0f, 0f));
+    public void NudgeForward() => Nudge(new Vector3(0f, 0f, +30f));
+    public void NudgeBack() => Nudge(new Vector3(0f, 0f, -30f));
 
     public void RotateClockwise() => Rotate(+rotationStepDegrees);
     public void RotateCounterClockwise() => Rotate(-rotationStepDegrees);
@@ -53,7 +53,7 @@ public class UIButtonNudge : MonoBehaviour
         var t = ResolveTarget();
         if (t == null) return;
 
-        Vector3 delta = dirUnit.normalized * moveStep;
+        Vector3 delta = dirUnit * moveStep;
         if (useLocalSpace) t.localPosition += delta;
         else t.position += delta;
     }
