@@ -24,26 +24,36 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     private RoomNetwork _netRoom;
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, GameObject> _playerItems = new();
-    private Dictionary<NetAddress, string> _pendingNames = new();
     private Dictionary<PlayerRef, string> _playerFactions = new(); // 陣営保持用.
 
     void Start()
     {
         _runner = FindObjectOfType<NetworkRunner>();
-        if (_runner == null) return;
+        if (_runner == null)
+        {
+            Debug.Log("NetworkRunner が見つかりません");
+            return;
+        }
 
         _runner.AddCallbacks(this);
 
-        if (_runner.IsServer) // ホストがRoomNetworkをスポーン.
+        if (_runner.IsServer)
         {
+            // ホストだけ RoomNetwork を Spawn
             var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
-            _netRoom = netObj.GetComponent<RoomNetwork>();
+            // Spawned() の中で Room に SetRoomNetwork が飛んでくる
         }
 
         startButton.SetActive(_runner.IsServer);    // スタートボタンはホストのみ表示.
         leaveButton.SetActive(true);                // 退出ボタンの表示.
 
         UpdatePlayerCount();
+    }
+
+    public void SetRoomNetwork(RoomNetwork rn)
+    {
+        _netRoom = rn;
+        Debug.Log("RoomNetwork を Room にセットしました");
     }
 
     // RoomNetworkをクライアント側から取得.
@@ -148,7 +158,6 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         foreach (var item in _playerItems.Values)
             Destroy(item);
         _playerItems.Clear();
-        _pendingNames.Clear();
         _runner.Shutdown();
         SceneManager.LoadScene("StartScene");
     }

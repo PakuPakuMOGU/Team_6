@@ -97,4 +97,14 @@ public class RoomNetwork : NetworkBehaviour
         yield return new WaitForSeconds(second); // 2•b‘Ò‚Â
         Runner.LoadScene("GameScene");
     }
+    public override void Spawned()
+    {
+        Debug.Log("RoomNetwork Spawned");
+
+        var room = FindObjectOfType<Room>();
+        if (room != null)
+        {
+            room.SetRoomNetwork(this);
+        }
+    }
 }
