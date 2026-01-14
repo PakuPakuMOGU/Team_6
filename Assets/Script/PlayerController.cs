@@ -53,29 +53,30 @@ public class PlayerController : NetworkBehaviour
         if (!GetInput(out NetworkInputData data))
             return;
 
-        // 回転同期（あなたのRPC方式）
+        // 回転同期.
         if (Object.HasInputAuthority)
         {
-            float newY = NetRotation.eulerAngles.y + data.rotation;
+            float newY = NetRotation.eulerAngles.y + data.rotation * Xsensitivity; 
             RPC_SetRotation(Quaternion.Euler(0, newY, 0));
         }
 
         transform.rotation = NetRotation;
 
-        // 移動ベクトル
-        Vector3 move = new Vector3(data.direction.x, 0, data.direction.y);
-        move = transform.TransformDirection(move) * speed;
-
-        // --- 予測移動（クライアント） ---
-        if (Object.HasInputAuthority)
-            ncc.Move(move);
-
-        // --- 正式移動（StateAuthority） ---
+        // 移動.
         if (Object.HasStateAuthority)
-            ncc.Move(move);
+        {
+            Vector3 move = new Vector3(data.direction.x, 0, data.direction.y);
+            move = transform.TransformDirection(move) * speed;
 
-        // ジャンプ
-        ncc.Jump(data.jumpPressed);
+            ncc.Move(move);
+            // ジャンプ.
+            if (data.jumpPressed)
+                ncc.Jump(data.jumpPressed);
+        }
+
+        // アニメーション.
+        if (animator != null)
+            animator.SetFloat("speed", data.direction.magnitude);
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
