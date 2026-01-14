@@ -35,7 +35,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
 
         // ホストだけRoomNetworkをSpawn.
         if (_runner.IsServer)
-            var netObj = _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
+            _runner.Spawn(roomNetworkPrefab, Vector3.zero, Quaternion.identity);
         
         // スタートボタンはホストのみ表示.
         startButton.SetActive(_runner.IsServer); 
