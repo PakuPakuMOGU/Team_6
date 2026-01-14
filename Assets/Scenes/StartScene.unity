@@ -1958,8 +1958,9 @@ GameObject:
   - component: {fileID: 1285751879}
   - component: {fileID: 1285751878}
   - component: {fileID: 1285751877}
-  - component: {fileID: 1285751881}
   - component: {fileID: 1285751880}
+  - component: {fileID: 1285751882}
+  - component: {fileID: 1285751881}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2062,9 +2063,56 @@ MonoBehaviour:
   m_GameObject: {fileID: 1285751876}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dd172ad899fcfe469307c64b40366c9, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ae4b9566c5444a47a5e7ab6157a7de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomButtonPrefab: {fileID: 860587117}
+  roomListParent: {fileID: 538099996}
+  roomNameInput: {fileID: 1819728383}
+--- !u!114 &1285751882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1285751876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &1321452266
 GameObject:
   m_ObjectHideFlags: 0
@@ -3596,7 +3644,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1285751881}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: StartButton, Assembly-CSharp
         m_MethodName: OnButtonGameWork
         m_Mode: 1
