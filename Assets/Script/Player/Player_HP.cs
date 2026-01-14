@@ -4,15 +4,26 @@ using UnityEngine;
 
 public class Player_HP : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    [SerializeField] private int maxHp = 100;
+    [SerializeField] private int currentHp;
+
+    private void Awake()
     {
-        
+        currentHp = maxHp;
     }
 
-    // Update is called once per frame
-    void Update()
+    // Robotto1Wepon から呼びたいメソッドをこのシグネチャで用意
+    public void TakeDamage(int amount)
     {
-        
+        currentHp -= amount;
+        currentHp = Mathf.Clamp(currentHp, 0, maxHp);
+
+        // HPが0なら死亡処理など
+        if (currentHp == 0)
+        {
+            Debug.Log("死");
+        }
     }
 }
+
