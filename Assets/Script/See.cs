@@ -1,69 +1,63 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
-public class See : NetworkBehaviour
+public class PlayerRotation : NetworkBehaviour
 {
     public GameObject cam;
-    public float Xsensityvity = 3f;
-    public float Ysensityvity = 3f;
-    private Animator animator;
-    private CharacterController controller;
+    public float Xsensitivity = 3f;
+    public float Ysensitivity = 3f;
 
-    float xRotation = 1f;
-    bool cursorLock = true;
+    private float xRotation = 0f;
 
-    private NetworkObject netObj;
+    // ネットワーク同期される回転（StateAuthority が書き込む）
+    [Networked] private Quaternion NetRotation { get; set; }
 
     void Start()
     {
-        controller = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
-
-        if (animator != null)
-            animator.applyRootMotion = false;
-
-        netObj = GetComponentInParent<NetworkObject>();
-        if (netObj == null || !netObj.HasInputAuthority)
+        // 自分以外のプレイヤーはカメラを無効化
+        if (!Object.HasInputAuthority)
         {
             cam.SetActive(false);
-            enabled = false;
-            return;
         }
     }
 
     void Update()
     {
-        UpdateCursorLock();
-
-        if (!GetInput(out NetworkInputData data)) return;
-
-        // 多分ここが死んでる.クライアント側だけプレイヤーが横回転してない.
-        // ちがう、最初に入室したプレイヤー以外？
-        // そもそも最初に入室したらホストだった.
-        // プレイヤー自体を回転.
-        //transform.Rotate(0, data.rotation * Xsensityvity * Time.deltaTime, 0);
-        float newY = transform.eulerAngles.y + data.rotation * Xsensityvity * Time.deltaTime;
-        transform.rotation = Quaternion.Euler(0, newY, 0);
-        var netTransform = GetComponent<NetworkTransform>();
-        if (netTransform != null)
+        // 自分のキャラだけ入力を処理
+        if (!Object.HasInputAuthority)
         {
-            netTransform.Teleport(rotation: transform.rotation); // 強制同期
+            // 他人の回転は NetRotation を適用
+            transform.rotation = NetRotation;
+            return;
         }
 
-        // カメラのみを回転（マウスYはローカルで処理）
-        float mouseY = Input.GetAxis("Mouse Y") * Ysensityvity;
+        // --- マウス入力 ---
+        float mouseX = Input.GetAxis("Mouse X") * Xsensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * Ysensitivity;
+
+        // 水平回転（プレイヤー本体）
+        float newY = transform.eulerAngles.y + mouseX;
+        Quaternion newRot = Quaternion.Euler(0, newY, 0);
+
+        // RPC で StateAuthority に送る
+        RPC_SetRotation(newRot);
+
+        // 垂直回転（カメラのみ）
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        cam.transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
     }
 
-    void UpdateCursorLock()
+    // --- RPC：StateAuthority が回転を確定して全員に同期 ---
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SetRotation(Quaternion rot)
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) cursorLock = false;
-        else if (Input.GetMouseButton(0)) cursorLock = true;
+        NetRotation = rot;
+    }
 
-        Cursor.lockState = cursorLock ? CursorLockMode.Locked : CursorLockMode.None;
+    public override void FixedUpdateNetwork()
+    {
+        // 全員が NetRotation を適用
+        transform.rotation = NetRotation;
     }
 }

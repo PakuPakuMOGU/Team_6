@@ -1,35 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
-
 public class PlayerController : NetworkBehaviour
 {
-    public float speed = 6.0f;
-    public float jumpSpeed = 8.0f;
-    public float gravity = 20.0f;
+    public float speed = 6f;
+    public float jumpSpeed = 8f;
+    public float gravity = 20f;
+
     public GameObject cam;
-    public float Xsensityvity = 3f;
-    public float Ysensityvity = 3f;
+    public float Xsensitivity = 3f;
+    public float Ysensitivity = 3f;
 
     private float xRotation = 0f;
     private bool cursorLock = true;
 
-    private Vector3 moveDirection = Vector3.zero;
-    private CharacterController controller;
+    private NetworkCharacterController ncc;
     private Animator animator;
 
-    void Start()
+    [Networked] private Quaternion NetRotation { get; set; }
+
+    public override void Spawned()
     {
-        controller = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>(); // Animatorを取得
+        ncc = GetComponent<NetworkCharacterController>();
+        animator = GetComponent<Animator>();
 
         if (!Object.HasInputAuthority)
         {
             cam.SetActive(false);
-            enabled = false;
-            return;
+        }
+
+        if (Object.HasStateAuthority)
+        {
+            NetRotation = transform.rotation;
         }
     }
 
@@ -39,7 +41,8 @@ public class PlayerController : NetworkBehaviour
 
         UpdateCursorLock();
 
-        float mouseY = Input.GetAxis("Mouse Y") * Ysensityvity;
+        // カメラ上下回転（ローカルのみ）
+        float mouseY = Input.GetAxis("Mouse Y") * Ysensitivity;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
@@ -47,32 +50,34 @@ public class PlayerController : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (!Object.HasInputAuthority || !GetInput(out NetworkInputData data)) return;
+        if (!GetInput(out NetworkInputData data)) return;
 
-        // プレイヤーごとY軸回転.
-        float newY = transform.eulerAngles.y + data.rotation * Xsensityvity;
-        transform.rotation = Quaternion.Euler(0, newY, 0);
-
-        // カメラの上下回転.
-        Vector3 input = new Vector3(data.direction.x, 0.0f, data.direction.y);
-        Vector3 horizontalMove = (transform.forward * input.z + transform.right * input.x) * speed;
-
-        // 水平方向だけ更新.
-        Vector3 move = new Vector3(horizontalMove.x, moveDirection.y, horizontalMove.z);
-        moveDirection = move;
-
-        if (controller != null && controller.isGrounded)
+        // --- 回転（InputAuthority → StateAuthority → 全員） ---
+        if (Object.HasInputAuthority)
         {
-            moveDirection.y = data.jumpPressed ? jumpSpeed : 0f;
+            float newY = NetRotation.eulerAngles.y + data.rotation * Xsensitivity;
+            RPC_SetRotation(Quaternion.Euler(0, newY, 0));
         }
 
-        moveDirection.y -= gravity * Runner.DeltaTime;
+        transform.rotation = NetRotation;
 
-        if (controller != null)
-            controller.Move(moveDirection * Runner.DeltaTime);
+        // --- 移動（NetworkCharacterController が同期） ---
+        Vector3 move = new Vector3(data.direction.x, 0, data.direction.y);
+        move = transform.TransformDirection(move) * speed;
+
+        if (data.jumpPressed)
+            ncc.Jump(data.jumpPressed);
+
+        ncc.Move(move);
 
         if (animator != null)
-            animator.SetFloat("speed", input.magnitude);
+            animator.SetFloat("speed", move.magnitude);
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SetRotation(Quaternion rot)
+    {
+        NetRotation = rot;
     }
 
     void UpdateCursorLock()

@@ -416,7 +416,7 @@ PrefabInstance:
       addedObject: {fileID: -8183503373930131801}
     - targetCorrespondingSourceObject: {fileID: 100060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -7827171463740893645}
+      addedObject: {fileID: 4666606948374169673}
   m_SourcePrefab: {fileID: 100100000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
 --- !u!1 &201370938361181771 stripped
 GameObject:
@@ -454,8 +454,8 @@ MonoBehaviour:
   jumpSpeed: 8
   gravity: 20
   cam: {fileID: 1586652175677974933}
-  Xsensityvity: 3
-  Ysensityvity: 3
+  Xsensitivity: 3
+  Ysensitivity: 3
 --- !u!143 &6306135733685190680
 CharacterController:
   m_ObjectHideFlags: 0
@@ -500,9 +500,9 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 5650638524865823062}
-  - {fileID: -7827171463740893645}
+  - {fileID: 4666606948374169673}
   ForceRemoteRenderTimeframe: 0
---- !u!114 &-7827171463740893645
+--- !u!114 &4666606948374169673
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -511,14 +511,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 201370938361181771}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
+  gravity: -20
+  jumpImpulse: 8
+  acceleration: 10
+  braking: 10
+  maxSpeed: 2
+  rotationSpeed: 15
 --- !u!4 &201370938361342507 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
