@@ -35,6 +35,11 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    void Start()
+    {
+        animator.SetBool("Attack", false);
+    }
+
     void Update()
     {
         if (!Object.HasInputAuthority) return;
