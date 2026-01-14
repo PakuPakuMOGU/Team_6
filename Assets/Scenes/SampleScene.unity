@@ -536,7 +536,7 @@ Transform:
   m_GameObject: {fileID: 478184896}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 499.96, y: 107.12, z: -798.376}
+  m_LocalPosition: {x: 499.96, y: 107.12, z: -830.61}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1392,7 +1392,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 5.557678
+  m_Radius: 27.8
   m_Height: 11.115356
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -1409,9 +1409,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 478184900}
-  moveSpeed: 3.5
-  rotateSpeed: 10
-  stoppingDistance: 1.2
+  maxMoveSpeed: 3.5
+  accel: 8
+  decel: 12
+  rotateSpeedDegPerSec: 360
+  stoppingDistance: 3
+  slowDownRange: 2
 --- !u!54 &1410091661
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1434,8 +1437,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
