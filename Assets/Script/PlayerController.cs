@@ -50,28 +50,32 @@ public class PlayerController : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (!GetInput(out NetworkInputData data)) return;
+        if (!GetInput(out NetworkInputData data))
+            return;
 
-        // --- 回転（InputAuthority → StateAuthority → 全員） ---
+        // 回転同期（あなたのRPC方式）
         if (Object.HasInputAuthority)
         {
-            float newY = NetRotation.eulerAngles.y + data.rotation * Xsensitivity;
+            float newY = NetRotation.eulerAngles.y + data.rotation;
             RPC_SetRotation(Quaternion.Euler(0, newY, 0));
         }
 
         transform.rotation = NetRotation;
 
-        // --- 移動（NetworkCharacterController が同期） ---
+        // 移動ベクトル
         Vector3 move = new Vector3(data.direction.x, 0, data.direction.y);
         move = transform.TransformDirection(move) * speed;
 
-        if (data.jumpPressed)
-            ncc.Jump(data.jumpPressed);
+        // --- 予測移動（クライアント） ---
+        if (Object.HasInputAuthority)
+            ncc.Move(move);
 
-        ncc.Move(move);
+        // --- 正式移動（StateAuthority） ---
+        if (Object.HasStateAuthority)
+            ncc.Move(move);
 
-        if (animator != null)
-            animator.SetFloat("speed", move.magnitude);
+        // ジャンプ
+        ncc.Jump(data.jumpPressed);
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]

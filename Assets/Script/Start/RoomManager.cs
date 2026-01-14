@@ -9,7 +9,6 @@ using System.Collections.Generic;
 
 public class Room : MonoBehaviour, INetworkRunnerCallbacks
 {
-    [SerializeField] private Transform playerListParent;
     [SerializeField] private GameObject startButton;
     [SerializeField] private GameObject leaveButton;
     [SerializeField] private View SelectPanelView;
