@@ -311,6 +311,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2561849875332439694, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 478184900}
     - target: {fileID: 5532037678386027919, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
       propertyPath: m_Name
       value: Robot_Soldier_White (2)
@@ -866,6 +870,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2561849875332439694, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 478184900}
     - target: {fileID: 5532037678386027919, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
       propertyPath: m_Name
       value: Robot_Soldier_White (4)
@@ -943,6 +951,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2561849875332439694, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 478184900}
     - target: {fileID: 5532037678386027919, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
       propertyPath: m_Name
       value: Robot_Soldier_White (1)
@@ -2362,6 +2374,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2561849875332439694, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 478184900}
     - target: {fileID: 5532037678386027919, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
       propertyPath: m_Name
       value: Robot_Soldier_White (3)
