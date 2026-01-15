@@ -33,7 +33,7 @@ public class EnemyStraightRayShooter : MonoBehaviour
         if (!firePoint) return;
 
         Vector3 origin = firePoint.position;
-        Vector3 dir = firePoint.forward; // š gí‚É‘O•ûh‚ÉŒ‚‚Â
+        Vector3 dir = firePoint.forward; 
         float dist = rayDistance;
 
         Debug.DrawRay(origin, dir * dist, Color.red, 0.1f);
