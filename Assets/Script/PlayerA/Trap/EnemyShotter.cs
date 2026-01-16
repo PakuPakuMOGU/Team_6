@@ -41,7 +41,7 @@ public class EnemyStraightRayShooter : MonoBehaviour
 
     [Header("デバッグ")]
     public bool debugLogs = false;
-    public bool drawGizmos = false;
+    public bool drawGizmos = true;
 
     Coroutine _loop;
     WaitForSeconds _wait;
