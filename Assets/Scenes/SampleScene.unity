@@ -2233,18 +2233,6 @@ PrefabInstance:
       value: turret_1_2
       objectReference: {fileID: 0}
     - target: {fileID: 6400194621032153429, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.55
-      objectReference: {fileID: 0}
-    - target: {fileID: 6400194621032153429, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.55
-      objectReference: {fileID: 0}
-    - target: {fileID: 6400194621032153429, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.55
-      objectReference: {fileID: 0}
-    - target: {fileID: 6400194621032153429, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
       propertyPath: m_LocalPosition.x
       value: 486.07068
       objectReference: {fileID: 0}
@@ -2284,34 +2272,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6400194621032153429, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8407466267210264485, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 478184900}
-    - target: {fileID: 8450483341060275422, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
-      propertyPath: m_Height
-      value: 9.14
-      objectReference: {fileID: 0}
-    - target: {fileID: 8450483341060275422, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
-      propertyPath: m_Radius
-      value: 2.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 8450483341060275422, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
-      propertyPath: m_Center.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8450483341060275422, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
-      propertyPath: m_Center.y
-      value: 2.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8450483341060275422, guid: c35f2b4b47945d341abd9d3e90715d81, type: 3}
-      propertyPath: m_Center.z
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2328,6 +2292,14 @@ PrefabInstance:
     - target: {fileID: 648253506095631446, guid: b15b0c1b73145fb408b0afd0c41101fe, type: 3}
       propertyPath: m_Name
       value: Lazer
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591625250425114759, guid: b15b0c1b73145fb408b0afd0c41101fe, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591625250425114759, guid: b15b0c1b73145fb408b0afd0c41101fe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.05
       objectReference: {fileID: 0}
     - target: {fileID: 5094605606709647480, guid: b15b0c1b73145fb408b0afd0c41101fe, type: 3}
       propertyPath: player
@@ -2376,6 +2348,14 @@ PrefabInstance:
     - target: {fileID: 5853346024823795574, guid: b15b0c1b73145fb408b0afd0c41101fe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000282717265982414, guid: b15b0c1b73145fb408b0afd0c41101fe, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000282717265982414, guid: b15b0c1b73145fb408b0afd0c41101fe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.08
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

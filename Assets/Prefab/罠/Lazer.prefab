@@ -62,7 +62,7 @@ Transform:
   m_GameObject: {fileID: 983926486797389389}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.00951196, z: 0, w: 0.99995476}
-  m_LocalPosition: {x: 0.001, y: 0.409, z: 0.532}
+  m_LocalPosition: {x: 0, y: 0.409, z: 0.08}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -131,6 +131,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePoint: {fileID: 7000282717265982414}
+  player: {fileID: 0}
+  detectRadius: 15
+  requireLineOfSight: 0
+  viewHalfAngle: 0
   shootInterval: 1
   rayDistance: 30
   damage: 10
@@ -139,6 +143,8 @@ MonoBehaviour:
     m_Bits: 1
   hitImpactPrefab: {fileID: 0}
   tracerPrefab: {fileID: 0}
+  debugLogs: 0
+  drawGizmos: 1
 --- !u!65 &6658435790077025535
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -174,7 +180,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3357611626398618450, guid: e7437d3fa8a3c5e4da1e5ef6506d7690, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 3357611626398618450, guid: e7437d3fa8a3c5e4da1e5ef6506d7690, type: 3}
       propertyPath: m_LocalPosition.y
@@ -182,7 +188,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3357611626398618450, guid: e7437d3fa8a3c5e4da1e5ef6506d7690, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.05
       objectReference: {fileID: 0}
     - target: {fileID: 3357611626398618450, guid: e7437d3fa8a3c5e4da1e5ef6506d7690, type: 3}
       propertyPath: m_LocalRotation.w
@@ -245,7 +251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  detectionRadius: 11.59
+  detectionRadius: 14.6
   rotateSpeed: 8
   lockYOnly: 1
 --- !u!4 &4591625250425114759 stripped

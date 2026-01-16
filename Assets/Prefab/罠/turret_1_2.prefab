@@ -550,6 +550,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePoint: {fileID: 4117068410203474913}
+  player: {fileID: 0}
+  detectRadius: 15
+  requireLineOfSight: 0
+  viewHalfAngle: 0
   shootInterval: 1
   rayDistance: 30
   damage: 10
@@ -558,6 +562,8 @@ MonoBehaviour:
     m_Bits: 1
   hitImpactPrefab: {fileID: 0}
   tracerPrefab: {fileID: 0}
+  debugLogs: 0
+  drawGizmos: 1
 --- !u!65 &166991183595799508
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1055,6 +1061,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePoint: {fileID: 120689343632585363}
+  player: {fileID: 0}
+  detectRadius: 15
+  requireLineOfSight: 0
+  viewHalfAngle: 0
   shootInterval: 1
   rayDistance: 30
   damage: 10
@@ -1063,6 +1073,8 @@ MonoBehaviour:
     m_Bits: 1
   hitImpactPrefab: {fileID: 0}
   tracerPrefab: {fileID: 0}
+  debugLogs: 0
+  drawGizmos: 1
 --- !u!65 &4181131212449364753
 BoxCollider:
   m_ObjectHideFlags: 0
