@@ -7,7 +7,7 @@ public class taretto : MonoBehaviour
     public Transform player;           // プレイヤーのTransform（Inspectorで割当 or 自動取得）
 
     [Header("挙動")]
-    public float detectionRadius = 8f; // 反応半径
+    public float detectionRadius = 11f; // 反応半径
     public float rotateSpeed = 8f;     // 回転スピード
     public bool lockYOnly = true;      // Y軸だけ回転（水平面）
 
