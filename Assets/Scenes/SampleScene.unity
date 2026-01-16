@@ -1259,6 +1259,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc4939dd6464a7d46a601cc059648b00, type: 3}
+--- !u!1001 &1255267398
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1821812945662922531, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 492.4435
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821812945662922531, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 106.711845
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821812945662922531, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -835.4102
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821812945662922531, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821812945662922531, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821812945662922531, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821812945662922531, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821812945662922531, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821812945662922531, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821812945662922531, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2602593249079245034, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: m_Name
+      value: Robot_Soldier_White
+      objectReference: {fileID: 0}
+    - target: {fileID: 5428665846910532587, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 478184900}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c1ae6f1fec7494843a75ff0dd02f42df, type: 3}
 --- !u!1001 &1280025716
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2375,3 +2436,4 @@ SceneRoots:
   - {fileID: 2863356757026171027}
   - {fileID: 1074645795238477050}
   - {fileID: 478184900}
+  - {fileID: 1255267398}
