@@ -1,7 +1,7 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Fusion;
 
-public class PlayerRotation : NetworkBehaviour
+public class OrbitCamera : NetworkBehaviour
 {
     public GameObject cam;
     public float Xsensitivity = 3f;
@@ -9,12 +9,12 @@ public class PlayerRotation : NetworkBehaviour
 
     private float xRotation = 0f;
 
-    // ƒlƒbƒgƒ[ƒN“¯Šú‚³‚ê‚é‰ñ“].
+    // ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯åŒæœŸã•ã‚Œã‚‹å›è»¢.
     //[Networked] private Quaternion NetRotation { get; set; }
 
     void Start()
     {
-        // ©•ªˆÈŠO‚ÌƒvƒŒƒCƒ„[‚ÍƒJƒƒ‰‚ğ–³Œø‰».
+        // è‡ªåˆ†ä»¥å¤–ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¯ã‚«ãƒ¡ãƒ©ã‚’ç„¡åŠ¹åŒ–.
         if (!Object.HasInputAuthority)
         {
             cam.SetActive(false);
@@ -23,33 +23,33 @@ public class PlayerRotation : NetworkBehaviour
 
     void Update()
     {
-        /*// ©•ª‚ÌƒLƒƒƒ‰‚¾‚¯“ü—Í‚ğˆ—.
+        /*/ è‡ªåˆ†ã®ã‚­ãƒ£ãƒ©ã ã‘å…¥åŠ›ã‚’å‡¦ç†.
         if (!Object.HasInputAuthority)
         {
-            // ‘¼l‚Ì‰ñ“]‚Í NetRotation ‚ğ“K—p.
+            // ä»–äººã®å›è»¢ã¯ NetRotation ã‚’é©ç”¨.
             transform.rotation = NetRotation;
             return;
         }*/
 
-        // --- ƒ}ƒEƒX“ü—Í ---
+        // --- ãƒã‚¦ã‚¹å…¥åŠ› ---
         float mouseX = Input.GetAxis("Mouse X") * Xsensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * Ysensitivity;
 
-        // …•½‰ñ“]iƒvƒŒƒCƒ„[–{‘Ìj.
+        // æ°´å¹³å›è»¢ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æœ¬ä½“ï¼‰.
         float newY = transform.eulerAngles.y + mouseX;
         Quaternion newRot = Quaternion.Euler(0, newY, 0);
 
-        // RPC ‚Å StateAuthority ‚É‘—‚é.
-       // RPC_SetRotation(newRot);
+        // RPC ã§ StateAuthority ã«é€ã‚‹.
+        //RPC_SetRotation(newRot);
 
-        // ‚’¼‰ñ“]iƒJƒƒ‰‚Ì‚İj.
+        // å‚ç›´å›è»¢ï¼ˆã‚«ãƒ¡ãƒ©ã®ã¿ï¼‰.
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
     }
 
-    // ‰ñ“]‚ğŠm’è‚µ‚Ä‘Sˆõ‚É“¯Šú.
-    /*[Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    /*/ å›è»¢ã‚’ç¢ºå®šã—ã¦å…¨å“¡ã«åŒæœŸ.
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_SetRotation(Quaternion rot)
     {
         NetRotation = rot;
@@ -57,7 +57,7 @@ public class PlayerRotation : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        // ‘Sˆõ‚ªNetRotation‚ğ“K—p.
+        // å…¨å“¡ãŒNetRotationã‚’é©ç”¨.
         transform.rotation = NetRotation;
     }*/
 }
