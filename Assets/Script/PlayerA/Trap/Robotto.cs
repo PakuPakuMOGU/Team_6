@@ -8,20 +8,20 @@ public class Robotto : MonoBehaviour
     [SerializeField] private Transform player;
 
     [Header("検知・距離設定")]
-    [SerializeField] private float detectRadius = 8.0f;       // 追跡を始める検知半径
-    [SerializeField] private float stopDistance = 3.5f;       // この距離で前進を止める
-    [SerializeField] private float attackRange = 2.8f;        // 攻撃開始距離（stopDistanceより小さく）
+    [SerializeField] private float detectRadius = 8.0f;
+    [SerializeField] private float stopDistance = 3.5f;   // 攻撃距離より大きく
+    [SerializeField] private float attackRange = 2.8f;    // stopDistance より小さく
 
     [Header("移動・回転（減速なし）")]
     [SerializeField] private float moveSpeed = 3.5f;
     [SerializeField] private float rotateSpeedDegPerSec = 600f;
 
     [Header("攻撃制御")]
-    [SerializeField] private float attackCooldown = 1.0f;     // 連続攻撃間隔
-    [SerializeField] private bool stopWhileAttacking = false; // 攻撃中は足を止めるか
+    [SerializeField] private float attackCooldown = 1.0f;
+    [SerializeField] private bool stopWhileAttacking = false;
 
     private Animator anim;
-    private bool chaseFlag = false;        // ← 距離で更新する
+    private bool chaseFlag = false;
     private float currentSpeed = 0f;
     private float lastAttackTime = -999f;
 
@@ -33,8 +33,16 @@ public class Robotto : MonoBehaviour
 
     void Start()
     {
+        if (!player)
+            Debug.LogWarning("[Robotto] player が未割り当てです。インスペクタで設定してください。");
+
+        // Animator 側に "Attack"(Bool) と "Speed"(Float) がある前提
         anim.SetBool("Attack", false);
         currentSpeed = 0f;
+
+        // 値の整合性チェック（必要なら OnValidate に移行）
+        if (attackRange >= stopDistance)
+            Debug.LogWarning("[Robotto] attackRange は stopDistance より小さくしてください。");
     }
 
     void Update()
@@ -46,10 +54,8 @@ public class Robotto : MonoBehaviour
         toPlayer.y = 0f;
         float dist = toPlayer.magnitude;
 
-        // --- 追跡フラグを距離で決定 ---
-        // プレイヤーが検知半径内にいれば追跡ON、外ならOFF
-        bool inDetect = dist <= detectRadius;
-        chaseFlag = inDetect;
+        // 追跡フラグ
+        chaseFlag = (dist <= detectRadius);
 
         // 向きを合わせる
         if (chaseFlag && toPlayer.sqrMagnitude > 1e-6f)
@@ -59,70 +65,63 @@ public class Robotto : MonoBehaviour
                 transform.rotation, targetRot, rotateSpeedDegPerSec * Time.deltaTime);
         }
 
-        // --- 速度決定 ---
+        // 速度決定
         float desiredSpeed = 0f;
         if (chaseFlag)
         {
-            bool inStopZone = dist <= stopDistance; // 近すぎ防止
+            bool inStopZone = dist <= stopDistance;
             bool canMove = !inStopZone;
 
             if (stopWhileAttacking)
             {
-                // 攻撃中は足を止めたい場合
+                // 攻撃中は止める設定
                 canMove = canMove && !anim.GetBool("Attack");
             }
 
             desiredSpeed = canMove ? moveSpeed : 0f;
         }
 
-        // 立ち上がりを速めたスムージング（慣性）
+        // 慣性
         float rate = 20f;
         currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, rate * Time.deltaTime);
 
-        // 実移動（前進）
+        // 実移動
         transform.position += transform.forward * currentSpeed * Time.deltaTime;
 
-        // Animator（走り/待機ブレンド）
+        // 走り/待機ブレンド
         anim.SetFloat("Speed", currentSpeed, 0.1f, Time.deltaTime);
 
-        // --- 攻撃条件：攻撃距離内 + クールダウン ---
+        // 攻撃条件：距離内 + クールダウン
         if (chaseFlag && dist <= attackRange)
         {
             if (Time.time - lastAttackTime >= attackCooldown)
             {
-                anim.ResetTrigger("Attack");   // 念のため
-                anim.SetTrigger("Attack");
-                anim.SetBool("Attack", true);  // 足を止める/ブレンドに使うならON
+                anim.SetBool("Attack", true); // Bool 運用
                 lastAttackTime = Time.time;
             }
         }
 
-        // 時間ベースの簡易解除（本番はアニメイベント推奨）
-        if (Time.time - lastAttackTime >= 0.2f)
+        // 解除：時間ベース（クリップ長に合わせて延長）
+        // 例：0.8秒（攻撃クリップが1秒弱ならこれくらい）
+        if (Time.time - lastAttackTime >= 0.8f)
         {
             anim.SetBool("Attack", false);
         }
     }
 
-    // もうトリガーには依存しません（削除OK）
-    void OnTriggerEnter(Collider other) { }
-    void OnTriggerExit(Collider other) { }
-
     // アニメーションイベント（ヒット）
     public void AE_AttackHit()
     {
-        // 攻撃・ダメージは別スクリプトでOK
-        // ここでは追跡側の状態を変えない（止めたい場合は HitStop で時間付き停止）
+        // ダメージ処理等は別スクリプトへ
     }
 
-    // アニメーションイベント（終わり）
+    // アニメーションイベント（終わり）… こちらを使うなら、上の時間解除は保険でOK
     public void AE_AttackEnd()
     {
-        // 攻撃終了で必ず解除（安全策）
         anim.SetBool("Attack", false);
     }
 
-    // （任意）短いヒットストップを入れたい場合
+    // （任意）ヒットストップ
     public void DoHitStop(float duration)
     {
         StartCoroutine(HitStop(duration));
@@ -131,15 +130,20 @@ public class Robotto : MonoBehaviour
     private System.Collections.IEnumerator HitStop(float duration)
     {
         bool prevAttack = anim.GetBool("Attack");
-        anim.SetBool("Attack", true);  // 足を止めたい時
+        anim.SetBool("Attack", true);
         yield return new WaitForSeconds(duration);
-        anim.SetBool("Attack", prevAttack);   // 攻撃中でなければ false に戻る
+        anim.SetBool("Attack", prevAttack);
     }
 
-    // Gizmo
     void OnDrawGizmosSelected()
     {
         Gizmos.color = new Color(0f, 1f, 0.5f, 0.25f);
         Gizmos.DrawWireSphere(transform.position, detectRadius);
+
+        // 可視化を追加（任意）
+        Gizmos.color = new Color(1f, 1f, 0f, 0.25f);
+        Gizmos.DrawWireSphere(transform.position, stopDistance);
+        Gizmos.color = new Color(1f, 0.2f, 0f, 0.25f);
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

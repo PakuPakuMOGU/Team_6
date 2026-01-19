@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlayerAttackAdvanced : MonoBehaviour
+public class Robotto1 : MonoBehaviour
 {
     [Header("Timings")]
     [SerializeField, Tooltip("アニメイベントを使わない場合の攻撃モーション長（秒）")]
