@@ -903,7 +903,7 @@ GameObject:
   - component: {fileID: 3684449587501530762}
   - component: {fileID: 7644312904618728057}
   m_Layer: 0
-  m_Name: Robot_Soldier_White
+  m_Name: "\u7D20\u624B\u30ED\u30DC\u30C3\u30C8"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
