@@ -10,6 +10,9 @@ TagManager:
   - Fence2
   - Camera
   - UIButton
+  - S_Robo
+  - T_Robo
+  - G_Robo
   layers:
   - Default
   - TransparentFX

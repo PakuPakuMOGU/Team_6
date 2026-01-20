@@ -10,17 +10,29 @@ using UnityEngine;
 /// </summary>
 public class Shop_Maneger : MonoBehaviour
 {
-    [Header("在庫（罠）")]
+    [Header("在庫柵1")]
     [SerializeField] public Transform[] targets;
     public int targetIndex = 0;
 
-    [Header("在庫（家具A：椅子など）")]
+    [Header("在庫柵2")]
     [SerializeField] public Transform[] targets1;
     public int targetIndex1 = 0;
 
-    [Header("在庫（家具B：テーブルなど）")]
+    [Header("在庫地雷")]
     [SerializeField] public Transform[] targets2;
     public int targetIndex2 = 0;
+
+    [Header("在庫素手ロボット")]
+    [SerializeField] public Transform[] targets3;
+    public int targetIndex3 = 0;
+
+    [Header("在庫銃ロボット")]
+    [SerializeField] public Transform[] targets4;
+    public int targetIndex4 = 0;
+
+    [Header("在庫特殊ロボット")]
+    [SerializeField] public Transform[] targets5;
+    public int targetIndex5 = 0;
 
     [Header("レイキャスト設定")]
     [SerializeField] private UnityEngine.Camera cam;
@@ -124,6 +136,18 @@ public class Shop_Maneger : MonoBehaviour
                 placed = TryPlaceFromArray(targets2, ref targetIndex2, tagName);
                 break;
 
+            case "S_Robo":
+                placed = TryPlaceFromArray(targets3, ref targetIndex3, tagName);
+                break;
+
+            case "G_Robo":
+                placed = TryPlaceFromArray(targets4, ref targetIndex4, tagName);
+                break;
+
+            case "T_Robo":
+                placed = TryPlaceFromArray(targets5, ref targetIndex5, tagName);
+                break;
+
             default:
                 Debug.LogWarning($"[Shop_Maneger] 未対応のタグ『{tagName}』です。switch に追加してください。");
                 break;
@@ -161,6 +185,18 @@ public class Shop_Maneger : MonoBehaviour
                 break;
             case "Land":
                 targetIndex2 = Mathf.Max(targetIndex2 - 1, 0);
+                break;
+
+            case "S_Robo":
+                targetIndex3 = Mathf.Max(targetIndex3 - 1, 0);
+                break;
+
+            case "G_Robo":
+                targetIndex4 = Mathf.Max(targetIndex4 - 1, 0);
+                break;
+
+            case "T_Robo":
+                targetIndex5 = Mathf.Max(targetIndex5 - 1, 0);
                 break;
         }
 
