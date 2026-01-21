@@ -34,6 +34,14 @@ public class Shop_Maneger : MonoBehaviour
     [SerializeField] public Transform[] targets5;
     public int targetIndex5 = 0;
 
+    [Header("在庫でかタレット")]
+    [SerializeField] public Transform[] targets6;
+    public int targetIndex6 = 0;
+
+    [Header("在庫チビタレット")]
+    [SerializeField] public Transform[] targets7;
+    public int targetIndex7 = 0;
+
     [Header("レイキャスト設定")]
     [SerializeField] private UnityEngine.Camera cam;
     [SerializeField] private float maxDistance = 100f;
@@ -148,6 +156,14 @@ public class Shop_Maneger : MonoBehaviour
                 placed = TryPlaceFromArray(targets5, ref targetIndex5, tagName);
                 break;
 
+            case "B_Tare":
+                placed = TryPlaceFromArray(targets6, ref targetIndex6, tagName);
+                break;
+
+            case "C_Tare":
+                placed = TryPlaceFromArray(targets7, ref targetIndex7, tagName);
+                break;
+
             default:
                 Debug.LogWarning($"[Shop_Maneger] 未対応のタグ『{tagName}』です。switch に追加してください。");
                 break;
@@ -197,6 +213,14 @@ public class Shop_Maneger : MonoBehaviour
 
             case "T_Robo":
                 targetIndex5 = Mathf.Max(targetIndex5 - 1, 0);
+                break;
+
+            case "B_Tare":
+                targetIndex6 = Mathf.Max(targetIndex6 - 1, 0);
+                break;
+
+            case "C_Tare":
+                targetIndex7 = Mathf.Max(targetIndex7 - 1, 0);
                 break;
         }
 
