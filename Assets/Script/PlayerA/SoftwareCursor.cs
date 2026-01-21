@@ -1,22 +1,37 @@
-
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class SoftwareCursor : MonoBehaviour
 {
-    [SerializeField] private RectTransform cursorRect; // カーソル画像の RectTransform
-    [SerializeField] private UnityEngine.Camera uiCamera;
+    [SerializeField] Canvas canvas;
+    [SerializeField] RectTransform cursorRt;     // 仮想カーソル
+    GraphicRaycaster raycaster;
+    PointerEventData ped;
+    EventSystem es;
+
+    void Awake()
+    {
+        raycaster = canvas.GetComponent<GraphicRaycaster>();
+        es = EventSystem.current;
+        ped = new PointerEventData(es);
+    }
 
     void Update()
     {
-        // 実マウスで動かす場合（戦略A/B）
-        var pos = Mouse.current != null ? Mouse.current.position.ReadValue() : Vector2.zero;
+        // 仮想カーソル位置からUIへレイ
+        ped.position = cursorRt.position;
+        var results = new List<RaycastResult>();
+        raycaster.Raycast(ped, results);
 
-        // 画面座標 → Canvas座標（Screen Space - Camera）
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            (RectTransform)transform, pos, uiCamera, out var localPoint);
-
-        cursorRect.anchoredPosition = localPoint;
+        // 左クリックが押されたら、一番上のUIにクリックイベント
+        if (Input.GetMouseButtonDown(0) && results.Count > 0)
+        {
+            var target = results[0].gameObject;
+            ExecuteEvents.Execute(target, ped, ExecuteEvents.pointerClickHandler);
+            // Buttonなら Submit も飛ばせる
+            ExecuteEvents.Execute(target, ped, ExecuteEvents.submitHandler);
+        }
     }
 }
