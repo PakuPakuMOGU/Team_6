@@ -13,6 +13,8 @@ TagManager:
   - S_Robo
   - T_Robo
   - G_Robo
+  - B_Tare
+  - C_Tare
   layers:
   - Default
   - TransparentFX
