@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text;
 
 /// <summary>
 /// 設置時は「回転を絶対に変えず」、位置のみ
@@ -172,7 +173,6 @@ public class Shop_Maneger : MonoBehaviour
         if (!placed && Button_Canbus != null) Button_Canbus.SetActive(false);
     }
 
-
     // 編集終了（UIを閉じる）
     public void Hensyu()
     {
@@ -184,10 +184,8 @@ public class Shop_Maneger : MonoBehaviour
             string tagName;
             int zeroBasedIndex;
 
-            // すでに TryFindArrayAndIndexOf を追加済みなら、タグ名をそちらから得る方法でもOK
             if (!TryFindArrayAndIndexOf(t, out tagName, out zeroBasedIndex))
             {
-                // 見つからない場合は Transform 自体の tag を使う（任意）
                 tagName = t.tag;
             }
 
@@ -212,8 +210,6 @@ public class Shop_Maneger : MonoBehaviour
                     break;
 
                 default:
-                    // 未定義タグ：何もしない or ログ
-                    // Debug.Log($"[Shop_Maneger] Hensyu: 未定義タグ {tagName}");
                     break;
             }
         }
@@ -223,8 +219,6 @@ public class Shop_Maneger : MonoBehaviour
         if (Button_Canbus != null) Button_Canbus.SetActive(false);
     }
 
-
-
     /// <summary>
     /// 現在の在庫配列群（targets～targets7）から、指定Transformの所属配列タグと添字（0ベース）を探索。
     /// 見つかれば true と tagName/zeroBasedIndex を返す。
@@ -233,14 +227,14 @@ public class Shop_Maneger : MonoBehaviour
     {
         (Transform[] arr, string tag)[] groups = new (Transform[], string)[]
         {
-        (targets,  "Fence2"),
-        (targets1, "Fence1"),
-        (targets2, "Land"),
-        (targets3, "S_Robo"),
-        (targets4, "G_Robo"),
-        (targets5, "T_Robo"),
-        (targets6, "B_Tare"),
-        (targets7, "C_Tare"),
+            (targets,  "Fence2"),
+            (targets1, "Fence1"),
+            (targets2, "Land"),
+            (targets3, "S_Robo"),
+            (targets4, "G_Robo"),
+            (targets5, "T_Robo"),
+            (targets6, "B_Tare"),
+            (targets7, "C_Tare"),
         };
 
         for (int g = 0; g < groups.Length; g++)
@@ -262,7 +256,6 @@ public class Shop_Maneger : MonoBehaviour
         zeroBasedIndex = -1;
         return false;
     }
-
 
     /// <summary>
     /// 対象Transform（と任意で子階層）のRigidbodyに対して useGravity を true にし、
@@ -297,7 +290,6 @@ public class Shop_Maneger : MonoBehaviour
         }
         return count;
     }
-
 
     // 直前の設置を取り消す（Cancel）
     public void Cancel()
@@ -379,9 +371,15 @@ public class Shop_Maneger : MonoBehaviour
         Quaternion originalRotation = preRot;
 
         // --- savedPositions がある場合は位置のみ復元（回転は維持） ---
+        // ★ 解決案A：使ったら消す（次の配置がアンカーに行くようにする）
         if (cast != null && cast.savedPositions != null && cast.savedPositions.Count > 0)
         {
-            Vector3 lastPos = cast.savedPositions[^1];
+            int lastIndex = cast.savedPositions.Count - 1;
+            Vector3 lastPos = cast.savedPositions[lastIndex];
+
+            // ★ここが追加：消費した位置を削除
+            cast.savedPositions.RemoveAt(lastIndex);
+
             t.SetPositionAndRotation(lastPos, originalRotation);
 
             // 成功として履歴に積む（設置前の位置・回転）
@@ -420,9 +418,6 @@ public class Shop_Maneger : MonoBehaviour
 
         // ★ 位置のみ更新、回転は originalRotation に固定
         t.SetPositionAndRotation(t.position + delta, originalRotation);
-
-        // ※ alignToNormal は使わない（回転固定方針）
-        // if (alignToNormal) { ... } // 完全無効
 
         // 成功として履歴に積む（設置前の位置・回転）
         placedHistory.Push(new PlacedRecord
