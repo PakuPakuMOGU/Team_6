@@ -172,12 +172,132 @@ public class Shop_Maneger : MonoBehaviour
         if (!placed && Button_Canbus != null) Button_Canbus.SetActive(false);
     }
 
+
     // 編集終了（UIを閉じる）
     public void Hensyu()
     {
+        var t = CurrentTarget;
+
+        if (t != null)
+        {
+            // タグ名取得（配列探索が不要なら、Transform.tagで足ります）
+            string tagName;
+            int zeroBasedIndex;
+
+            // すでに TryFindArrayAndIndexOf を追加済みなら、タグ名をそちらから得る方法でもOK
+            if (!TryFindArrayAndIndexOf(t, out tagName, out zeroBasedIndex))
+            {
+                // 見つからない場合は Transform 自体の tag を使う（任意）
+                tagName = t.tag;
+            }
+
+            // ★ タグ別の重力適用ルール
+            switch (tagName)
+            {
+                case "S_Robo":
+                case "G_Robo":
+                case "T_Robo":
+                case "Land":
+                case "B_Tare":
+                case "C_Tare":
+                    // ロボ系は重力ON
+                    EnableGravity(t, includeChildren: true, alsoMakeDynamic: true);
+                    Debug.Log($"[Shop_Maneger] Hensyu: tag={tagName} → useGravity ON");
+                    break;
+
+                case "Fence1":
+                case "Fence2":
+                    // 柵は重力OFFにするなど（必要なら）
+                    // DisableGravity(t, includeChildren: true, makeKinematic: true);
+                    break;
+
+                default:
+                    // 未定義タグ：何もしない or ログ
+                    // Debug.Log($"[Shop_Maneger] Hensyu: 未定義タグ {tagName}");
+                    break;
+            }
+        }
+
+        // ← 確定処理のあとに UI を閉じる
         CurrentTarget = null;
         if (Button_Canbus != null) Button_Canbus.SetActive(false);
     }
+
+
+
+    /// <summary>
+    /// 現在の在庫配列群（targets～targets7）から、指定Transformの所属配列タグと添字（0ベース）を探索。
+    /// 見つかれば true と tagName/zeroBasedIndex を返す。
+    /// </summary>
+    private bool TryFindArrayAndIndexOf(Transform target, out string tagName, out int zeroBasedIndex)
+    {
+        (Transform[] arr, string tag)[] groups = new (Transform[], string)[]
+        {
+        (targets,  "Fence2"),
+        (targets1, "Fence1"),
+        (targets2, "Land"),
+        (targets3, "S_Robo"),
+        (targets4, "G_Robo"),
+        (targets5, "T_Robo"),
+        (targets6, "B_Tare"),
+        (targets7, "C_Tare"),
+        };
+
+        for (int g = 0; g < groups.Length; g++)
+        {
+            var (arr, tag) = groups[g];
+            if (arr == null) continue;
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (arr[i] == target)
+                {
+                    tagName = tag;
+                    zeroBasedIndex = i;
+                    return true;
+                }
+            }
+        }
+
+        tagName = null;
+        zeroBasedIndex = -1;
+        return false;
+    }
+
+
+    /// <summary>
+    /// 対象Transform（と任意で子階層）のRigidbodyに対して useGravity を true にし、
+    /// 必要なら isKinematic を false に戻す。戻り値は変更を適用した Rigidbody の件数。
+    /// </summary>
+    private int EnableGravity(Transform root, bool includeChildren, bool alsoMakeDynamic)
+    {
+        int count = 0;
+
+        if (root == null) return 0;
+
+        if (includeChildren)
+        {
+            var rbs = root.GetComponentsInChildren<Rigidbody>(true);
+            for (int i = 0; i < rbs.Length; i++)
+            {
+                var rb = rbs[i];
+                rb.useGravity = true;
+                if (alsoMakeDynamic) rb.isKinematic = false;
+                count++;
+            }
+        }
+        else
+        {
+            var rb = root.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.useGravity = true;
+                if (alsoMakeDynamic) rb.isKinematic = false;
+                count = 1;
+            }
+        }
+        return count;
+    }
+
 
     // 直前の設置を取り消す（Cancel）
     public void Cancel()
