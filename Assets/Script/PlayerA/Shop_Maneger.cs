@@ -1,58 +1,58 @@
-
+ï»¿
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 
 /// <summary>
-/// İ’u‚Íu‰ñ“]‚ğâ‘Î‚É•Ï‚¦‚¸vAˆÊ’u‚Ì‚İ
-/// E‚Ü‚¸‚Í savedPositions ‚ª‚ ‚é‚È‚ç‚»‚±‚É•œŒ³i‰ñ“]ˆÛj
-/// E‚È‚¯‚ê‚Î cameraAnchoriƒJƒƒ‰‚É•t‚·‚é‹óƒIƒuƒWƒFƒNƒgj‚ÌˆÊ’u‚Ö 1 ‰ñƒXƒiƒbƒv
-/// ƒtƒH[ƒ‹ƒoƒbƒN‚Æ‚µ‚Ä HitPoint/HitNormal ‚É‚æ‚é°‡‚í‚¹‚à‰Â”\
+/// è¨­ç½®æ™‚ã¯ã€Œå›è»¢ã‚’çµ¶å¯¾ã«å¤‰ãˆãšã€ã€ä½ç½®ã®ã¿
+/// ãƒ»ã¾ãšã¯ savedPositions ãŒã‚ã‚‹ãªã‚‰ãã“ã«å¾©å…ƒï¼ˆå›è»¢ç¶­æŒï¼‰
+/// ãƒ»ãªã‘ã‚Œã° cameraAnchorï¼ˆã‚«ãƒ¡ãƒ©ã«ä»˜éšã™ã‚‹ç©ºã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼‰ã®ä½ç½®ã¸ 1 å›ã‚¹ãƒŠãƒƒãƒ—
+/// ãƒ•ã‚©ãƒ¼ãƒ«ãƒãƒƒã‚¯ã¨ã—ã¦ HitPoint/HitNormal ã«ã‚ˆã‚‹åºŠåˆã‚ã›ã‚‚å¯èƒ½
 /// </summary>
 public class Shop_Maneger : MonoBehaviour
 {
-    [Header("İŒÉò1")]
+    [Header("åœ¨åº«æŸµ1")]
     [SerializeField] public Transform[] targets;
     public int targetIndex = 0;
 
-    [Header("İŒÉò2")]
+    [Header("åœ¨åº«æŸµ2")]
     [SerializeField] public Transform[] targets1;
     public int targetIndex1 = 0;
 
-    [Header("İŒÉ’n—‹")]
+    [Header("åœ¨åº«åœ°é›·")]
     [SerializeField] public Transform[] targets2;
     public int targetIndex2 = 0;
 
-    [Header("İŒÉ‘fèƒƒ{ƒbƒg")]
+    [Header("åœ¨åº«ç´ æ‰‹ãƒ­ãƒœãƒƒãƒˆ")]
     [SerializeField] public Transform[] targets3;
     public int targetIndex3 = 0;
 
-    [Header("İŒÉeƒƒ{ƒbƒg")]
+    [Header("åœ¨åº«éŠƒãƒ­ãƒœãƒƒãƒˆ")]
     [SerializeField] public Transform[] targets4;
     public int targetIndex4 = 0;
 
-    [Header("İŒÉ“Áêƒƒ{ƒbƒg")]
+    [Header("åœ¨åº«ç‰¹æ®Šãƒ­ãƒœãƒƒãƒˆ")]
     [SerializeField] public Transform[] targets5;
     public int targetIndex5 = 0;
 
-    [Header("İŒÉ‚Å‚©ƒ^ƒŒƒbƒg")]
+    [Header("åœ¨åº«ã§ã‹ã‚¿ãƒ¬ãƒƒãƒˆ")]
     [SerializeField] public Transform[] targets6;
     public int targetIndex6 = 0;
 
-    [Header("İŒÉƒ`ƒrƒ^ƒŒƒbƒg")]
+    [Header("åœ¨åº«ãƒãƒ“ã‚¿ãƒ¬ãƒƒãƒˆ")]
     [SerializeField] public Transform[] targets7;
     public int targetIndex7 = 0;
 
-    [Header("ƒŒƒCƒLƒƒƒXƒgİ’è")]
+    [Header("ãƒ¬ã‚¤ã‚­ãƒ£ã‚¹ãƒˆè¨­å®š")]
     [SerializeField] private UnityEngine.Camera cam;
     [SerializeField] private float maxDistance = 100f;
-    [SerializeField] private bool alignToNormal = false; // ¦•ûj“I‚Ég‚í‚È‚¢ií‚É‰ñ“]ŒÅ’èj
-    [Tooltip("Pivot‚ª’ê–Ê‚Å‚È‚¢ê‡‚Ì‚¿ã‚°•â³i‚ß‚è‚İ–h~j")]
+    [SerializeField] private bool alignToNormal = false; // â€»æ–¹é‡çš„ã«ä½¿ã‚ãªã„ï¼ˆå¸¸ã«å›è»¢å›ºå®šï¼‰
+    [Tooltip("PivotãŒåº•é¢ã§ãªã„å ´åˆã®æŒã¡ä¸Šã’è£œæ­£ï¼ˆã‚ã‚Šè¾¼ã¿é˜²æ­¢ï¼‰")]
     [SerializeField] private float extraLift = 0.01f;
     public LayerMask groundMask;
     public float maxSlopeDeg = 45f;
 
-    [Header("”z’uƒAƒ“ƒJ[iƒJƒƒ‰‚Ìq‚É‚µ‚½‹óƒIƒuƒWƒFƒNƒgj")]
+    [Header("é…ç½®ã‚¢ãƒ³ã‚«ãƒ¼ï¼ˆã‚«ãƒ¡ãƒ©ã®å­ã«ã—ãŸç©ºã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼‰")]
     [SerializeField] private Transform cameraAnchor;
 
     public CenterRaycastSpaceApply cast;
@@ -63,22 +63,22 @@ public class Shop_Maneger : MonoBehaviour
     private struct PlacedRecord
     {
         public Transform t;
-        public Vector3 pos;      // Cancel‚Å–ß‚·‚½‚ß‚Ìuİ’u‘O‚ÌˆÊ’uv
-        public Quaternion rot;   // Cancel‚Å–ß‚·‚½‚ß‚Ìuİ’u‘O‚Ì‰ñ“]v
+        public Vector3 pos;      // Cancelã§æˆ»ã™ãŸã‚ã®ã€Œè¨­ç½®å‰ã®ä½ç½®ã€
+        public Quaternion rot;   // Cancelã§æˆ»ã™ãŸã‚ã®ã€Œè¨­ç½®å‰ã®å›è»¢ã€
         public string tagName;
     }
     private readonly Stack<PlacedRecord> placedHistory = new();
 
     public GameObject Button_Canbus;
 
-    // ’¼‹ß‚Éİ’uE•ÒW’†‚Ì‘ÎÛiUIButtonNudge‚È‚Ç‚©‚çQÆj
+    // ç›´è¿‘ã«è¨­ç½®ãƒ»ç·¨é›†ä¸­ã®å¯¾è±¡ï¼ˆUIButtonNudgeãªã©ã‹ã‚‰å‚ç…§ï¼‰
     public Transform CurrentTarget { get; private set; }
 
-    // ------------------ ƒ‰ƒCƒtƒTƒCƒNƒ‹ ------------------
+    // ------------------ ãƒ©ã‚¤ãƒ•ã‚µã‚¤ã‚¯ãƒ« ------------------
     void Awake()
     {
         if (cam == null) cam = UnityEngine.Camera.main;
-        // Ground ƒŒƒCƒ„[‚ª–¢w’è‚È‚çƒfƒtƒHƒ‹ƒg‚Å "Ground"
+        // Ground ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæœªæŒ‡å®šãªã‚‰ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ "Ground"
         if (groundMask.value == 0) groundMask = LayerMask.GetMask("Ground");
     }
 
@@ -104,33 +104,33 @@ public class Shop_Maneger : MonoBehaviour
             }
             else
             {
-                // ‹}Î–Ê‚Íƒm[ƒ}ƒ‹‚ğãŒü‚«ˆµ‚¢
+                // æ€¥æ–œé¢ã¯ãƒãƒ¼ãƒãƒ«ã‚’ä¸Šå‘ãæ‰±ã„
                 HitPoint = hit.point;
                 HitNormal = Vector3.up;
             }
         }
         else
         {
-            // ”ñƒqƒbƒg‚ÍŒ©’Ê‚µü‚Ìæ’[ˆÊ’u{ƒm[ƒ}ƒ‹‚ÍãŒü‚«
+            // éãƒ’ãƒƒãƒˆæ™‚ã¯è¦‹é€šã—ç·šã®å…ˆç«¯ä½ç½®ï¼‹ãƒãƒ¼ãƒãƒ«ã¯ä¸Šå‘ã
             HitPoint = ray.GetPoint(maxDistance);
             HitNormal = Vector3.up;
         }
     }
 
-    // ------------------ ƒ{ƒ^ƒ“iƒ^ƒOj‚©‚çŒÄ‚Ô“üŒû ------------------
+    // ------------------ ãƒœã‚¿ãƒ³ï¼ˆã‚¿ã‚°ï¼‰ã‹ã‚‰å‘¼ã¶å…¥å£ ------------------
     public void BuyByTag(string tagName)
     {
         if (string.IsNullOrEmpty(tagName))
         {
-            Debug.LogWarning("[Shop_Maneger] BuyByTag: tagName ‚ª‹ó‚Å‚·");
+            Debug.LogWarning("[Shop_Maneger] BuyByTag: tagName ãŒç©ºã§ã™");
             return;
         }
 
-        if (cast != null) cast.kono(); // Šù‘¶‚Ì‘Oˆ—‚ª‚ ‚é‚È‚çÀs
+        if (cast != null) cast.kono(); // æ—¢å­˜ã®å‰å‡¦ç†ãŒã‚ã‚‹ãªã‚‰å®Ÿè¡Œ
 
         bool placed = false;
 
-        // ƒ^ƒO–¼‚ÅİŒÉ”z—ñ‚ğ‘I‘ğ
+        // ã‚¿ã‚°åã§åœ¨åº«é…åˆ—ã‚’é¸æŠ
         switch (tagName)
         {
             case "Fence2":
@@ -166,21 +166,21 @@ public class Shop_Maneger : MonoBehaviour
                 break;
 
             default:
-                Debug.LogWarning($"[Shop_Maneger] –¢‘Î‰‚Ìƒ^ƒOw{tagName}x‚Å‚·Bswitch ‚É’Ç‰Á‚µ‚Ä‚­‚¾‚³‚¢B");
+                Debug.LogWarning($"[Shop_Maneger] æœªå¯¾å¿œã®ã‚¿ã‚°ã€{tagName}ã€ã§ã™ã€‚switch ã«è¿½åŠ ã—ã¦ãã ã•ã„ã€‚");
                 break;
         }
 
         if (!placed && Button_Canbus != null) Button_Canbus.SetActive(false);
     }
 
-    // •ÒWI—¹iUI‚ğ•Â‚¶‚éj
+    // ç·¨é›†çµ‚äº†ï¼ˆUIã‚’é–‰ã˜ã‚‹ï¼‰
     public void Hensyu()
     {
         var t = CurrentTarget;
 
         if (t != null)
         {
-            // ƒ^ƒO–¼æ“¾i”z—ñ’Tõ‚ª•s—v‚È‚çATransform.tag‚Å‘«‚è‚Ü‚·j
+            // ã‚¿ã‚°åå–å¾—ï¼ˆé…åˆ—æ¢ç´¢ãŒä¸è¦ãªã‚‰ã€Transform.tagã§è¶³ã‚Šã¾ã™ï¼‰
             string tagName;
             int zeroBasedIndex;
 
@@ -189,7 +189,7 @@ public class Shop_Maneger : MonoBehaviour
                 tagName = t.tag;
             }
 
-            // š ƒ^ƒO•Ê‚Ìd—Í“K—pƒ‹[ƒ‹
+            // â˜… ã‚¿ã‚°åˆ¥ã®é‡åŠ›é©ç”¨ãƒ«ãƒ¼ãƒ«
             switch (tagName)
             {
                 case "S_Robo":
@@ -198,14 +198,14 @@ public class Shop_Maneger : MonoBehaviour
                 case "Land":
                 case "B_Tare":
                 case "C_Tare":
-                    // ƒƒ{Œn‚Íd—ÍON
+                    // ãƒ­ãƒœç³»ã¯é‡åŠ›ON
                     EnableGravity(t, includeChildren: true, alsoMakeDynamic: true);
-                    Debug.Log($"[Shop_Maneger] Hensyu: tag={tagName} ¨ useGravity ON");
+                    Debug.Log($"[Shop_Maneger] Hensyu: tag={tagName} â†’ useGravity ON");
                     break;
 
                 case "Fence1":
                 case "Fence2":
-                    // ò‚Íd—ÍOFF‚É‚·‚é‚È‚Çi•K—v‚È‚çj
+                    // æŸµã¯é‡åŠ›OFFã«ã™ã‚‹ãªã©ï¼ˆå¿…è¦ãªã‚‰ï¼‰
                     // DisableGravity(t, includeChildren: true, makeKinematic: true);
                     break;
 
@@ -214,14 +214,14 @@ public class Shop_Maneger : MonoBehaviour
             }
         }
 
-        // © Šm’èˆ—‚Ì‚ ‚Æ‚É UI ‚ğ•Â‚¶‚é
+        // â† ç¢ºå®šå‡¦ç†ã®ã‚ã¨ã« UI ã‚’é–‰ã˜ã‚‹
         CurrentTarget = null;
         if (Button_Canbus != null) Button_Canbus.SetActive(false);
     }
 
     /// <summary>
-    /// Œ»İ‚ÌİŒÉ”z—ñŒQitargets`targets7j‚©‚çAw’èTransform‚ÌŠ‘®”z—ñƒ^ƒO‚Æ“Yši0ƒx[ƒXj‚ğ’TõB
-    /// Œ©‚Â‚©‚ê‚Î true ‚Æ tagName/zeroBasedIndex ‚ğ•Ô‚·B
+    /// ç¾åœ¨ã®åœ¨åº«é…åˆ—ç¾¤ï¼ˆtargetsï½targets7ï¼‰ã‹ã‚‰ã€æŒ‡å®šTransformã®æ‰€å±é…åˆ—ã‚¿ã‚°ã¨æ·»å­—ï¼ˆ0ãƒ™ãƒ¼ã‚¹ï¼‰ã‚’æ¢ç´¢ã€‚
+    /// è¦‹ã¤ã‹ã‚Œã° true ã¨ tagName/zeroBasedIndex ã‚’è¿”ã™ã€‚
     /// </summary>
     private bool TryFindArrayAndIndexOf(Transform target, out string tagName, out int zeroBasedIndex)
     {
@@ -258,8 +258,8 @@ public class Shop_Maneger : MonoBehaviour
     }
 
     /// <summary>
-    /// ‘ÎÛTransformi‚Æ”CˆÓ‚ÅqŠK‘wj‚ÌRigidbody‚É‘Î‚µ‚Ä useGravity ‚ğ true ‚É‚µA
-    /// •K—v‚È‚ç isKinematic ‚ğ false ‚É–ß‚·B–ß‚è’l‚Í•ÏX‚ğ“K—p‚µ‚½ Rigidbody ‚ÌŒ”B
+    /// å¯¾è±¡Transformï¼ˆã¨ä»»æ„ã§å­éšå±¤ï¼‰ã®Rigidbodyã«å¯¾ã—ã¦ useGravity ã‚’ true ã«ã—ã€
+    /// å¿…è¦ãªã‚‰ isKinematic ã‚’ false ã«æˆ»ã™ã€‚æˆ»ã‚Šå€¤ã¯å¤‰æ›´ã‚’é©ç”¨ã—ãŸ Rigidbody ã®ä»¶æ•°ã€‚
     /// </summary>
     private int EnableGravity(Transform root, bool includeChildren, bool alsoMakeDynamic)
     {
@@ -291,7 +291,7 @@ public class Shop_Maneger : MonoBehaviour
         return count;
     }
 
-    // ’¼‘O‚Ìİ’u‚ğæ‚èÁ‚·iCancelj
+    // ç›´å‰ã®è¨­ç½®ã‚’å–ã‚Šæ¶ˆã™ï¼ˆCancelï¼‰
     public void Cancel()
     {
         if (placedHistory.Count == 0) return;
@@ -302,7 +302,7 @@ public class Shop_Maneger : MonoBehaviour
             last.t.SetPositionAndRotation(last.pos, last.rot);
         }
 
-        // í—Ş‚²‚Æ‚ÉİŒÉƒCƒ“ƒfƒbƒNƒX‚ğ–ß‚·i‰ºŒÀ•ÛŒìj
+        // ç¨®é¡ã”ã¨ã«åœ¨åº«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æˆ»ã™ï¼ˆä¸‹é™ä¿è­·ï¼‰
         switch (last.tagName)
         {
             case "Fence2":
@@ -340,93 +340,48 @@ public class Shop_Maneger : MonoBehaviour
         if (Button_Canbus != null) Button_Canbus.SetActive(false);
     }
 
-    // ------------------ ‹¤’ÊFİŒÉ”z—ñ‚©‚çİ’uiA: ƒAƒ“ƒJ[‚Ö1‰ñƒXƒiƒbƒvj ------------------
+    // ------------------ å…±é€šï¼šåœ¨åº«é…åˆ—ã‹ã‚‰è¨­ç½®ï¼ˆA: ã‚¢ãƒ³ã‚«ãƒ¼ã¸1å›ã‚¹ãƒŠãƒƒãƒ—ï¼‰ ------------------
+
     private bool TryPlaceFromArray(Transform[] arr, ref int index, string tagNameForHistory)
     {
-        // İŒÉ‚ª‹ó^‘¶İ‚µ‚È‚¢
         if (arr == null || arr.Length == 0)
         {
-            Debug.LogWarning($"[Shop_Maneger] İŒÉ‚ª‚ ‚è‚Ü‚¹‚ñi{tagNameForHistory}j");
+            Debug.LogWarning($"[Shop_Maneger] åœ¨åº«ãŒã‚ã‚Šã¾ã›ã‚“ï¼ˆ{tagNameForHistory}ï¼‰");
             return false;
         }
 
-        // nullİŒÉƒXƒLƒbƒvi˜A‘±null‘Î‰j
         while (index < arr.Length && arr[index] == null) index++;
 
-        // ƒCƒ“ƒfƒbƒNƒX‹«ŠEƒ`ƒFƒbƒN
         if (index >= arr.Length)
         {
-            Debug.Log($"[Shop_Maneger] {tagNameForHistory} ‚ÍİŒÉØ‚ê‚Å‚·");
+            Debug.Log($"[Shop_Maneger] {tagNameForHistory} ã¯åœ¨åº«åˆ‡ã‚Œã§ã™");
             return false;
         }
 
         Transform t = arr[index];
         if (t == null) return false;
 
-        // š İ’u‘O‚Ìó‘Ô‚ğ•ÛiCancel—pj
+        // è¨­ç½®å‰ã®çŠ¶æ…‹ï¼ˆCancelç”¨ï¼‰
         Vector3 prePos = t.position;
         Quaternion preRot = t.rotation;
 
-        // š ‰ñ“]‚ÍŒÅ’èiİ’uŒã‚à preRot ‚Ì‚Ü‚Üj
+        // å›è»¢å›ºå®šæ–¹é‡
         Quaternion originalRotation = preRot;
 
-        // --- savedPositions ‚ª‚ ‚éê‡‚ÍˆÊ’u‚Ì‚İ•œŒ³i‰ñ“]‚ÍˆÛj ---
-        // š ‰ğŒˆˆÄAFg‚Á‚½‚çÁ‚·iŸ‚Ì”z’u‚ªƒAƒ“ƒJ[‚És‚­‚æ‚¤‚É‚·‚éj
-        if (cast != null && cast.savedPositions != null && cast.savedPositions.Count > 0)
-        {
-            int lastIndex = cast.savedPositions.Count - 1;
-            Vector3 lastPos = cast.savedPositions[lastIndex];
-
-            // š‚±‚±‚ª’Ç‰ÁFÁ”ï‚µ‚½ˆÊ’u‚ğíœ
-            cast.savedPositions.RemoveAt(lastIndex);
-
-            t.SetPositionAndRotation(lastPos, originalRotation);
-
-            // ¬Œ÷‚Æ‚µ‚Ä—š—ğ‚ÉÏ‚Şiİ’u‘O‚ÌˆÊ’uE‰ñ“]j
-            placedHistory.Push(new PlacedRecord
-            {
-                t = t,
-                pos = prePos,
-                rot = preRot,
-                tagName = tagNameForHistory
-            });
-
-            CurrentTarget = t;
-            index++;
-            Button_Canbus?.SetActive(true);
-            return true;
-        }
-
-        // --- ‡¬Bounds‚Å’†SE‚‚³”¼•ª‚ğæ“¾i’ê–Ê‚ß‚è‚İ‘Îô‚É—˜—pj ---
-        Bounds worldBounds;
-        if (!TryGetWorldBounds(t, out worldBounds))
-        {
-            // æ“¾‚Å‚«‚È‚¢ê‡‚ÍPivotƒx[ƒX
-            worldBounds = new Bounds(t.position, Vector3.zero);
-        }
-
-        float halfHeight = Mathf.Max(worldBounds.extents.y, 0f);
-        float lift = Mathf.Max(0f, extraLift);
-
-        // š A: ƒAƒ“ƒJ[‚Ö 1 ‰ñƒXƒiƒbƒviƒAƒ“ƒJ[–¢İ’è‚È‚ç HitPoint ‚ÖƒtƒH[ƒ‹ƒoƒbƒNj
+        // âœ… ã‚¢ãƒ³ã‚«ãƒ¼ä½ç½®ã¸ï¼ˆãƒ”ãƒœãƒƒãƒˆä¸€è‡´ï¼‰
         Vector3 basePoint = (cameraAnchor != null) ? cameraAnchor.position : HitPoint;
-        Vector3 upNormal = Vector3.up; // ‰ñ“]ŒÅ’è•ûj‚È‚Ì‚Åƒm[ƒ}ƒ‹‚ÍãŒü‚«‚Åˆµ‚¤
+        t.SetPositionAndRotation(basePoint, originalRotation);
 
-        Vector3 desiredCenterWorld = basePoint + upNormal * (halfHeight + lift);
-        Vector3 currentCenterWorld = worldBounds.center;
-        Vector3 delta = desiredCenterWorld - currentCenterWorld;
+        // å±¥æ­´ï¼ˆCancelã§æˆ»ã™ï¼‰
 
-        // š ˆÊ’u‚Ì‚İXVA‰ñ“]‚Í originalRotation ‚ÉŒÅ’è
-        t.SetPositionAndRotation(t.position + delta, originalRotation);
-
-        // ¬Œ÷‚Æ‚µ‚Ä—š—ğ‚ÉÏ‚Şiİ’u‘O‚ÌˆÊ’uE‰ñ“]j
         placedHistory.Push(new PlacedRecord
         {
             t = t,
-            pos = prePos,    // Cancel‚ÅŒ³ˆÊ’u‚É–ß‚¹‚é
+            pos = prePos,
             rot = preRot,
             tagName = tagNameForHistory
         });
+
 
         CurrentTarget = t;
         index++;
@@ -434,9 +389,11 @@ public class Shop_Maneger : MonoBehaviour
         return true;
     }
 
+    
+
     /// <summary>
-    /// ‘ÎÛTransform”z‰º‚Ì Renderer / Collider ‚©‚ç‡¬Bounds‚ğæ“¾
-    /// ƒ[ƒ‹ƒhAABB‚Æ‚µ‚Ä Encapsulate ‚µ‚Ä‚¢‚«‚Ü‚·
+    /// å¯¾è±¡Transformé…ä¸‹ã® Renderer / Collider ã‹ã‚‰åˆæˆBoundsã‚’å–å¾—
+    /// ãƒ¯ãƒ¼ãƒ«ãƒ‰AABBã¨ã—ã¦ Encapsulate ã—ã¦ã„ãã¾ã™
     /// </summary>
     private static bool TryGetWorldBounds(Transform root, out Bounds bounds)
     {
