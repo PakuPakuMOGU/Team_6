@@ -1,44 +1,54 @@
 
 using UnityEngine;
 
-public class taretto : MonoBehaviour
+public class tarerro : MonoBehaviour
 {
     [Header("対象")]
-    public Transform player;           // プレイヤーのTransform（Inspectorで割当 or 自動取得）
+    public Transform player;
+
 
     [Header("挙動")]
-    public float detectionRadius = 11f; // 反応半径
-    public float rotateSpeed = 8f;     // 回転スピード
-    public bool lockYOnly = true;      // Y軸だけ回転（水平面）
+    public float rotateSpeed = 8f;
+    public bool lockYOnly = true;
 
-    void Start()
-    {
-        // Inspectorで未設定ならタグ"Player"から探す（任意）
-        if (player == null)
-        {
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p) player = p.transform;
-        }
-    }
+    private Transform target;      // 今追いかける対象
+    private bool isInside = false; // コライダー内にいるか
 
     void Update()
     {
-        if (player == null) return;
+        // コライダー内じゃないなら何もしない
+        if (!isInside || target == null) return;
 
-        Vector3 toPlayer = player.position - transform.position;
-        // 範囲チェック
-        if (toPlayer.sqrMagnitude > detectionRadius * detectionRadius) return;
+        Vector3 toTarget = target.position - transform.position;
 
-        if (lockYOnly) toPlayer.y = 0f;
-        if (toPlayer.sqrMagnitude < 0.0001f) return;
+        // 水平だけ向きたい場合（上下無視）
+        if (lockYOnly) toTarget.y = 0f;
 
-        Quaternion targetRot = Quaternion.LookRotation(toPlayer.normalized, Vector3.up);
+        // ほぼ同位置なら回転しない（ゼロ割対策）
+        if (toTarget.sqrMagnitude < 0.0001f) return;
+
+        Quaternion targetRot = Quaternion.LookRotation(toTarget.normalized, Vector3.up);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * rotateSpeed);
     }
 
-    void OnDrawGizmosSelected()
+    private void OnTriggerEnter(Collider other)
     {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        // プレイヤーが入ったら追尾開始
+        if (other.CompareTag("Player"))
+        {
+            target = other.transform;
+            isInside = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        // プレイヤーが出たら追尾停止
+        if (other.CompareTag("Player"))
+        {
+            isInside = false;
+            target = null;
+        }
     }
 }
+
