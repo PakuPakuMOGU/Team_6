@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public class tarerro : MonoBehaviour
+public class taretto : MonoBehaviour
 {
     [Header("対象")]
     public Transform player;
@@ -12,7 +12,7 @@ public class tarerro : MonoBehaviour
     public bool lockYOnly = true;
 
     private Transform target;      // 今追いかける対象
-    private bool isInside = false; // コライダー内にいるか
+    public bool isInside = false; // コライダー内にいるか
 
     void Update()
     {
