@@ -35,6 +35,14 @@ public class EnemyShooter : MonoBehaviour
     public bool debugLogs = false;
     public bool drawGizmos = true;
 
+    [Header("レーザー表示（Gameビュー）")]
+    public bool showLaserInGame = true;
+    public Color laserColor = Color.red;
+    public float laserWidth = 0.02f;
+    public float laserMaxDistance = 50f;
+
+    LineRenderer _laserLine;
+
     Coroutine _loop;
     WaitForSeconds _wait;
 
@@ -56,13 +64,19 @@ public class EnemyShooter : MonoBehaviour
 
     void OnEnable()
     {
+        PrepareLaser();
         _loop = StartCoroutine(ShootLoop());
     }
+
 
     void OnDisable()
     {
         if (_loop != null) StopCoroutine(_loop);
+
+        if (_laserLine != null)       // ★追加
+            _laserLine.enabled = false;
     }
+
 
     IEnumerator ShootLoop()
     {
@@ -173,6 +187,35 @@ public class EnemyShooter : MonoBehaviour
         Destroy(tracer, 0.6f);
     }
 
+    void Update()
+    {
+        UpdateLaser(); // ★ゲーム中に見えるレーザー更新
+    }
+
+    void UpdateLaser()
+    {
+        if (!showLaserInGame) return;
+        if (_laserLine == null || !firePoint) return;
+
+        // ★「isInside true で撃てる時だけ」表示
+        bool can = CanShootNow();
+        _laserLine.enabled = can;
+        if (!can) return;
+
+        Vector3 origin = firePoint.position;
+        Vector3 dir = firePoint.forward;
+
+        Vector3 end = origin + dir * laserMaxDistance;
+
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, laserMaxDistance, hitMask, QueryTriggerInteraction.Ignore))
+        {
+            end = hit.point;
+        }
+
+        _laserLine.SetPosition(0, origin);
+        _laserLine.SetPosition(1, end);
+    }
+
     void OnDrawGizmosSelected()
     {
         if (!drawGizmos) return;
@@ -189,6 +232,51 @@ public class EnemyShooter : MonoBehaviour
             const float gizmoLen = 3f;
             Gizmos.DrawLine(origin, origin + right * gizmoLen);
             Gizmos.DrawLine(origin, origin + left * gizmoLen);
+        }
+    }
+
+    void PrepareLaser()
+    {
+        if (!showLaserInGame) return;
+        if (!firePoint) return;
+
+        if (_laserLine == null)
+        {
+            // tracerPrefabにLineRendererが付いているなら流用できる
+            if (tracerPrefab)
+            {
+                var obj = Instantiate(tracerPrefab, firePoint.position, Quaternion.identity);
+                obj.name = "LaserLineRuntime";
+                obj.transform.SetParent(firePoint, worldPositionStays: true);
+
+                _laserLine = obj.GetComponent<LineRenderer>();
+                if (_laserLine == null)
+                {
+                    _laserLine = obj.AddComponent<LineRenderer>();
+                }
+            }
+            else
+            {
+                var obj = new GameObject("LaserLineRuntime");
+                obj.transform.SetParent(firePoint, worldPositionStays: false);
+                _laserLine = obj.AddComponent<LineRenderer>();
+            }
+
+            // 見た目設定
+            _laserLine.positionCount = 2;
+            _laserLine.startWidth = laserWidth;
+            _laserLine.endWidth = laserWidth;
+
+            // マテリアル（確実に見えるUnlit）
+            var mat = new Material(Shader.Find("Unlit/Color"));
+            mat.color = laserColor;
+            _laserLine.material = mat;
+
+            _laserLine.startColor = laserColor;
+            _laserLine.endColor = laserColor;
+
+            _laserLine.useWorldSpace = true;
+            _laserLine.enabled = false; // 最初はOFF
         }
     }
 }
