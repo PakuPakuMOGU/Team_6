@@ -17,7 +17,6 @@ public class PlayerController : NetworkBehaviour
     public float Xsensitivity = 3f;
     public float Ysensitivity = 3f;
 
-    //private float xRotation = 0f;
     private bool cursorLock = true;
 
     private NetworkCharacterController ncc;
@@ -29,11 +28,6 @@ public class PlayerController : NetworkBehaviour
     {
         ncc = GetComponent<NetworkCharacterController>();
         animator = GetComponent<Animator>();
-
-        if (!Object.HasInputAuthority)
-        {
-           // head.SetActive(false);
-        }
 
         if (Object.HasStateAuthority)
         {
@@ -66,27 +60,15 @@ public class PlayerController : NetworkBehaviour
 
         // 体は補間して追従させて回転.
         body.localRotation = Quaternion.Slerp(
-    body.localRotation,
-    Quaternion.Euler(0, yaw, 0),
-    Time.deltaTime * 10f
-);
+            body.localRotation,
+            Quaternion.Euler(-90, yaw, 0),
+            Time.deltaTime * 10f);
     }
     public override void FixedUpdateNetwork()
     {
         if (!GetInput(out NetworkInputData data))
             return;
 
-        /*
-        // 回転同期.
-        if (Object.HasInputAuthority)
-        {
-            float newY = NetRotation.eulerAngles.y + data.rotation * Xsensitivity; 
-            RPC_SetRotation(Quaternion.Euler(0, newY, 0));
-        }
-        
-
-        transform.rotation = NetRotation;
-        */
         // 移動.
         if (Object.HasStateAuthority)
         {
@@ -94,7 +76,6 @@ public class PlayerController : NetworkBehaviour
             move *= speed;
             ncc.Move(move);
 
-            ncc.Move(move);
             // ジャンプ.
             if (data.jumpPressed)
                 ncc.Jump(data.jumpPressed);
@@ -103,9 +84,6 @@ public class PlayerController : NetworkBehaviour
         // アニメーション.
         if (animator != null)
             animator.SetFloat("speed", data.direction.magnitude);
-
-        // PlayerRoot の回転を固定（常に正面を向かせる）
-        transform.rotation = Quaternion.identity;
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -118,7 +96,5 @@ public class PlayerController : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape)) cursorLock = false;
         else if (Input.GetMouseButton(0)) cursorLock = true;
-
-        //Cursor.lockState = cursorLock ? CursorLockMode.Locked : CursorLockMode.None;
     }
 }
