@@ -20,7 +20,7 @@ public class PlayerController : NetworkBehaviour
     private bool cursorLock = true;
 
     private NetworkCharacterController ncc;
-    private Animator animator;
+    public Animator animator;
 
     [Networked] private Quaternion NetRotation { get; set; }
 
@@ -61,7 +61,7 @@ public class PlayerController : NetworkBehaviour
         // ëÃÇÕï‚ä‘ÇµÇƒí«è]Ç≥ÇπÇƒâÒì].
         body.localRotation = Quaternion.Slerp(
             body.localRotation,
-            Quaternion.Euler(-90, yaw, 0),
+            Quaternion.Euler(-90, yaw, 90),
             Time.deltaTime * 10f);
     }
     public override void FixedUpdateNetwork()
