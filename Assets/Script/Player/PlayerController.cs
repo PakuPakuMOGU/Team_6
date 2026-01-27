@@ -7,11 +7,17 @@ public class PlayerController : NetworkBehaviour
     public float jumpSpeed = 8f;
     public float gravity = 20f;
 
-    public GameObject cam;
+    public Transform viewPivot; // 視点の横回転（ローカル専用）
+    public Transform head;      // 上下回転
+    public Transform body;      // 見た目の体（同期用）
+
+    float pitch = 0f;
+    float yaw = 0f;
+
     public float Xsensitivity = 3f;
     public float Ysensitivity = 3f;
 
-    private float xRotation = 0f;
+    //private float xRotation = 0f;
     private bool cursorLock = true;
 
     private NetworkCharacterController ncc;
@@ -26,7 +32,7 @@ public class PlayerController : NetworkBehaviour
 
         if (!Object.HasInputAuthority)
         {
-            cam.SetActive(false);
+           // head.SetActive(false);
         }
 
         if (Object.HasStateAuthority)
@@ -46,32 +52,47 @@ public class PlayerController : NetworkBehaviour
 
         UpdateCursorLock();
 
-        // カメラ上下回転（ローカルのみ）
-        float mouseY = Input.GetAxis("Mouse Y") * Ysensitivity;
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-    }
+        float mouseX = Input.GetAxisRaw("Mouse X") * Xsensitivity;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * Ysensitivity;
 
+        // 視点の横回転.
+        yaw += mouseX;
+        viewPivot.localRotation = Quaternion.Euler(0, yaw, 0);
+
+        // 上下回転.
+        pitch -= mouseY;
+        pitch = Mathf.Clamp(pitch, -90f, 90f);
+        head.localRotation = Quaternion.Euler(pitch, 0, 0);
+
+        // 体は補間して追従させて回転.
+        body.localRotation = Quaternion.Slerp(
+    body.localRotation,
+    Quaternion.Euler(0, yaw, 0),
+    Time.deltaTime * 10f
+);
+    }
     public override void FixedUpdateNetwork()
     {
         if (!GetInput(out NetworkInputData data))
             return;
 
+        /*
         // 回転同期.
         if (Object.HasInputAuthority)
         {
             float newY = NetRotation.eulerAngles.y + data.rotation * Xsensitivity; 
             RPC_SetRotation(Quaternion.Euler(0, newY, 0));
         }
+        
 
         transform.rotation = NetRotation;
-
+        */
         // 移動.
         if (Object.HasStateAuthority)
         {
-            Vector3 move = new Vector3(data.direction.x, 0, data.direction.y);
-            move = transform.TransformDirection(move) * speed;
+            Vector3 move = viewPivot.TransformDirection(new Vector3(data.direction.x, 0, data.direction.y));
+            move *= speed;
+            ncc.Move(move);
 
             ncc.Move(move);
             // ジャンプ.
@@ -82,6 +103,9 @@ public class PlayerController : NetworkBehaviour
         // アニメーション.
         if (animator != null)
             animator.SetFloat("speed", data.direction.magnitude);
+
+        // PlayerRoot の回転を固定（常に正面を向かせる）
+        transform.rotation = Quaternion.identity;
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
