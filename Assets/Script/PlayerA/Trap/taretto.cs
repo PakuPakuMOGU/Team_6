@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class taretto : MonoBehaviour
@@ -6,25 +5,20 @@ public class taretto : MonoBehaviour
     [Header("対象")]
     public Transform player;
 
-
     [Header("挙動")]
     public float rotateSpeed = 8f;
     public bool lockYOnly = true;
 
-    private Transform target;      // 今追いかける対象
-    public bool isInside = false; // コライダー内にいるか
+    private Transform target;
+    public bool isInside = false; // 監視用（読み取り専用運用を推奨）
+    private int insideCount = 0;  // ★重なりカウント
 
     void Update()
     {
-        // コライダー内じゃないなら何もしない
         if (!isInside || target == null) return;
 
         Vector3 toTarget = target.position - transform.position;
-
-        // 水平だけ向きたい場合（上下無視）
         if (lockYOnly) toTarget.y = 0f;
-
-        // ほぼ同位置なら回転しない（ゼロ割対策）
         if (toTarget.sqrMagnitude < 0.0001f) return;
 
         Quaternion targetRot = Quaternion.LookRotation(toTarget.normalized, Vector3.up);
@@ -33,22 +27,49 @@ public class taretto : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // プレイヤーが入ったら追尾開始
-        if (other.CompareTag("Player"))
+        // ★ ルートで判定（子コライダーでもOKにする）
+        if (other.transform.root.CompareTag("Player"))
         {
-            target = other.transform;
-            isInside = true;
+            insideCount++;
+            if (insideCount == 1) // 最初の進入
+            {
+                target = other.transform.root;
+                isInside = true;
+                // Debug.Log($"[taretto] Enter -> insideCount={insideCount}, isInside=true");
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        // プレイヤーが出たら追尾停止
-        if (other.CompareTag("Player"))
+        if (other.transform.root.CompareTag("Player"))
         {
-            isInside = false;
-            target = null;
+            insideCount = Mathf.Max(0, insideCount - 1);
+            if (insideCount == 0)
+            {
+                isInside = false;
+                target = null;
+                // Debug.Log($"[taretto] Exit -> insideCount={insideCount}, isInside=false");
+            }
+            // else Debug.Log($"[taretto] Exit(partial) -> insideCount={insideCount}");
         }
     }
-}
 
+    // ★ 保険：自分や相手が無効化/破棄された場合でも確実にリセット
+    private void OnDisable()
+    {
+        ResetInsideState();
+    }
+
+    private void OnDestroy()
+    {
+        ResetInsideState();
+    }
+
+    private void ResetInsideState()
+    {
+        insideCount = 0;
+        isInside = false;
+        target = null;
+    }
+}
