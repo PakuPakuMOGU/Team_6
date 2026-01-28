@@ -46,7 +46,7 @@ public class PlayerController : NetworkBehaviour
 
         UpdateCursorLock();
 
-        // カメラ上下回転（ローカルのみ）
+        // カメラ上下回転.
         float mouseY = Input.GetAxis("Mouse Y") * Ysensitivity;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
@@ -57,16 +57,16 @@ public class PlayerController : NetworkBehaviour
     {
         if (!GetInput(out NetworkInputData data))
             return;
-
+        
         // 回転同期.
         if (Object.HasInputAuthority)
         {
             float newY = NetRotation.eulerAngles.y + data.rotation * Xsensitivity; 
             RPC_SetRotation(Quaternion.Euler(0, newY, 0));
         }
-
+        
         transform.rotation = NetRotation;
-
+        
         // 移動.
         if (Object.HasStateAuthority)
         {

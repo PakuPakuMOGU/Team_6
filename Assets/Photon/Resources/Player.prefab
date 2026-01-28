@@ -639,11 +639,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stateAuthorityChangeErrorCorrectionDelta: 0
   gravity: -20
-  jumpImpulse: 8
+  jumpImpulse: 2
   acceleration: 10
   braking: 10
   maxSpeed: 4
-  rotationSpeed: 20
+  rotationSpeed: 0
 --- !u!4 &201370938361342507 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
