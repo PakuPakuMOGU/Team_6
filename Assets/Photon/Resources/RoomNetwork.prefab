@@ -45,6 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d168dbeceec303c4fabdecd9d810f253, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ProtecterId: 0
+  ProtecterPrefab:
+    RawGuidValue: 1af3bb5e5b632c6459ce46b8c43914e7
+  AttackerPrefab:
+    RawGuidValue: d287d9480a4d5b349955e729ae757a17
 --- !u!114 &8333486415759965496
 MonoBehaviour:
   m_ObjectHideFlags: 0

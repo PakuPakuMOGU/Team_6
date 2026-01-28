@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Fusion;
 
-public class Camera : MonoBehaviour
+public class Camera : NetworkBehaviour
 {
     public GameObject cam;
     public float Xsensityvity = 3f; // 上下感度
@@ -19,6 +20,14 @@ public class Camera : MonoBehaviour
 
     void Start()
     {
+        // 自分のキャラ以外はカメラを無効化.
+        if (!Object.HasInputAuthority)
+        {
+            cam.SetActive(false);
+            enabled = false;
+            return;
+        }
+
         // 現在の感度をロード
         Xsensityvity = PlayerPrefs.GetFloat("X_Sensitivity", Xsensityvity);
         Ysensityvity = PlayerPrefs.GetFloat("Y_Sensitivity", Ysensityvity);
@@ -33,6 +42,9 @@ public class Camera : MonoBehaviour
 
     void Update()
     {
+        if (!Object.HasInputAuthority)
+            return;
+
         float mouseX = Input.GetAxis("Mouse X") * Ysensityvity;
         float mouseY = Input.GetAxis("Mouse Y") * Xsensityvity;
 
