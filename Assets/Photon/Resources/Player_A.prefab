@@ -219,7 +219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 4721132177290361946}
+  Maneger: {fileID: 0}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &9109716320291587737
 CanvasRenderer:
@@ -1530,7 +1530,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 775451171480675733}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIButtonNudge, Assembly-CSharp
         m_MethodName: NudgeLeft
         m_Mode: 1
@@ -1542,186 +1542,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!1 &732930225967195410
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4648488693257254062}
-  - component: {fileID: 919892879037420722}
-  - component: {fileID: 4721132177290361946}
-  - component: {fileID: 680910946428028148}
-  - component: {fileID: 775451171480675733}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4648488693257254062
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 732930225967195410}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 874.3522, y: -84.91302, z: -769.0795}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4460259710713159527}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &919892879037420722
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 732930225967195410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IsGlobal: 1
-  priority: 0
-  blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: 858b38ec9e5764244a53c1c95fcf22dd, type: 2}
---- !u!114 &4721132177290361946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 732930225967195410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4eda8a110056ea442a9afa0db2387b95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targets:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  targetIndex: 0
-  targets1:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  targetIndex1: 0
-  targets2:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  targetIndex2: 0
-  targets3:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  targetIndex3: 0
-  targets4:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  targetIndex4: 0
-  targets5:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  targetIndex5: 0
-  targets6:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  targetIndex6: 0
-  targets7:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  targetIndex7: 0
-  cam: {fileID: 6092459845171697142}
-  maxDistance: 27.3
-  alignToNormal: 1
-  extraLift: 0.01
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 64
-  maxSlopeDeg: 45
-  cameraAnchor: {fileID: 1013458043201203672}
-  cast: {fileID: 680910946428028148}
-  Button_Canbus: {fileID: 6061033630735451835}
---- !u!114 &680910946428028148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 732930225967195410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e34326c711026a409f2b0c302def3d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetCamera: {fileID: 6092459845171697142}
-  maxDistance: 100
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  saveObjectOrigin: 1
-  applyTarget: {fileID: 0}
-  applyAsWorldPosition: 1
-  smoothApply: 0
-  smoothSpeed: 8
-  debugLog: 1
-  savedPositions: []
---- !u!114 &775451171480675733
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 732930225967195410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c90104870cd93f45a0b247a31ec0a9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shop: {fileID: 4721132177290361946}
-  overrideTarget: {fileID: 0}
-  moveStep: 0.1
-  useLocalSpace: 0
-  rotateAxis: 1
 --- !u!1 &882268698647638597
 GameObject:
   m_ObjectHideFlags: 0
@@ -2048,7 +1868,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1188598721560400348}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 550, y: 138.5, z: -838}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2284,7 +2104,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 775451171480675733}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIButtonNudge, Assembly-CSharp
         m_MethodName: NudgeDown
         m_Mode: 1
@@ -3185,7 +3005,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 775451171480675733}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIButtonNudge, Assembly-CSharp
         m_MethodName: NudgeRight
         m_Mode: 1
@@ -6379,7 +6199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 4721132177290361946}
+  Maneger: {fileID: 0}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &1140209886534537175
 CanvasRenderer:
@@ -6723,7 +6543,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 775451171480675733}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIButtonNudge, Assembly-CSharp
         m_MethodName: RotateCounterClockwise
         m_Mode: 1
@@ -13285,7 +13105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 4721132177290361946}
+  Maneger: {fileID: 0}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &8981880562292319852
 CanvasRenderer:
@@ -13861,7 +13681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4801e1ed6c9e15547a6d50edbeb3b4ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Maneger: {fileID: 4721132177290361946}
+  Maneger: {fileID: 0}
 --- !u!222 &7617703527832446791
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14009,7 +13829,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 4721132177290361946}
+  Maneger: {fileID: 0}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &5980594537867320963
 CanvasRenderer:
@@ -14308,6 +14128,83 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0.27933443, z: -0.0129728615}
     m_Extent: {x: 0.17133708, y: 0.18852746, z: 0.16667478}
   m_DirtyAABB: 0
+--- !u!1 &5611537758329001280
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 284914679920579476}
+  - component: {fileID: 263332457345155096}
+  m_Layer: 0
+  m_Name: Shop_Maneger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &284914679920579476
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5611537758329001280}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.039790526, y: -0.4200044, z: 7.790023}
+  m_LocalScale: {x: 2.66, y: 2.6600003, z: 2.66}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 4460259710713159527}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &263332457345155096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5611537758329001280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eda8a110056ea442a9afa0db2387b95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targets:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  targetIndex: 0
+  targets1: []
+  targetIndex1: 0
+  targets2: []
+  targetIndex2: 0
+  targets3: []
+  targetIndex3: 0
+  targets4: []
+  targetIndex4: 0
+  targets5: []
+  targetIndex5: 0
+  targets6: []
+  targetIndex6: 0
+  targets7: []
+  targetIndex7: 0
+  cam: {fileID: 6092459845171697142}
+  maxDistance: 100
+  alignToNormal: 0
+  extraLift: 0.01
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 0
+  maxSlopeDeg: 45
+  cameraAnchor: {fileID: 1013458043201203672}
+  cast: {fileID: 8823458585164950014}
+  Button_Canbus: {fileID: 2272245684541787494}
 --- !u!1 &5613613387090611006
 GameObject:
   m_ObjectHideFlags: 0
@@ -14361,7 +14258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 4721132177290361946}
+  Maneger: {fileID: 0}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &5510847990176671110
 CanvasRenderer:
@@ -15360,7 +15257,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 775451171480675733}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIButtonNudge, Assembly-CSharp
         m_MethodName: NudgeUp
         m_Mode: 1
@@ -15774,7 +15671,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 775451171480675733}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIButtonNudge, Assembly-CSharp
         m_MethodName: RotateClockwise
         m_Mode: 1
@@ -15942,7 +15839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b67da59dafeebf45a18e6d2c46a24de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Maneger: {fileID: 4721132177290361946}
+  Maneger: {fileID: 0}
 --- !u!114 &8344523956520537978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16788,7 +16685,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 775451171480675733}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIButtonNudge, Assembly-CSharp
         m_MethodName: NudgeBack
         m_Mode: 1
@@ -16921,7 +16818,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 775451171480675733}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIButtonNudge, Assembly-CSharp
         m_MethodName: NudgeForward
         m_Mode: 1
@@ -19359,7 +19256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 4721132177290361946}
+  Maneger: {fileID: 0}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &2842514300503864884
 CanvasRenderer:
@@ -19635,7 +19532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 4721132177290361946}
+  Maneger: {fileID: 0}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &7815017096855720656
 CanvasRenderer:
@@ -20033,7 +19930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 4721132177290361946}
+  Maneger: {fileID: 0}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &2170478995879583933
 CanvasRenderer:
@@ -20889,6 +20786,7 @@ GameObject:
   - component: {fileID: 6092459845171697142}
   - component: {fileID: 219010156033993996}
   - component: {fileID: 839145242678120895}
+  - component: {fileID: 8823458585164950014}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -20909,7 +20807,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4648488693257254062}
+  - {fileID: 284914679920579476}
   - {fileID: 5417900443635287342}
   - {fileID: 1013458043201203672}
   m_Father: {fileID: 1936474553447646532}
@@ -20994,7 +20892,7 @@ MonoBehaviour:
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
-  m_VolumeTrigger: {fileID: 4648488693257254062}
+  m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
   m_Antialiasing: 0
@@ -21017,6 +20915,30 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &8823458585164950014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8725837919571008975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e34326c711026a409f2b0c302def3d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCamera: {fileID: 6092459845171697142}
+  maxDistance: 100
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  saveObjectOrigin: 1
+  applyTarget: {fileID: 0}
+  applyAsWorldPosition: 1
+  smoothApply: 0
+  smoothSpeed: 8
+  debugLog: 1
+  savedPositions: []
 --- !u!1 &8732111166504392186
 GameObject:
   m_ObjectHideFlags: 0
