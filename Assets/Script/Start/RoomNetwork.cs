@@ -6,8 +6,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class RoomNetwork : NetworkBehaviour
-{
+{ 
+    // 陣営保持用.
+    [Networked] public int ProtecterId { get; set; }
     private Dictionary<PlayerRef, string> _playerFactions = new();
+
+    // 陣営ごとのキャラクタープレハブ.
+    public NetworkPrefabRef ProtecterPrefab;
+    public NetworkPrefabRef AttackerPrefab;
 
     // 陣営選択をサーバーに伝えるRPC.
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
@@ -77,6 +83,8 @@ public class RoomNetwork : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RpcNotifyProtecter(int protecterId)
     {
+        ProtecterId = protecterId;
+
         Debug.Log($"Protecterは {protecterId} に決定しました");
 
         var room = FindObjectOfType<Room>();
@@ -87,7 +95,7 @@ public class RoomNetwork : NetworkBehaviour
 
         if (Runner.IsServer)
         {
-            // 決定陣営のウィンドウを見せるために2秒待ってからシーン遷移.
+            // 2秒後に画面遷移開始.
             StartCoroutine(DelayedSceneLoad(2f));
         }
     }
@@ -97,9 +105,12 @@ public class RoomNetwork : NetworkBehaviour
         yield return new WaitForSeconds(second); // 2秒待つ
         Runner.LoadScene("GameScene");
     }
+
     public override void Spawned()
     {
         Debug.Log("RoomNetwork Spawned");
+
+        DontDestroyOnLoad(gameObject);
 
         var room = FindObjectOfType<Room>();
         if (room != null)

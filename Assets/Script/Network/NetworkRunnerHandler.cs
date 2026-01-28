@@ -8,7 +8,6 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 {
     private NetworkRunner _runner;
 
-    [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private NetworkProjectConfig _newNetworkConfig;
 
     async void Start()
@@ -32,16 +31,40 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer)
+        if (!runner.IsServer)
+            return;
+
+        var roomNetwork = FindObjectOfType<RoomNetwork>();
+        if (roomNetwork == null)
         {
-            Vector3 spawnPos = new Vector3(
+            Debug.LogError("RoomNetwork が見つかりません");
+            return;
+        }
+
+        int protecterId = roomNetwork.ProtecterId;
+
+        // Protecterかどうか.
+        bool isProtecter = false;
+        Debug.Log("playerID = " + player.PlayerId);
+        Debug.Log("protectID = " + protecterId);
+        if (player.PlayerId  == protecterId || (player.PlayerId == 1 && -1 == protecterId))
+            isProtecter = true;
+
+        // 陣営ごとにスポーンプレハブを切り替え.
+        NetworkPrefabRef prefabToSpawn = isProtecter
+            ? roomNetwork.ProtecterPrefab
+            : roomNetwork.AttackerPrefab;
+
+        // スポーン位置も陣営ごとに変える
+        Vector3 spawnPos = isProtecter
+            ? new Vector3(550, 138, -838)
+            : new Vector3(
                 UnityEngine.Random.Range(540f, 550f),
                 121f,
                 UnityEngine.Random.Range(-870f, -860f)
             );
 
-            var obj = runner.Spawn(_playerPrefab, spawnPos, Quaternion.identity, player);
-        }
+        runner.Spawn(prefabToSpawn, spawnPos, Quaternion.identity, player);
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
