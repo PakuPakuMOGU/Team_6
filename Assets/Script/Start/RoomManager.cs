@@ -15,6 +15,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private SceneRef gameScene;
     [SerializeField] private View protecterView;
     [SerializeField] private View attackerView;
+    [SerializeField] private View need2View;
     [SerializeField] private NetworkObject roomNetworkPrefab;
     [SerializeField] private TextMeshPro playerCountText;
 
@@ -135,6 +136,7 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
         if (_runner.ActivePlayers.Count() < 2)
         {
             Debug.Log("プレイヤーが2人未満のため開始できません");
+            need2View.WindowView();
             return;
         }
 
