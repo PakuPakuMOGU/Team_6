@@ -6,8 +6,8 @@ public class Shot : MonoBehaviour
     public UnityEngine.Camera mainCam;
 
 
-    public AudioClip gunshotClip; // 銃声
-    public AudioClip echoClip;    // 反響音など
+    public AudioSource gunshotClip; // 銃声
+    public AudioSource echoClip;    // 反響音など
 
     private AudioSource audioSource;
     private Animator animator;
@@ -34,7 +34,7 @@ public class Shot : MonoBehaviour
             // 🔊 銃声を再生
             if (gunshotClip != null)
             {
-                audioSource.PlayOneShot(gunshotClip);
+                gunshotClip.Play();
             }
 
             Debug.Log("ばーん");
@@ -43,7 +43,6 @@ public class Shot : MonoBehaviour
             animator.SetBool("Shot", true);
             StartCoroutine(ResetShootFlag());
 
-            // ⏱ 反響音を2秒後に再生
             if (echoClip != null)
             {
                 StartCoroutine(PlayDelayedSound(2f, echoClip));
@@ -61,10 +60,10 @@ public class Shot : MonoBehaviour
         }
     }
 
-    IEnumerator PlayDelayedSound(float delay, AudioClip clip)
+    IEnumerator PlayDelayedSound(float delay, AudioSource source)
     {
         yield return new WaitForSeconds(delay);
-        audioSource.PlayOneShot(clip);
+        source.Play();
     }
 
     IEnumerator ResetShootFlag()
