@@ -219,7 +219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 0}
+  Maneger: {fileID: 263332457345155096}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &9109716320291587737
 CanvasRenderer:
@@ -6199,7 +6199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 0}
+  Maneger: {fileID: 263332457345155096}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &1140209886534537175
 CanvasRenderer:
@@ -13105,7 +13105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 0}
+  Maneger: {fileID: 263332457345155096}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &8981880562292319852
 CanvasRenderer:
@@ -13681,7 +13681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4801e1ed6c9e15547a6d50edbeb3b4ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Maneger: {fileID: 0}
+  Maneger: {fileID: 263332457345155096}
 --- !u!222 &7617703527832446791
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -13829,7 +13829,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 0}
+  Maneger: {fileID: 263332457345155096}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &5980594537867320963
 CanvasRenderer:
@@ -14200,11 +14200,11 @@ MonoBehaviour:
   extraLift: 0.01
   groundMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   maxSlopeDeg: 45
   cameraAnchor: {fileID: 1013458043201203672}
   cast: {fileID: 8823458585164950014}
-  Button_Canbus: {fileID: 2272245684541787494}
+  Button_Canbus: {fileID: 6061033630735451835}
 --- !u!1 &5613613387090611006
 GameObject:
   m_ObjectHideFlags: 0
@@ -14258,7 +14258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 0}
+  Maneger: {fileID: 263332457345155096}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &5510847990176671110
 CanvasRenderer:
@@ -14777,7 +14777,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &901914319226097942
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15257,9 +15257,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIButtonNudge, Assembly-CSharp
-        m_MethodName: NudgeUp
+      - m_Target: {fileID: 11500000, guid: 7c90104870cd93f45a0b247a31ec0a9f, type: 3}
+        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15268,7 +15268,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
 --- !u!1 &6279437957806727093
 GameObject:
   m_ObjectHideFlags: 0
@@ -15839,7 +15839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b67da59dafeebf45a18e6d2c46a24de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Maneger: {fileID: 0}
+  Maneger: {fileID: 263332457345155096}
 --- !u!114 &8344523956520537978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19256,7 +19256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 0}
+  Maneger: {fileID: 263332457345155096}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &2842514300503864884
 CanvasRenderer:
@@ -19532,7 +19532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 0}
+  Maneger: {fileID: 263332457345155096}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &7815017096855720656
 CanvasRenderer:
@@ -19627,7 +19627,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 1
+        m_CallState: 2
 --- !u!1 &8088051452744896877
 GameObject:
   m_ObjectHideFlags: 0
@@ -19751,6 +19751,7 @@ GameObject:
   - component: {fileID: 908512134137789948}
   - component: {fileID: 1310350728456761206}
   - component: {fileID: 6191180079746920422}
+  - component: {fileID: 7267804076481929689}
   - component: {fileID: 1829978504896942788}
   - component: {fileID: 2663098854980752427}
   m_Layer: 5
@@ -19817,6 +19818,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7267804076481929689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8125333852199872359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff19534cd26253841aaf330a209c866d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WindowOpen: 1
+  image: {fileID: 365394639146540994}
+  moveDistance: 700
+  moveSpeed: 5
 --- !u!114 &1829978504896942788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19860,7 +19877,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6191180079746920422}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 11500000, guid: ff19534cd26253841aaf330a209c866d, type: 3}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2663098854980752427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19930,7 +19959,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 2663098854980752427}
-  Maneger: {fileID: 0}
+  Maneger: {fileID: 263332457345155096}
   Window_Button: {fileID: 8125333852199872359}
 --- !u!222 &2170478995879583933
 CanvasRenderer:
@@ -20025,7 +20054,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 1
+        m_CallState: 2
 --- !u!1 &8245215103377936678
 GameObject:
   m_ObjectHideFlags: 0

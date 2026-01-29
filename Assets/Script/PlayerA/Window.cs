@@ -6,7 +6,7 @@ public class Window : MonoBehaviour
 
     public bool WindowOpen;
     public GameObject image;
-    public float moveDistance = 100f;   // ã‚ÉˆÚ“®‚·‚é‹——£
+    public float moveDistance = 1f;   // ã‚ÉˆÚ“®‚·‚é‹——£
     public float moveSpeed = 5f;        // ˆÚ“®‘¬“x
 
     private Vector3 originalPosition;
