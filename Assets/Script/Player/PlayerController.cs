@@ -30,6 +30,8 @@ public class PlayerController : NetworkBehaviour
     [Range(0.1f, 2f)]
     public float airJumpMultiplier = 0.8f;
 
+    public GameObject MenuPre;
+
     private float xRotation = 0f;
     private bool cursorLock = true;
 
@@ -91,6 +93,14 @@ public class PlayerController : NetworkBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+
+        if(Input.GetKey(KeyCode.Escape))
+        {
+            /*
+            _runner.Shutdown();
+            SceneManager.LoadScene("StartScene");
+            */
+        }
     }
 
     public override void FixedUpdateNetwork()
