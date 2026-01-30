@@ -53,9 +53,7 @@ public class UIButtonNudge : MonoBehaviour
         var t = ResolveTarget();
         if (t == null) return;
 
-        Vector3 delta = dirUnit * moveStep;
-        if (useLocalSpace) t.localPosition += delta;
-        else t.position += delta;
+        shop.RPC_Nudge(dirUnit, moveStep, useLocalSpace);
     }
 
     private void Rotate(float degrees)
@@ -63,15 +61,6 @@ public class UIButtonNudge : MonoBehaviour
         var t = ResolveTarget();
         if (t == null) return;
 
-        Vector3 axis = Vector3.up;
-        switch (rotateAxis)
-        {
-            case Axis.X: axis = Vector3.right; break;
-            case Axis.Y: axis = Vector3.up; break;
-            case Axis.Z: axis = Vector3.forward; break;
-        }
-
-        var space = useLocalSpace ? Space.Self : Space.World;
-        t.Rotate(axis, degrees, space);
+        shop.RPC_Rotate(degrees, rotateAxis, useLocalSpace);
     }
 }

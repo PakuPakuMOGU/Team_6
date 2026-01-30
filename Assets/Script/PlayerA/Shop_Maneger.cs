@@ -405,7 +405,7 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
         Vector3 pos = (cameraAnchor != null) ? cameraAnchor.position : HitPoint;
         Quaternion rot = t.rotation;
 
-        // ★ Host に配置を依頼
+        // Hostに配置を依頼.
         RPC_RequestPlace(tagName, pos, rot);
 
         index++;
@@ -416,9 +416,51 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
     public void RPC_RequestPlace(string tag, Vector3 pos, Quaternion rot)
     {
         var prefab = GetPrefabByTag(tag);
-        _runner.Spawn(prefab, pos, rot);
+        
+        // Spawnの戻り値を取得.
+        var obj = _runner.Spawn(prefab, pos, rot);
+
+        // 生成したオブジェクトをCurrentTargetに設定.
+        CurrentTarget = obj.transform;
     }
 
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_Nudge(Vector3 dirUnit, float step, bool useLocal)
+    {
+        Debug.Log($"[RPC_Nudge] dir={dirUnit}, step={step}, useLocal={useLocal}, CurrentTarget={CurrentTarget}");
+        if (CurrentTarget == null) return;
+        var delta = dirUnit * step;
+        var nt = CurrentTarget.GetComponent<NetworkTransform>();
+        nt.Teleport(CurrentTarget.position + delta);
+        /*
+        
+        if (useLocal)
+            CurrentTarget.localPosition += delta;
+        else
+            CurrentTarget.position += delta;*/
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_Rotate(float degrees, UIButtonNudge.Axis axisType, bool useLocal)
+    {
+        if (CurrentTarget == null) return;
+
+        var rb = CurrentTarget.GetComponent<Rigidbody>();
+        if (rb == null) return;
+
+        Vector3 axis = Vector3.up;
+        switch (axisType)
+        {
+            case UIButtonNudge.Axis.X: axis = Vector3.right; break;
+            case UIButtonNudge.Axis.Y: axis = Vector3.up; break;
+            case UIButtonNudge.Axis.Z: axis = Vector3.forward; break;
+        }
+
+        Quaternion rot = Quaternion.AngleAxis(degrees, axis);
+
+        rb.MoveRotation(rot * rb.rotation); // ← これが同期される
+    }
 
 
     /// <summary>

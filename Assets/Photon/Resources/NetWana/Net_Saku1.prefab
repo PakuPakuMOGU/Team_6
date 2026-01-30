@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5025976203506676307}
   - component: {fileID: 4082976590943415139}
   - component: {fileID: -8374652117072347263}
+  - component: {fileID: 383243139068790918}
   m_Layer: 0
   m_Name: Net_Saku1
   m_TagString: Untagged
@@ -135,5 +136,23 @@ MonoBehaviour:
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: 383243139068790918}
   ForceRemoteRenderTimeframe: 0
+--- !u!114 &383243139068790918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2800763966502360276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
