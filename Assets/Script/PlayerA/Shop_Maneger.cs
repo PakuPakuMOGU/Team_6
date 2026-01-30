@@ -1,4 +1,6 @@
-﻿
+﻿using Fusion;
+using Fusion.Sockets;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
@@ -9,7 +11,7 @@ using System.Text;
 /// ・なければ cameraAnchor（カメラに付随する空オブジェクト）の位置へ 1 回スナップ
 /// フォールバックとして HitPoint/HitNormal による床合わせも可能
 /// </summary>
-public class Shop_Maneger : MonoBehaviour
+public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
 {
     [Header("在庫柵1")]
     [SerializeField] public Transform[] targets;
@@ -60,6 +62,9 @@ public class Shop_Maneger : MonoBehaviour
     public Vector3 HitPoint { get; private set; }
     public Vector3 HitNormal { get; private set; }
 
+    // ネットワーク.
+    private NetworkRunner _runner;
+
     private struct PlacedRecord
     {
         public Transform t;
@@ -84,9 +89,25 @@ public class Shop_Maneger : MonoBehaviour
 
     void Start()
     {
+        // ネットワーク、Runnerが見つかるまで待機.
+        StartCoroutine(WaitForRunner());
+
         if (Button_Canbus != null) Button_Canbus.SetActive(false);
         CurrentTarget = null;
     }
+    private System.Collections.IEnumerator WaitForRunner()
+    {
+        // Runnerが見つかるまで動作.
+        while (_runner == null)
+        {
+            _runner = FindObjectOfType<NetworkRunner>();
+            yield return null;
+        }
+
+        Debug.Log("[Shop] Runner 発見！Callbacks 登録！");
+        _runner.AddCallbacks(this);
+    }
+
 
     void Update()
     {
@@ -342,54 +363,36 @@ public class Shop_Maneger : MonoBehaviour
 
     // ------------------ 共通：在庫配列から設置（A: アンカーへ1回スナップ） ------------------
 
-    private bool TryPlaceFromArray(Transform[] arr, ref int index, string tagNameForHistory)
+    private bool TryPlaceFromArray(Transform[] arr, ref int index, string tagName)
     {
         if (arr == null || arr.Length == 0)
-        {
-            Debug.LogWarning($"[Shop_Maneger] 在庫がありません（{tagNameForHistory}）");
             return false;
-        }
 
         while (index < arr.Length && arr[index] == null) index++;
-
         if (index >= arr.Length)
-        {
-            Debug.Log($"[Shop_Maneger] {tagNameForHistory} は在庫切れです");
             return false;
-        }
 
         Transform t = arr[index];
         if (t == null) return false;
 
-        // 設置前の状態（Cancel用）
-        Vector3 prePos = t.position;
-        Quaternion preRot = t.rotation;
+        Vector3 pos = (cameraAnchor != null) ? cameraAnchor.position : HitPoint;
+        Quaternion rot = t.rotation;
 
-        // 回転固定方針
-        Quaternion originalRotation = preRot;
+        // ★ Host に配置を依頼
+        RPC_RequestPlace(tagName, pos, rot);
 
-        // ✅ アンカー位置へ（ピボット一致）
-        Vector3 basePoint = (cameraAnchor != null) ? cameraAnchor.position : HitPoint;
-        t.SetPositionAndRotation(basePoint, originalRotation);
-
-        // 履歴（Cancelで戻す）
-
-        placedHistory.Push(new PlacedRecord
-        {
-            t = t,
-            pos = prePos,
-            rot = preRot,
-            tagName = tagNameForHistory
-        });
-
-
-        CurrentTarget = t;
         index++;
-        Button_Canbus?.SetActive(true);
         return true;
     }
 
-    
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_RequestPlace(string tag, Vector3 pos, Quaternion rot)
+    {
+        var prefab = GetPrefabByTag(tag);
+        _runner.Spawn(prefab, pos, rot);
+    }
+
+
 
     /// <summary>
     /// 対象Transform配下の Renderer / Collider から合成Boundsを取得
@@ -432,4 +435,23 @@ public class Shop_Maneger : MonoBehaviour
 
         return initialized;
     }
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
+    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
+    public void OnConnectedToServer(NetworkRunner runner) { }
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
+    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
+    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
+    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, System.ArraySegment<byte> data) { }
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
+    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
+    public void OnSceneLoadStart(NetworkRunner runner) { }
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
+    public void OnSceneLoadDone(NetworkRunner runner) { }
+    public void OnInput(NetworkRunner runner, NetworkInput input) { }
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
 }
