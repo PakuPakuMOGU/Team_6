@@ -299,6 +299,62 @@ PrefabInstance:
       propertyPath: fence1Prefab.RawGuidValue.Array.data[1]
       value: -2308113771704416070
       objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: fence2Prefab.RawGuidValue.Array.data[0]
+      value: -4255784717635380561
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: fence2Prefab.RawGuidValue.Array.data[1]
+      value: 1582053246235288378
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: roboGunPrefab.RawGuidValue.Array.data[0]
+      value: -849731745852039277
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: roboGunPrefab.RawGuidValue.Array.data[1]
+      value: -7174727821665266760
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: landMinePrefab.RawGuidValue.Array.data[0]
+      value: 1508946699373110488
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: landMinePrefab.RawGuidValue.Array.data[1]
+      value: -5944812329383840968
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: roboHandPrefab.RawGuidValue.Array.data[0]
+      value: -6577688446940632740
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: roboHandPrefab.RawGuidValue.Array.data[1]
+      value: 5673979658126091386
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: turretBigPrefab.RawGuidValue.Array.data[0]
+      value: 7242639499708918354
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: turretBigPrefab.RawGuidValue.Array.data[1]
+      value: -7680522020501532264
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: roboSpecialPrefab.RawGuidValue.Array.data[0]
+      value: 2610431789514514444
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: roboSpecialPrefab.RawGuidValue.Array.data[1]
+      value: 8092264036715673768
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: turretSmallPrefab.RawGuidValue.Array.data[0]
+      value: -8915429008865878902
+      objectReference: {fileID: 0}
+    - target: {fileID: 263332457345155096, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
+      propertyPath: turretSmallPrefab.RawGuidValue.Array.data[1]
+      value: -1614987042117412504
+      objectReference: {fileID: 0}
     - target: {fileID: 793083511856594809, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
       propertyPath: window
       value: 
