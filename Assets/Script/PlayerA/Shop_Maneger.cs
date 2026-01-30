@@ -73,24 +73,6 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkPrefabRef turretBigPrefab;
     [SerializeField] private NetworkPrefabRef turretSmallPrefab;
 
-    private NetworkPrefabRef GetPrefabByTag(string tag)
-    {
-        switch (tag)
-        {
-            case "Fence1": return fence1Prefab;
-            case "Fence2": return fence2Prefab;
-            case "Land": return landMinePrefab;
-            case "S_Robo": return roboHandPrefab;
-            case "G_Robo": return roboGunPrefab;
-            case "T_Robo": return roboSpecialPrefab;
-            case "B_Tare": return turretBigPrefab;
-            case "C_Tare": return turretSmallPrefab;
-        }
-
-        Debug.LogError($"[Shop_Manager] 未対応のタグ: {tag}");
-        return default;
-    }
-
     private struct PlacedRecord
     {
         public Transform t;
@@ -132,6 +114,24 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
 
         Debug.Log("[Shop] Runner 発見！Callbacks 登録！");
         _runner.AddCallbacks(this);
+    }
+    // tagからプレハブを取得する.
+    private NetworkPrefabRef GetPrefabByTag(string tag)
+    {
+        switch (tag)
+        {
+            case "Fence1": return fence1Prefab;
+            case "Fence2": return fence2Prefab;
+            case "Land": return landMinePrefab;
+            case "S_Robo": return roboHandPrefab;
+            case "G_Robo": return roboGunPrefab;
+            case "T_Robo": return roboSpecialPrefab;
+            case "B_Tare": return turretBigPrefab;
+            case "C_Tare": return turretSmallPrefab;
+        }
+
+        Debug.LogError($"[Shop_Manager] 未対応のタグ: {tag}");
+        return default;
     }
 
 
@@ -218,6 +218,7 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         if (!placed && Button_Canbus != null) Button_Canbus.SetActive(false);
+        else Button_Canbus.SetActive(true);
     }
 
     // 編集終了（UIを閉じる）
