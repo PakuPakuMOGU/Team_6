@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ProtecterId: 0
   ProtecterPrefab:
-    RawGuidValue: 1af3bb5e5b632c6459ce46b8c43914e7
+    RawGuidValue: 8a7b7b35ab7cdc3478347edac5675724
   AttackerPrefab:
     RawGuidValue: d287d9480a4d5b349955e729ae757a17
 --- !u!114 &8333486415759965496
