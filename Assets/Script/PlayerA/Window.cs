@@ -1,55 +1,61 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class Window : MonoBehaviour
 {
+    public bool WindowOpen { get; private set; }
+    [SerializeField] GameObject image;
+    [SerializeField] float moveDistance = 100f; // UIならピクセル想定にするのがおすすめ
+    [SerializeField] float moveSpeed = 10f;
 
-    public bool WindowOpen;
-    public GameObject image;
-    public float moveDistance = 1f;   // 上に移動する距離
-    public float moveSpeed = 5f;        // 移動速度
+    Vector3 originalPosition;
+    Vector3 openPosition;
+    Vector3 targetPosition;
 
-    private Vector3 originalPosition;
-    private Vector3 targetPosition;
-
-    void Start()
+    void Awake()
     {
+        originalPosition = image.transform.localPosition;
+        openPosition = originalPosition + new Vector3(0, moveDistance, 0);
+        targetPosition = originalPosition;
         WindowOpen = false;
-        originalPosition = image.transform.localPosition; // 初期位置を記録
-        targetPosition = originalPosition;                // 初期ターゲットも同じ
+    }
+
+    public void Open()
+    {
+        WindowOpen = true;
+        image.SetActive(true);
+        targetPosition = openPosition;
+
+      
     }
 
     void Update()
     {
-        // 左クリックされたか判定
-        if (Input.GetMouseButtonDown(0))
-        {
-            // UIボタンが押されたか判定
-            if (EventSystem.current.currentSelectedGameObject != null &&
-                EventSystem.current.currentSelectedGameObject.CompareTag("UIButton"))
-            {
-                ToggleWindow(); // ← ボタン押下時に処理を呼ぶ
-            }
-        }
+        var before = image.transform.localPosition;
 
-        // スムーズに移動
-        image.transform.localPosition = Vector3.Lerp(image.transform.localPosition, targetPosition, Time.deltaTime * moveSpeed);
+        float dt = Time.deltaTime;
+        float step = moveSpeed * dt;
+        float dist = Vector3.Distance(before, targetPosition);
+
+        image.transform.localPosition = Vector3.MoveTowards(before, targetPosition, step);
+
+        // 毎フレーム出すと多いので、変化があった時だけ
+        if ((image.transform.localPosition - before).sqrMagnitude > 0.000001f)
+        {
+         
+        }
     }
 
-    public void ToggleWindow()
+    public void Close()
     {
-        WindowOpen = !WindowOpen;
+        WindowOpen = false;
+        targetPosition = originalPosition;
+        Debug.Log("ウィンドウを閉じました");
+    }
 
-        if (WindowOpen)
-        {
-            image.SetActive(true);
-            targetPosition = originalPosition + new Vector3(0, moveDistance, 0); // 上に移動
-            Debug.Log("ウィンドウを開きました");
-        }
-        else
-        {
-            targetPosition = originalPosition; // 元の位置に戻す
-            Debug.Log("ウィンドウを閉じました");
-        }
+    public void Toggle()
+    {
+       
+        if (WindowOpen) Close();
+        else Open();
     }
 }

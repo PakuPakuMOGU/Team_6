@@ -9,7 +9,7 @@ public class UIButtonNudge : MonoBehaviour
 
     [Header("移動ステップ")]
     [Tooltip("1クリックあたりの移動量（メートル）")]
-    public float moveStep = 80f;
+    public float moveStep = 4f;
 
     [Tooltip("ローカル空間で動かすなら true、ワールドなら false")]
     public bool useLocalSpace =false ;
