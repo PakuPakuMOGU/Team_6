@@ -6,7 +6,7 @@ public class Enemy_HP : MonoBehaviour
 {
     [SerializeField] private int maxHp = 100;
     [SerializeField] private int currentHp;
-    
+
 
 
     private void Awake()
