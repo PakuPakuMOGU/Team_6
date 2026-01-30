@@ -86,29 +86,38 @@ public class Room : MonoBehaviour, INetworkRunnerCallbacks
     {
         Debug.Log($"選択された陣営: {faction}");
 
-        if (_netRoom != null) 
-            _netRoom.RpcSetFaction(faction);
+        if (_netRoom != null)
+        {
+            if (_runner.IsServer)
+            {
+                // ホストは RPC を使わず直接登録
+                _netRoom.SetFactionServer(_runner.LocalPlayer, faction);
+            }
+            else
+            {
+                // クライアントは RPC を使う
+                _netRoom.RpcSetFaction(faction);
+            }
+        }
 
         // 陣営選択画面を閉じる.
         SelectPanelView.WindowClose();
     }
-
     // 振り分けた陣営を表示.
     public void OnFactionAssigned(int protecterId)
     {
-        var localId = _runner.LocalPlayer.PlayerId;
-        Debug.Log($"[OnFactionAssigned] Local={localId}, Protecter={protecterId}");
+        int localStableId = _runner.LocalPlayer.RawEncoded;
 
-        // ホストのprotectedIdが-1になっちゃうから直打ちで合わせた.こんなひどいプログラムを許すな.
-        // IDで陣営を認識してそれぞれの陣営用の画面を表示.
-        if (localId == protecterId || (localId == 1 && -1 == protecterId)) 
+        Debug.Log($"[OnFactionAssigned] LocalStable={localStableId}, Protecter={protecterId}");
+
+        if (localStableId == protecterId)
         {
             Debug.Log("→ この端末は Protecter");
             protecterView.WindowView();
         }
         else
         {
-            Debug.Log("→ この端末は Attacker");  // 両方にAttackerが表示されるときはprotexterIdを疑う.-1かも.
+            Debug.Log("→ この端末は Attacker");
             attackerView.WindowView();
         }
     }

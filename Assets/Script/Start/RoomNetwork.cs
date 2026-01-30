@@ -15,18 +15,38 @@ public class RoomNetwork : NetworkBehaviour
     public NetworkPrefabRef ProtecterPrefab;
     public NetworkPrefabRef AttackerPrefab;
 
+    void Start()
+    {
+        if (Runner.IsServer)
+        {
+            _playerFactions[Runner.LocalPlayer] = "Protecter"; // またはデフォルト
+        }
+    }
+
     // 陣営選択をサーバーに伝えるRPC.
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcSetFaction(string faction, RpcInfo info = default)
     {
-        var player = info.Source; // 送信者のPlayerRefを取得.
-        _playerFactions[player] = faction;
+        var player = info.Source;
 
-        Debug.Log($"{player.PlayerId} が {faction} を希望しました");
+        if (player == PlayerRef.None)
+        {
+            Debug.LogWarning("PlayerRef.None を無視");
+            return;
+        }
+
+        _playerFactions[player] = faction;
     }
-    
-    // ホストが開始ボタンを押したときに呼ぶRPC.
-    // RPC->ネットワーク上など離れたところにある関数を持ってくる.
+
+    private int GetStableID(PlayerRef player)
+    {
+        return player.RawEncoded;
+    }
+    public void SetFactionServer(PlayerRef player, string faction)
+    {
+        _playerFactions[player] = faction;
+        Debug.Log($"[Server] {player.RawEncoded} が {faction} を希望しました");
+    }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcStartFactionSelection()
     {
@@ -77,27 +97,26 @@ public class RoomNetwork : NetworkBehaviour
             Debug.Log($"Protecter希望者複数、ランダムで {chosenProtecter.PlayerId} を選出");
         }
 
-        RpcNotifyProtecter(chosenProtecter.PlayerId);
+        RpcNotifyProtecter(chosenProtecter.RawEncoded);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RpcNotifyProtecter(int protecterId)
     {
+        foreach (var kvp in _playerFactions)
+        {
+            Debug.Log($"Faction登録: Player={kvp.Key.RawEncoded}, Faction={kvp.Value}");
+        }
         ProtecterId = protecterId;
 
         Debug.Log($"Protecterは {protecterId} に決定しました");
 
         var room = FindObjectOfType<Room>();
         if (room != null)
-        {
             room.OnFactionAssigned(protecterId);
-        }
 
         if (Runner.IsServer)
-        {
-            // 2秒後に画面遷移開始.
             StartCoroutine(DelayedSceneLoad(2f));
-        }
     }
 
     private IEnumerator DelayedSceneLoad(float second)

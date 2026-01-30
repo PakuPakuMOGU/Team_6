@@ -1,6 +1,8 @@
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,31 +10,35 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 {
     private NetworkRunner _runner;
 
-    [SerializeField] private NetworkProjectConfig _newNetworkConfig;
-
-    async void Start()
+    void Start()
     {
-        _runner = gameObject.AddComponent<NetworkRunner>();
-        _runner.ProvideInput = true;
-        _runner.AddCallbacks(this);
-
-        var sceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>();
-
-        var result = await _runner.StartGame(new StartGameArgs()
-        {
-            GameMode = GameMode.AutoHostOrClient,
-            SessionName = "TestRoom",
-            SceneManager = sceneManager
-        });
-
-        if (result.Ok)  Debug.Log("部屋参加成功！");
-        else            Debug.LogError($"参加失敗: {result.ShutdownReason}");
+        StartCoroutine(WaitForRunner());
     }
 
-    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+    private System.Collections.IEnumerator WaitForRunner()
     {
+        // Runner が見つかるまで待つ
+        while (_runner == null)
+        {
+            _runner = FindObjectOfType<NetworkRunner>();
+            yield return null;
+        }
+
+        Debug.Log("[RunnerHandler] Runner 発見！Callbacks 登録！");
+        _runner.AddCallbacks(this);
+    }
+
+
+    public void OnSceneLoadDone(NetworkRunner runner)
+    {
+        Debug.Log("ここまでは到達してるよ");
         if (!runner.IsServer)
             return;
+
+        if (SceneManager.GetActiveScene().name != "GameScene")
+            return;
+
+        Debug.Log("[RunnerHandler] SceneLoadDone → 全プレイヤーをスポーン開始");
 
         var roomNetwork = FindObjectOfType<RoomNetwork>();
         if (roomNetwork == null)
@@ -41,30 +47,27 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        int protecterId = roomNetwork.ProtecterId;
+        foreach (var player in runner.ActivePlayers)
+        {
+            int stableId = player.RawEncoded;
+            bool isProtecter = (stableId == roomNetwork.ProtecterId);
 
-        // Protecterかどうか.
-        bool isProtecter = false;
-        Debug.Log("playerID = " + player.PlayerId);
-        Debug.Log("protectID = " + protecterId);
-        if (player.PlayerId  == protecterId || (player.PlayerId == 1 && -1 == protecterId))
-            isProtecter = true;
+            NetworkPrefabRef prefabToSpawn = isProtecter
+                ? roomNetwork.ProtecterPrefab
+                : roomNetwork.AttackerPrefab;
 
-        // 陣営ごとにスポーンプレハブを切り替え.
-        NetworkPrefabRef prefabToSpawn = isProtecter
-            ? roomNetwork.ProtecterPrefab
-            : roomNetwork.AttackerPrefab;
+            Vector3 spawnPos = isProtecter
+                ? new Vector3(550, 138, -838)
+                : new Vector3(
+                    UnityEngine.Random.Range(540f, 550f),
+                    121f,
+                    UnityEngine.Random.Range(-870f, -860f)
+                );
 
-        // スポーン位置も陣営ごとに変える
-        Vector3 spawnPos = isProtecter
-            ? new Vector3(550, 138, -838)
-            : new Vector3(
-                UnityEngine.Random.Range(540f, 550f),
-                121f,
-                UnityEngine.Random.Range(-870f, -860f)
-            );
+            Debug.Log($"[SpawnCheck] Player={stableId}, Protecter={roomNetwork.ProtecterId}, IsProtecter={isProtecter}");
 
-        runner.Spawn(prefabToSpawn, spawnPos, Quaternion.identity, player);
+            runner.Spawn(prefabToSpawn, spawnPos, Quaternion.identity, player);
+        }
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -97,5 +100,5 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
     public void OnSceneLoadStart(NetworkRunner runner) { }
-    public void OnSceneLoadDone(NetworkRunner runner) { }
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
 }
