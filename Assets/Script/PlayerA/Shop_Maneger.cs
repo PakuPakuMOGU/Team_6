@@ -64,6 +64,32 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
 
     // ネットワーク.
     private NetworkRunner _runner;
+    [SerializeField] private NetworkPrefabRef fence1Prefab;
+    [SerializeField] private NetworkPrefabRef fence2Prefab;
+    [SerializeField] private NetworkPrefabRef landMinePrefab;
+    [SerializeField] private NetworkPrefabRef roboHandPrefab;
+    [SerializeField] private NetworkPrefabRef roboGunPrefab;
+    [SerializeField] private NetworkPrefabRef roboSpecialPrefab;
+    [SerializeField] private NetworkPrefabRef turretBigPrefab;
+    [SerializeField] private NetworkPrefabRef turretSmallPrefab;
+
+    private NetworkPrefabRef GetPrefabByTag(string tag)
+    {
+        switch (tag)
+        {
+            case "Fence1": return fence1Prefab;
+            case "Fence2": return fence2Prefab;
+            case "Land": return landMinePrefab;
+            case "S_Robo": return roboHandPrefab;
+            case "G_Robo": return roboGunPrefab;
+            case "T_Robo": return roboSpecialPrefab;
+            case "B_Tare": return turretBigPrefab;
+            case "C_Tare": return turretSmallPrefab;
+        }
+
+        Debug.LogError($"[Shop_Manager] 未対応のタグ: {tag}");
+        return default;
+    }
 
     private struct PlacedRecord
     {
