@@ -8,9 +8,8 @@ public class ClickBreak : MonoBehaviour
     public float finishSpeed = 2f;   // フェードアウトの速さ.
     public float waitTime = 2f;      // 終了までの時間.
 
-    private float timer = 0f;
-    private enum State { FadeIn, Wait, FadeOut, Finish }
-    private State state = State.FadeIn;
+    private enum State { Wait, FadeOut, Finish }
+    private State state = State.Wait;
 
     void Start()
     {

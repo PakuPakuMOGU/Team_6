@@ -100,6 +100,7 @@ public class RoomNetwork : NetworkBehaviour
         RpcNotifyProtecter(chosenProtecter.RawEncoded);
     }
 
+    // ƒQ[ƒ€ƒV[ƒ“‘JˆÚ.
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RpcNotifyProtecter(int protecterId)
     {

@@ -17,7 +17,7 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 
     private System.Collections.IEnumerator WaitForRunner()
     {
-        // Runner が見つかるまで待つ
+        // Runnerが見つかるまで動作.
         while (_runner == null)
         {
             _runner = FindObjectOfType<NetworkRunner>();
@@ -28,7 +28,6 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
         _runner.AddCallbacks(this);
     }
 
-
     public void OnSceneLoadDone(NetworkRunner runner)
     {
         Debug.Log("ここまでは到達してるよ");
@@ -38,7 +37,7 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
         if (SceneManager.GetActiveScene().name != "GameScene")
             return;
 
-        Debug.Log("[RunnerHandler] SceneLoadDone → 全プレイヤーをスポーン開始");
+        Debug.Log("[RunnerHandler] プレイヤースポーン開始");
 
         var roomNetwork = FindObjectOfType<RoomNetwork>();
         if (roomNetwork == null)
@@ -52,10 +51,12 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
             int stableId = player.RawEncoded;
             bool isProtecter = (stableId == roomNetwork.ProtecterId);
 
+            // 陣営ごとにスポーンキャラを変更.
             NetworkPrefabRef prefabToSpawn = isProtecter
                 ? roomNetwork.ProtecterPrefab
                 : roomNetwork.AttackerPrefab;
 
+            // 陣営ごとにスポーン位置を変更.
             Vector3 spawnPos = isProtecter
                 ? new Vector3(550, 138, -838)
                 : new Vector3(
@@ -66,10 +67,12 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 
             Debug.Log($"[SpawnCheck] Player={stableId}, Protecter={roomNetwork.ProtecterId}, IsProtecter={isProtecter}");
 
+            // スポーン.
             runner.Spawn(prefabToSpawn, spawnPos, Quaternion.identity, player);
         }
     }
 
+    // ローカルプレイヤーの入力収集.
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         var data = new NetworkInputData();
@@ -79,6 +82,8 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 
         input.Set(data);
     }
+
+    // シャットダウン通知.
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
         Debug.Log($"Fusion shutdown: {shutdownReason}");
