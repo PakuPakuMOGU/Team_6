@@ -1014,6 +1014,7 @@ GameObject:
   - component: {fileID: 3600860964180997316}
   - component: {fileID: -4135730447082634883}
   - component: {fileID: 6012204149478999349}
+  - component: {fileID: -426402550199932643}
   m_Layer: 0
   m_Name: Net_Gun
   m_TagString: G_Robo
@@ -1177,6 +1178,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6012204149478999349}
+  - {fileID: -426402550199932643}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &6012204149478999349
 MonoBehaviour:
@@ -1195,6 +1197,19 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &-426402550199932643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2769409917255064694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34517ce46542b1c4cbf570f8fa8d3631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _NetRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &2818740566544470851
 GameObject:
   m_ObjectHideFlags: 0

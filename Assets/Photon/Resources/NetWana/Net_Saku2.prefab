@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3855588933145765646}
   - component: {fileID: 5418470273544102664}
   - component: {fileID: -3129545457708668451}
+  - component: {fileID: -2344330219746753845}
   m_Layer: 0
   m_Name: Net_Saku2
   m_TagString: Fence2
@@ -138,6 +139,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: -3129545457708668451}
+  - {fileID: -2344330219746753845}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-3129545457708668451
 MonoBehaviour:
@@ -156,3 +158,16 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &-2344330219746753845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3141634519506781200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34517ce46542b1c4cbf570f8fa8d3631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _NetRotation: {x: 0, y: 0, z: 0, w: 0}

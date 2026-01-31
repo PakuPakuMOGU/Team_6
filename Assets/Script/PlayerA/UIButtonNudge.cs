@@ -58,9 +58,12 @@ public class UIButtonNudge : MonoBehaviour
 
     private void Rotate(float degrees)
     {
+        Debug.Log("Rotate called");
         var t = ResolveTarget();
+        Debug.Log("ResolveTarget = " + t);
+
         if (t == null) return;
 
-        shop.RPC_Rotate(degrees, rotateAxis, useLocalSpace);
+        shop.RPC_Rotate(degrees, (int)rotateAxis, useLocalSpace);
     }
 }
