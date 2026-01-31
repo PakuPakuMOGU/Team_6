@@ -442,15 +442,15 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_Rotate(float degrees, UIButtonNudge.Axis axisType, bool useLocal)
+    public void RPC_Rotate(float degrees, int axisType, bool useLocal)
     {
         if (CurrentTarget == null) return;
 
-        var rb = CurrentTarget.GetComponent<Rigidbody>();
-        if (rb == null) return;
+        var ctrl = CurrentTarget.GetComponent<NetSaku2Controller>();
+        if (ctrl == null) return;
 
         Vector3 axis = Vector3.up;
-        switch (axisType)
+        switch ((UIButtonNudge.Axis)axisType)
         {
             case UIButtonNudge.Axis.X: axis = Vector3.right; break;
             case UIButtonNudge.Axis.Y: axis = Vector3.up; break;
@@ -459,7 +459,7 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
 
         Quaternion rot = Quaternion.AngleAxis(degrees, axis);
 
-        rb.MoveRotation(rot * rb.rotation); // ← これが同期される
+        ctrl.NetRotation = rot * ctrl.NetRotation;
     }
 
 

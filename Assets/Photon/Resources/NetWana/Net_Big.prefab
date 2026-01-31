@@ -1021,6 +1021,7 @@ GameObject:
   - component: {fileID: 8015024861294013229}
   - component: {fileID: -2796530184422236883}
   - component: {fileID: -2407954387331348373}
+  - component: {fileID: -7769138272521753167}
   m_Layer: 0
   m_Name: Net_Big
   m_TagString: B_Tare
@@ -1090,6 +1091,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: -2407954387331348373}
+  - {fileID: -7769138272521753167}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-2407954387331348373
 MonoBehaviour:
@@ -1108,6 +1110,19 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &-7769138272521753167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5392098193237980554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34517ce46542b1c4cbf570f8fa8d3631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _NetRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &7582646032633116956
 GameObject:
   m_ObjectHideFlags: 0

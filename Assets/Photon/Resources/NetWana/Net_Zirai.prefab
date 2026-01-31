@@ -4896,6 +4896,7 @@ GameObject:
   - component: {fileID: 3103716342057565514}
   - component: {fileID: 5664199788358038943}
   - component: {fileID: 1334831491335853717}
+  - component: {fileID: 4570114838186986810}
   m_Layer: 0
   m_Name: Net_Zirai
   m_TagString: Land
@@ -5069,6 +5070,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 1334831491335853717}
+  - {fileID: 4570114838186986810}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &1334831491335853717
 MonoBehaviour:
@@ -5087,3 +5089,16 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &4570114838186986810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7584221204701083633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34517ce46542b1c4cbf570f8fa8d3631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _NetRotation: {x: 0, y: 0, z: 0, w: 0}
