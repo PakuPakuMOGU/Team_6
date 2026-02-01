@@ -1,5 +1,7 @@
 using Fusion;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 
 public class PlayerController : NetworkBehaviour
 {
@@ -10,6 +12,9 @@ public class PlayerController : NetworkBehaviour
     public GameObject cam;
     public float Xsensitivity = 3f;
     public float Ysensitivity = 3f;
+
+    private View menuView;
+    private SetActiveOnly setAc;
 
     [Header("Jump Limit Settings (No IsGrounded)")]
     [Tooltip("ジャンプのクールダウン（秒）")]
@@ -51,6 +56,16 @@ public class PlayerController : NetworkBehaviour
     private float yStableTime;
     private bool landed;
 
+    private void Awake()
+    {
+        // メニュー関連のスクリプトを読み込む.
+        if (menuView == null)
+            menuView = GameObject.Find("MenuView").GetComponent<View>();
+
+        if (setAc == null)
+            setAc = FindObjectOfType<SetActiveOnly>();
+    }
+
     public override void Spawned()
     {
         ncc = GetComponent<NetworkCharacterController>();
@@ -81,6 +96,10 @@ public class PlayerController : NetworkBehaviour
     {
         if (animator != null)
             animator.SetBool("Attack", false);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        cursorLock = true;
     }
 
     void Update()
@@ -95,13 +114,17 @@ public class PlayerController : NetworkBehaviour
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
-        if(Input.GetKey(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            /*
-            _runner.Shutdown();
-            SceneManager.LoadScene("StartScene");
-            */
+            OpenMenu();
         }
+    }
+
+    public void OpenMenu()
+    {
+        menuView.WindowView();
+        setAc.OpenAfter(1f);
+        cursorLock = false;
     }
 
     public override void FixedUpdateNetwork()
@@ -192,7 +215,10 @@ public class PlayerController : NetworkBehaviour
 
         // アニメーション.
         if (animator != null)
-            animator.SetFloat("speed", data.direction.magnitude);
+        {
+            float spd = data.direction.magnitude;
+            animator.SetFloat("speed", spd, 0.1f, Runner.DeltaTime);
+        }
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -204,6 +230,12 @@ public class PlayerController : NetworkBehaviour
     // カーソルの非表示化、固定化.
     void UpdateCursorLock()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            // UI をクリックしている → ロックしない
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
             cursorLock = false;
         else if (Input.GetMouseButtonDown(0))
