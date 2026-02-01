@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 {
     private NetworkRunner _runner;
+    private float accumulatedYaw = 0f;
 
     void Start()
     {
@@ -76,9 +77,19 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         var data = new NetworkInputData();
-        data.direction = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
+        data.direction = new Vector2(
+            Input.GetAxis("Horizontal"),
+            Input.GetAxis("Vertical")
+        );
+
+        // ジャンプ.
         data.jumpPressed = Input.GetKey(KeyCode.Space);
-        data.rotation = Input.GetAxis("Mouse X");
+
+        // マウスの移動量累積.
+        float mouseX = Input.GetAxis("Mouse X");
+        accumulatedYaw += mouseX;
+        data.yaw = accumulatedYaw;
 
         input.Set(data);
     }

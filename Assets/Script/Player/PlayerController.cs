@@ -35,6 +35,7 @@ public class PlayerController : NetworkBehaviour
     private float xRotation = 0f;
     private bool cursorLock = true;
 
+    private float accumulatedYaw = 0f;
     private NetworkCharacterController ncc;
     private Animator animator;
 
@@ -108,15 +109,11 @@ public class PlayerController : NetworkBehaviour
         if (!GetInput(out NetworkInputData data))
             return;
 
-        // 入力権限：ヨー回転をサーバへ
-        if (Object.HasInputAuthority)
+        // StateAuthority が回転を適用
+        if (Object.HasStateAuthority)
         {
-            float newY = NetRotation.eulerAngles.y + data.rotation * Xsensitivity;
-            RPC_SetRotation(Quaternion.Euler(0, newY, 0));
+            transform.rotation = Quaternion.Euler(0, data.yaw, 0);
         }
-
-        // 見た目の向き同期
-        transform.rotation = NetRotation;
 
         if (Object.HasStateAuthority)
         {
@@ -124,7 +121,7 @@ public class PlayerController : NetworkBehaviour
 
             // ---- 移動（Transform に依存しない方向変換）----
             Vector3 localInput = new Vector3(data.direction.x, 0f, data.direction.y);
-            Quaternion yaw = Quaternion.Euler(0f, NetRotation.eulerAngles.y, 0f);
+            Quaternion yaw = Quaternion.Euler(0f, data.yaw, 0f);
             Vector3 worldMove = yaw * localInput * speed;
             ncc.Move(worldMove);
 
@@ -180,20 +177,20 @@ public class PlayerController : NetworkBehaviour
                 v.y = appliedVelocity;
                 ncc.Velocity = v;
 
-                // クールダウン等の更新
+                // クールダウン更新.
                 NextJumpAllowedTime = now + jumpCooldown;
 
-                // バッファ消費
+                // バッファ消費.
                 LastJumpBufferTime = -999f;
 
-                // 離陸状態に遷移
+                // 離陸状態に遷移.
                 landed = false;
                 yStableTime = 0f;
                 JumpsSinceTakeoff++;
             }
         }
 
-        // アニメーション
+        // アニメーション.
         if (animator != null)
             animator.SetFloat("speed", data.direction.magnitude);
     }
@@ -204,6 +201,7 @@ public class PlayerController : NetworkBehaviour
         NetRotation = rot;
     }
 
+    // カーソルの非表示化、固定化.
     void UpdateCursorLock()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
