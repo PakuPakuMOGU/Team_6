@@ -15,8 +15,6 @@ public class Menu : MonoBehaviour
         audioMixer.SetFloat("Master", master);
         masterSlider.value = master;
 
-        // ‰Šú’l.
-
         audioMixer.GetFloat("BGM", out float bgm);
         bgmSlider.value = bgm;
 

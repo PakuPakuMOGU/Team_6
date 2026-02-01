@@ -230,11 +230,8 @@ public class PlayerController : NetworkBehaviour
     // カーソルの非表示化、固定化.
     void UpdateCursorLock()
     {
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            // UI をクリックしている → ロックしない
-            return;
-        }
+        // UI をクリックしている場合ロックしない.
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
             cursorLock = false;
