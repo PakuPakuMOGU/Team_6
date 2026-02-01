@@ -206,8 +206,20 @@ public class PlayerController : NetworkBehaviour
 
     void UpdateCursorLock()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) cursorLock = false;
-        else if (Input.GetMouseButton(0)) cursorLock = true;
-        // Cursor.lockState = cursorLock ? CursorLockMode.Locked : CursorLockMode.None;
+        if (Input.GetKeyDown(KeyCode.Escape))
+            cursorLock = false;
+        else if (Input.GetMouseButtonDown(0))
+            cursorLock = true;
+
+        if (cursorLock)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 }
