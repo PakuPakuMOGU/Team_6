@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Fusion;
+using UnityEngine.EventSystems;
 
 public class Camera : NetworkBehaviour
 {
@@ -17,6 +18,19 @@ public class Camera : NetworkBehaviour
 
     // 上下回転の制限
     float minX = -90f, maxX = 90f;
+
+    private View menuView;
+    private SetActiveOnly setAc;
+
+    private void Awake()
+    {
+        // メニュー関連のスクリプトを読み込む.
+        if (menuView == null)
+            menuView = GameObject.Find("MenuView").GetComponent<View>();
+
+        if (setAc == null)
+            setAc = FindObjectOfType<SetActiveOnly>();
+    }
 
     void Start()
     {
@@ -42,6 +56,10 @@ public class Camera : NetworkBehaviour
 
     void Update()
     {
+        Cursor.lockState = CursorLockMode.None;
+        if (Input.GetMouseButtonDown(0))
+            Cursor.lockState = CursorLockMode.None;
+
         if (!Object.HasInputAuthority)
             return;
 
@@ -57,8 +75,17 @@ public class Camera : NetworkBehaviour
         transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            OpenMenu();
+        }
     }
 
+    public void OpenMenu()
+    {
+        menuView.WindowView();
+        setAc.OpenAfter(1f);
+    }
 
     // 上下の回転を制限する関数
     Quaternion ClampRotation(Quaternion q)
