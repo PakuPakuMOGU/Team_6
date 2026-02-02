@@ -441,6 +441,7 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
             CurrentTarget.position += delta;*/
     }
 
+    // オブジェクトの回転.
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_Rotate(float degrees, int axisType, bool useLocal)
     {
@@ -449,19 +450,23 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
         var ctrl = CurrentTarget.GetComponent<NetSaku2Controller>();
         if (ctrl == null) return;
 
-        Vector3 axis = Vector3.up;
-        switch ((UIButtonNudge.Axis)axisType)
+        Vector3 axis = axisType switch
         {
-            case UIButtonNudge.Axis.X: axis = Vector3.right; break;
-            case UIButtonNudge.Axis.Y: axis = Vector3.up; break;
-            case UIButtonNudge.Axis.Z: axis = Vector3.forward; break;
-        }
+            (int)UIButtonNudge.Axis.X => Vector3.right,
+            (int)UIButtonNudge.Axis.Y => Vector3.up,
+            (int)UIButtonNudge.Axis.Z => Vector3.forward,
+            _ => Vector3.up
+        };
 
         Quaternion rot = Quaternion.AngleAxis(degrees, axis);
+        Quaternion current = CurrentTarget.rotation;
 
-        ctrl.NetRotation = rot * ctrl.NetRotation;
+        Quaternion newRot = useLocal
+            ? current * rot
+            : rot * current;
+
+        ctrl.NetRotation = newRot;
     }
-
 
     /// <summary>
     /// 対象Transform配下の Renderer / Collider から合成Boundsを取得
