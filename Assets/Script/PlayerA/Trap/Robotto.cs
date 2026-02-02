@@ -1,8 +1,9 @@
-﻿
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Robotto : MonoBehaviour
+public class Robotto_Move : MonoBehaviour
 {
     [Header("参照")]
     [SerializeField] private Transform player;
@@ -19,6 +20,10 @@ public class Robotto : MonoBehaviour
     [Header("攻撃制御")]
     [SerializeField] private float attackCooldown = 1.0f;
     [SerializeField] private bool stopWhileAttacking = false;
+
+    [Header("攻撃許可（Trigger判定）")]
+    [SerializeField] public bool attackAllowed = false;         // Triggerに入ったらtrue
+    [SerializeField] private string playerTag = "Player";        // プレイヤーのTag
 
     private Animator anim;
     private bool chaseFlag = false;
@@ -91,21 +96,47 @@ public class Robotto : MonoBehaviour
         // 走り/待機ブレンド
         anim.SetFloat("Speed", currentSpeed, 0.1f, Time.deltaTime);
 
-        // 攻撃条件：距離内 + クールダウン
-        if (chaseFlag && dist <= attackRange)
+        // ----------------------------
+        // 攻撃条件：Triggerで許可 + 距離で実射程 + クールダウン
+        // ----------------------------
+        if (attackAllowed && chaseFlag && dist <= attackRange)
         {
-            if (Time.time - lastAttackTime >= attackCooldown)
+            if (!anim.GetBool("Attack") && Time.time - lastAttackTime >= attackCooldown)
             {
-                anim.SetBool("Attack", true); // Bool 運用
+                anim.SetBool("Attack", true);
                 lastAttackTime = Time.time;
             }
         }
 
-        // 解除：時間ベース（クリップ長に合わせて延長）
-        // 例：0.8秒（攻撃クリップが1秒弱ならこれくらい）
+        // 解除：時間ベース（アニメイベントがあるなら保険程度でOK）
+        // 例：0.8秒（攻撃クリップ長に合わせて調整）
         if (Time.time - lastAttackTime >= 0.8f)
         {
             anim.SetBool("Attack", false);
+        }
+    }
+
+    // ----------------------------
+    // Triggerで攻撃許可をON/OFF
+    // ※プレイヤーにTagを付ける、または root 判定にする
+    // ----------------------------
+    private void OnTriggerEnter(Collider other)
+    {
+        // 子コライダー対策：rootでTag判定
+        if (other.transform.root.CompareTag(playerTag))
+        {
+            attackAllowed = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.transform.root.CompareTag(playerTag))
+        {
+            attackAllowed = false;
+
+            // 「範囲外に出たら攻撃を強制停止」したいなら有効化
+            // anim.SetBool("Attack", false);
         }
     }
 
@@ -115,7 +146,7 @@ public class Robotto : MonoBehaviour
         // ダメージ処理等は別スクリプトへ
     }
 
-    // アニメーションイベント（終わり）… こちらを使うなら、上の時間解除は保険でOK
+    // アニメーションイベント（終わり）
     public void AE_AttackEnd()
     {
         anim.SetBool("Attack", false);
@@ -127,7 +158,7 @@ public class Robotto : MonoBehaviour
         StartCoroutine(HitStop(duration));
     }
 
-    private System.Collections.IEnumerator HitStop(float duration)
+    private IEnumerator HitStop(float duration)
     {
         bool prevAttack = anim.GetBool("Attack");
         anim.SetBool("Attack", true);
