@@ -424,7 +424,6 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
         CurrentTarget = obj.transform;
     }
 
-
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_Nudge(Vector3 dirUnit, float step, bool useLocal)
     {
@@ -433,12 +432,6 @@ public class Shop_Maneger : MonoBehaviour, INetworkRunnerCallbacks
         var delta = dirUnit * step;
         var nt = CurrentTarget.GetComponent<NetworkTransform>();
         nt.Teleport(CurrentTarget.position + delta);
-        /*
-        
-        if (useLocal)
-            CurrentTarget.localPosition += delta;
-        else
-            CurrentTarget.position += delta;*/
     }
 
     // オブジェクトの回転.
