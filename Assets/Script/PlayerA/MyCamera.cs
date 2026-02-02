@@ -56,9 +56,9 @@ public class Camera : NetworkBehaviour
 
     void Update()
     {
-        Cursor.lockState = CursorLockMode.None;
-        if (Input.GetMouseButtonDown(0))
-            Cursor.lockState = CursorLockMode.None;
+        //Cursor.lockState = CursorLockMode.None;
+        //if (Input.GetMouseButtonDown(0))
+        //    Cursor.lockState = CursorLockMode.None;
 
         if (!Object.HasInputAuthority)
             return;

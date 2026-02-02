@@ -38,7 +38,7 @@ public class PlayerController : NetworkBehaviour
     public GameObject MenuPre;
 
     private float xRotation = 0f;
-    private bool cursorLock = true;
+    //private bool cursorLock = true;
 
     private float accumulatedYaw = 0f;
     private NetworkCharacterController ncc;
@@ -97,16 +97,16 @@ public class PlayerController : NetworkBehaviour
         if (animator != null)
             animator.SetBool("Attack", false);
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        cursorLock = true;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        //cursorLock = true;
     }
 
     void Update()
     {
         if (!Object.HasInputAuthority) return;
 
-        UpdateCursorLock();
+        //UpdateCursorLock();
 
         // カメラ上下回転（ピッチ）
         float mouseY = Input.GetAxis("Mouse Y") * Ysensitivity;
@@ -124,7 +124,7 @@ public class PlayerController : NetworkBehaviour
     {
         menuView.WindowView();
         setAc.OpenAfter(1f);
-        cursorLock = false;
+        //cursorLock = false;
     }
 
     public override void FixedUpdateNetwork()
@@ -226,7 +226,7 @@ public class PlayerController : NetworkBehaviour
     {
         NetRotation = rot;
     }
-
+    /*
     // カーソルの非表示化、固定化.
     void UpdateCursorLock()
     {
@@ -248,5 +248,5 @@ public class PlayerController : NetworkBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-    }
+    }*/
 }
