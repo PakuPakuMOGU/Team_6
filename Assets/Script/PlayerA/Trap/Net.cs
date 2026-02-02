@@ -11,6 +11,9 @@ public class NetSaku2Controller : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        transform.rotation = NetRotation;
+        if (Object.HasStateAuthority)
+        {
+            transform.rotation = NetRotation;
+        }
     }
 }
