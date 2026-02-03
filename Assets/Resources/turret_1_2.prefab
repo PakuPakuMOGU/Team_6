@@ -1081,7 +1081,6 @@ GameObject:
   - component: {fileID: 1327932562470029498}
   - component: {fileID: 140859465833050123}
   - component: {fileID: 7257067453583538898}
-  - component: {fileID: 7152947595456889147}
   - component: {fileID: 8832361115792531337}
   - component: {fileID: 5995181708267065915}
   m_Layer: 0
@@ -1157,37 +1156,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7152947595456889147
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7582646032633116956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 137391814a2714740a2e79f157606e1a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  firePoint: {fileID: 1327932562470029498}
-  player: {fileID: 201370938361342507, guid: d287d9480a4d5b349955e729ae757a17, type: 3}
-  gate: {fileID: 7481548543396039245}
-  allowShootWhenGateMissing: 0
-  requireLineOfSight: 0
-  viewHalfAngle: 0
-  shootInterval: 1
-  damage: 10
-  hitMask:
-    serializedVersion: 2
-    m_Bits: 1
-  hitImpactPrefab: {fileID: 0}
-  tracerPrefab: {fileID: 0}
-  debugLogs: 0
-  drawGizmos: 1
-  showLaserInGame: 1
-  laserColor: {r: 1, g: 0, b: 0, a: 1}
-  laserWidth: 0.02
-  laserMaxDistance: 50
 --- !u!65 &8832361115792531337
 BoxCollider:
   m_ObjectHideFlags: 0
