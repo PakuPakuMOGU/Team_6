@@ -1,0 +1,369 @@
+diff a/Assets/Script/PlayerA/Trap/EnemyShotter.cs b/Assets/Script/PlayerA/Trap/EnemyShotter.cs	(rejected hunks)
+@@ -1,282 +0,131 @@
+-
+ using UnityEngine;
+-using System.Collections;
+ 
+-/// <summary>
+-/// ���X�N���v�g(tatetto)�� bool(isInside) �� true �̎������A�e���O���ɂ܂����� Ray ����B
+-/// </summary>
+-public class EnemyShooter : MonoBehaviour
++[RequireComponent(typeof(Animator))]
++public class Robotto : MonoBehaviour
+ {
+     [Header("�Q��")]
+-    public Transform firePoint;
+-    public Transform player;
+-
+-    [Header("�U�����i���X�N���v�g��bool�����j")]
+-    [Tooltip("taretto �X�N���v�g�iisInside ������Ă���j������ɓ����")]
+-    public taretto gate;   // �� tatetto �ւ̎Q�Ɓi�ϐ����� gate �Ȃǂ�������₷���j
++    [SerializeField] private Transform player;
+ 
+-    [Tooltip("gate �����ݒ�ł���Ă�悤�ɂ���i�f�o�b�O�p�j�B�ʏ�� false ����")]
+-    public bool allowShootWhenGateMissing = false;
++    [Header("���m�E�����ݒ�")]
++    [SerializeField] private float detectRadius = 8.0f;
++    [SerializeField] private float stopDistance = 3.5f;   // �U���������傫��
++    [SerializeField] private float attackRange = 2.8f;    // stopDistance ��菬����
+ 
+-    [Header("���C���")]
+-    public bool requireLineOfSight = false;
+-    [Range(0f, 180f)] public float viewHalfAngle = 0f;
++    [Header("�ړ��E��]�i�����Ȃ��j")]
++    [SerializeField] private float moveSpeed = 3.5f;
++    [SerializeField] private float rotateSpeedDegPerSec = 600f;
+ 
+-    [Header("�ˌ��ݒ�")]
+-    public float shootInterval = 0.2f;
+-    public int damage = 10;
+-    public LayerMask hitMask;
++    [Header("�U������")]
++    [SerializeField] private float attackCooldown = 1.0f;
++    [SerializeField] private bool stopWhileAttacking = false;
+ 
+-    [Header("VFX�i�C�Ӂj")]
+-    public GameObject hitImpactPrefab;
+-    public GameObject tracerPrefab;
++    [Header("�O������i���X�N���v�g����U�������/�֎~�j")]
++    [SerializeField] private bool externalAttackAllowed = true;
+ 
+-    [Header("�f�o�b�O")]
+-    public bool debugLogs = false;
+-    public bool drawGizmos = true;
++    /// <summary>
++    /// �O���i���X�N���v�g�j����U���ۂ�ON/OFF�ł���X�C�b�`
++    /// </summary>
++    public bool ExternalAttackAllowed
++    {
++        get => externalAttackAllowed;
++        set => externalAttackAllowed = value;
++    }
+ 
+-    [Header("���[�U�[�\���iGame�r���[�j")]
+-    public bool showLaserInGame = true;
+-    public Color laserColor = Color.red;
+-    public float laserWidth = 0.02f;
+-    public float laserMaxDistance = 50f;
++    /// <summary>
++    /// �������i�����E�N�[���_�E�����j�{�O������܂߂��ŏI�I�ȍU����
++    /// ���X�N���v�g����Q�Ɨp�i�ǂݎ���p�j
++    /// </summary>
++    public bool CanAttack { get; private set; }
+ 
+-    LineRenderer _laserLine;
++    /// <summary>
++    /// ���ݍU�����[�V���������iAnimator��Attack Bool�j
++    /// </summary>
++    public bool IsAttacking => anim != null && anim.GetBool("Attack");
+ 
+-    Coroutine _loop;
+-    WaitForSeconds _wait;
++    private Animator anim;
++    private bool chaseFlag = false;
++    private float currentSpeed = 0f;
++    private float lastAttackTime = -999f;
+ 
+     void Awake()
+     {
+-        if (!player)
+-        {
+-            var p = GameObject.FindWithTag("Player");
+-            if (p) player = p.transform;
+-        }
+-
+-        if (!firePoint) firePoint = transform;
+-
+-        // gate �����w��Ȃ瓯���I�u�W�F�N�g����T���i�֗��j
+-        if (!gate) gate = GetComponent<taretto>();
+-
+-        _wait = new WaitForSeconds(shootInterval);
++        anim = GetComponent<Animator>();
++        anim.applyRootMotion = false;
+     }
+ 
+-    void OnEnable()
++    void Start()
+     {
+-        PrepareLaser();
+-        _loop = StartCoroutine(ShootLoop());
+-    }
++        if (!player)
++            Debug.LogWarning("[Robotto] player �������蓖�Ăł��B�C���X�y�N�^�Őݒ肵�Ă��������B");
+ 
++        // Animator ���� "Attack"(Bool) �� "Speed"(Float) ������O��
++        anim.SetBool("Attack", false);
++        currentSpeed = 0f;
+ 
+-    void OnDisable()
+-    {
+-        if (_loop != null) StopCoroutine(_loop);
+-
+-        if (_laserLine != null)       // ���ǉ�
+-            _laserLine.enabled = false;
++        // �l�̐������`�F�b�N�i�K�v�Ȃ� OnValidate �Ɉڍs�j
++        if (attackRange >= stopDistance)
++            Debug.LogWarning("[Robotto] attackRange �� stopDistance ��菬�������Ă��������B");
+     }
+ 
+-
+-    IEnumerator ShootLoop()
++    void Update()
+     {
+-        while (true)
+-        {
+-            if (CanShootNow())
+-            {
+-                ShootForward();
+-            }
+-            yield return _wait;
+-        }
+-    }
++        if (!player) return;
+ 
+-    // �� p ������Đ����� bool ����n�߂�
+-    bool CanShootNow()
+-    {
+-        if (!player || !firePoint) return false;
++        // ���������݂̂ŋ����ƌ���
++        Vector3 toPlayer = player.position - transform.position;
++        toPlayer.y = 0f;
++        float dist = toPlayer.magnitude;
+ 
+-        // �� ���X�N���v�g�� bool �� true �̎������U���\
+-        if (gate != null)
+-        {
+-            if (!gate.isInside) return false;   // �� tatetto �� isInside ��Q��
+-        }
+-        else
+-        {
+-            // gate ���ݒ肳��ĂȂ��ꍇ�̋���
+-            if (!allowShootWhenGateMissing) return false;
+-        }
++        // �ǐՃt���O
++        chaseFlag = (dist <= detectRadius);
+ 
+-        // ����`�F�b�N�i�C�Ӂj
+-        if (viewHalfAngle > 0f)
++        // ��������킹��
++        if (chaseFlag && toPlayer.sqrMagnitude > 1e-6f)
+         {
+-            Vector3 toPlayer = player.position - transform.position;
+-
+-            Vector3 fwd = transform.forward; fwd.y = 0f;
+-            Vector3 toP = toPlayer; toP.y = 0f;
+-
+-            if (toP.sqrMagnitude > 0.0001f)
+-            {
+-                float ang = Vector3.Angle(fwd.normalized, toP.normalized);
+-                if (ang > viewHalfAngle) return false;
+-            }
++            Quaternion targetRot = Quaternion.LookRotation(toPlayer, Vector3.up);
++            transform.rotation = Quaternion.RotateTowards(
++                transform.rotation, targetRot, rotateSpeedDegPerSec * Time.deltaTime);
+         }
+ 
+-        // �����`�F�b�N�i�C�Ӂj
+-        if (requireLineOfSight && !HasLineOfSight()) return false;
+-
+-        return true;
+-    }
+-
+-    bool HasLineOfSight()
+-    {
+-        Vector3 origin = firePoint.position;
+-        Vector3 dirToPlayer = (player.position - origin).normalized;
+-
+-        if (Physics.Raycast(origin, dirToPlayer, out RaycastHit hit, Mathf.Infinity, hitMask, QueryTriggerInteraction.Ignore))
++        // ���x����
++        float desiredSpeed = 0f;
++        if (chaseFlag)
+         {
+-            if (debugLogs) Debug.Log($"[LoS] hit={hit.collider.name}, tag={hit.collider.tag}");
+-            return hit.collider.transform.root.CompareTag("Player");
+-        }
+-        return false;
+-    }
+-
+-    void ShootForward()
+-    {
+-        Vector3 origin = firePoint.position;
+-        Vector3 dir = firePoint.forward;
++            bool inStopZone = dist <= stopDistance;
++            bool canMove = !inStopZone;
+ 
+-        Debug.DrawRay(origin, dir * 50f, Color.red, 0.1f);
+-
+-        if (Physics.Raycast(origin, dir, out RaycastHit hit, Mathf.Infinity, hitMask, QueryTriggerInteraction.Ignore))
+-        {
+-            Transform root = hit.collider.transform.root;
+-            if (root.CompareTag("Player"))
++            if (stopWhileAttacking)
+             {
+-                var hp = root.GetComponent<Player_HP>() ?? hit.collider.GetComponentInParent<Player_HP>();
+-                if (hp != null)
+-                {
+-                    hp.TakeDamage(damage);
+-                    if (debugLogs) Debug.Log("[Damage] Player �ɓK�p");
+-                }
+-                else if (debugLogs) Debug.LogWarning("[Damage] Player_HP ��������܂���");
++                // �U�����͎~�߂�ݒ�
++                canMove = canMove && !anim.GetBool("Attack");
+             }
+ 
+-            if (hitImpactPrefab)
+-                Instantiate(hitImpactPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+-
+-            SpawnTracer(origin, hit.point);
+-        }
+-        else
+-        {
+-            SpawnTracer(origin, origin + dir * 50f);
+-        }
+-    }
+-
+-    void SpawnTracer(Vector3 from, Vector3 to)
+-    {
+-        if (!tracerPrefab) return;
+-        var tracer = Instantiate(tracerPrefab, from, Quaternion.identity);
+-
+-        var line = tracer.GetComponent<LineRenderer>();
+-        if (line)
+-        {
+-            line.positionCount = 2;
+-            line.SetPosition(0, from);
+-            line.SetPosition(1, to);
++            desiredSpeed = canMove ? moveSpeed : 0f;
+         }
+-        Destroy(tracer, 0.6f);
+-    }
+ 
+-    void Update()
+-    {
+-        UpdateLaser(); // ���Q�[�����Ɍ����郌�[�U�[�X�V
+-    }
++        // �����i�����R�[�h�̂܂܁F�����ɂ͊����Ƃ������Ǐ]�̊��炩���j
++        float rate = 20f;
++        currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, rate * Time.deltaTime);
+ 
+-    void UpdateLaser()
+-    {
+-        if (!showLaserInGame) return;
+-        if (_laserLine == null || !firePoint) return;
++        // ���ړ�
++        transform.position += transform.forward * currentSpeed * Time.deltaTime;
+ 
+-        // ���uisInside true �Ō��Ă鎞�����v�\��
+-        bool can = CanShootNow();
+-        _laserLine.enabled = can;
+-        if (!can) return;
++        // ����/�ҋ@�u�����h
++        anim.SetFloat("Speed", currentSpeed, 0.1f, Time.deltaTime);
+ 
+-        Vector3 origin = firePoint.position;
+-        Vector3 dir = firePoint.forward;
++        // --- �U������i�O������܂ށj ---
++        bool inAttackRange = chaseFlag && dist <= attackRange;
++        bool cooldownOK = (Time.time - lastAttackTime) >= attackCooldown;
+ 
+-        Vector3 end = origin + dir * laserMaxDistance;
++        // ���X�N���v�g�Q�Ɨp�F�ŏI�I�ȍU����
++        CanAttack = externalAttackAllowed && inAttackRange && cooldownOK;
+ 
+-        if (Physics.Raycast(origin, dir, out RaycastHit hit, laserMaxDistance, hitMask, QueryTriggerInteraction.Ignore))
++        // �U���J�n
++        if (CanAttack)
+         {
+-            end = hit.point;
++            anim.SetBool("Attack", true); // Bool �^�p
++            lastAttackTime = Time.time;
+         }
+ 
+-        _laserLine.SetPosition(0, origin);
+-        _laserLine.SetPosition(1, end);
+-    }
+-
+-    void OnDrawGizmosSelected()
+-    {
+-        if (!drawGizmos) return;
+-
+-        if (viewHalfAngle > 0f)
+-        {
+-            Vector3 origin = transform.position;
+-            Vector3 fwd = transform.forward; fwd.y = 0f; fwd.Normalize();
+-
+-            Vector3 right = Quaternion.Euler(0f, viewHalfAngle, 0f) * fwd;
+-            Vector3 left = Quaternion.Euler(0f, -viewHalfAngle, 0f) * fwd;
+-
+-            Gizmos.color = new Color(0f, 0.5f, 1f, 0.6f);
+-            const float gizmoLen = 3f;
+-            Gizmos.DrawLine(origin, origin + right * gizmoLen);
+-            Gizmos.DrawLine(origin, origin + left * gizmoLen);
+-        }
+-    }
+-
+-    void PrepareLaser()
+-    {
+-        if (!showLaserInGame) return;
+-        if (!firePoint) return;
+-
+-        if (_laserLine == null)
+-        {
+-            // tracerPrefab��LineRenderer���t���Ă���Ȃ痬�p�ł���
+-            if (tracerPrefab)
+-            {
+-                var obj = Instantiate(tracerPrefab, firePoint.position, Quaternion.identity);
+-                obj.name = "LaserLineRuntime";
+-                obj.transform.SetParent(firePoint, worldPositionStays: true);
+-
+-                _laserLine = obj.GetComponent<LineRenderer>();
+-                if (_laserLine == null)
+-                {
+-                    _laserLine = obj.AddComponent<LineRenderer>();
+-                }
+-            }
+-            else
+-            {
+-                var obj = new GameObject("LaserLineRuntime");
+-                obj.transform.SetParent(firePoint, worldPositionStays: false);
+-                _laserLine = obj.AddComponent<LineRenderer>();
+-            }
+-
+-            // �����ڐݒ�
+-            _laserLine.positionCount = 2;
+-            _laserLine.startWidth = laserWidth;
+-            _laserLine.endWidth = laserWidth;
+-
+-            // �}�e���A���i�m���Ɍ�����Unlit�j
+-            var mat = new Material(Shader.Find("Unlit/Color"));
+-            mat.color = laserColor;
+-            _laserLine.material = mat;
+-
+-            _laserLine.startColor = laserColor;
+-            _laserLine.endColor = laserColor;
+-
+-            _laserLine.useWorldSpace = true;
+-            _laserLine.enabled = false; // �ŏ���OFF
+-        }
+     }
+ }
