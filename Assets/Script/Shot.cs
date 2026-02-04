@@ -95,7 +95,8 @@ public class Shot : MonoBehaviour
     void DoSomething(GameObject target)
     {
         GunHit.Play();
-        target.GetComponent<Enemy_HP>()?.TakeDamage(damage);
+
+        target.GetComponentInParent<Enemy_HP>()?.TakeDamage(damage);
 
         Debug.Log($"Enemy/trap 共通処理：{target.name}");
         // 共通処理を書く

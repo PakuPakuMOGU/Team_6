@@ -44,8 +44,9 @@ public class Enemy_HP : MonoBehaviour
             case "T_Robo":
             case "B_Tare":
             case "C_Tare":
-
-
+                // 必要ならタグごとの処理
+                Debug.Log($"{t} を破壊");
+                break;
 
             default:
                 Debug.Log($"未対応タグ({t})：とりあえず破壊");
@@ -54,7 +55,5 @@ public class Enemy_HP : MonoBehaviour
 
         Destroy(obj);
     }
+
 }
-
-
-

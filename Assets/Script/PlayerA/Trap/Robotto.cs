@@ -18,9 +18,23 @@ public class Robotto_Move : MonoBehaviour
     public bool useRigidbody = true;
     public bool keepOnGround = true;
 
+    [Header("攻撃")]
+    public bool enableAttack = true;
+    public float attackDistance = 3.0f;
+    public float attackCooldown = 1.2f;
+    public float attackHoldTime = 0.6f;   // Attack(bool) を true に保つ時間
+    public float attackLockTime = 0.6f;   // 攻撃中に移動/追跡を止める時間（基本は hold と同じでOK）
+
+    [Header("アニメーション")]
+    public Animator animator;
+    public string speedFloatName = "Speed";   // float
+    public string attackBoolName = "Attack";  // bool
+    public float speedDamp = 8f;              // Speed の追従をなめらかに（大きいほどキビキビ）
+    public float speedNormalize = 1f;         // 1なら実速度、0〜1にしたいなら moveSpeed 等を入れる
+
     [Header("ポーリング")]
     [Tooltip("FixedUpdate 毎に形状ベースで“いま重なっているか”を再評価します")]
-    public float pollInterval = 0f; // 0 = 毎FixedUpdate
+    public float pollInterval = 0f;
 
     [Header("フィルタ")]
     [Tooltip("Player 層に絞る。0 の場合は全層から Player タグで絞る")]
@@ -35,42 +49,70 @@ public class Robotto_Move : MonoBehaviour
     private Rigidbody _rb;
     private Vector3 _currentVelocity;
 
+    private float _nextAttackTime;
+    private float _attackEndTime;
+    private float _attackBoolOffTime;
+
+    private float _animSpeed; // Animator に渡す Speed を平滑化した値
+
     private static readonly Collider[] _buf = new Collider[16];
 
     void Awake()
     {
         _shape = GetComponent<Collider>();
-        if (_shape == null) { Debug.LogError("[taretto] Collider が必要です"); enabled = false; return; }
+        if (_shape == null) { Debug.LogError("[Robotto_Move] Collider が必要です"); enabled = false; return; }
 
-        // Rigidbody任意
         _rb = GetComponent<Rigidbody>();
 
-        // 参照がない場合はタグから拾う
-        if (!player) { var p = GameObject.FindWithTag("Player"); if (p) player = p.transform; }
+        if (!player)
+        {
+            var p = GameObject.FindWithTag("Player");
+            if (p) player = p.transform;
+        }
+
+        if (!animator) animator = GetComponentInChildren<Animator>();
+        if (!animator) Debug.LogWarning("[Robotto_Move] Animator が見つかりません（アニメ制御は無効）");
 
         if (!_shape.isTrigger)
         {
-            Debug.LogWarning("[taretto] isTrigger=false ですが、形状ポーリングのみで検知します（仕様上OK）");
-        }
-
-        // Rigidbodyがある場合、追跡用なら回転/移動を物理側で扱いやすくする
-        if (_rb && useRigidbody)
-        {
-            // 物理挙動を使うなら基本はKinematic推奨（押されたり吹っ飛んだりしたくない場合）
-            // ただし押し合いしたいなら isKinematic=false のままでもOKです
-            // _rb.isKinematic = true;
+            Debug.LogWarning("[Robotto_Move] isTrigger=false ですが、形状ポーリングのみで検知します（仕様上OK）");
         }
     }
 
     void FixedUpdate()
     {
+        // 形状で「中にいるか」をポーリング
         if (pollInterval <= 0f || Time.time >= _nextPollTime)
         {
             RecalculateInsideByShape();
             if (pollInterval > 0f) _nextPollTime = Time.time + pollInterval;
         }
 
-        if (!isInside || target == null) return;
+        // Attack(bool) を時間で戻す（Bool運用の要）
+        if (animator && animator.GetBool(attackBoolName) && Time.time >= _attackBoolOffTime)
+        {
+            animator.SetBool(attackBoolName, false);
+        }
+
+        if (!isInside || target == null)
+        {
+            // 中にいない＝待機
+            _currentVelocity = Vector3.Lerp(_currentVelocity, Vector3.zero, Time.fixedDeltaTime * acceleration);
+            ApplyMove(_currentVelocity);
+            SetAnimSpeed(0f);
+            SetAttack(false);
+            return;
+        }
+
+        // 攻撃ロック中は移動しない（攻撃を優先）
+        bool attackLocked = Time.time < _attackEndTime;
+        if (attackLocked)
+        {
+            _currentVelocity = Vector3.Lerp(_currentVelocity, Vector3.zero, Time.fixedDeltaTime * acceleration);
+            ApplyMove(_currentVelocity);
+            SetAnimSpeed(0f);
+            return;
+        }
 
         // --- 方向（回転） ---
         Vector3 to = target.position - transform.position;
@@ -80,27 +122,36 @@ public class Robotto_Move : MonoBehaviour
         Quaternion tRot = Quaternion.LookRotation(to.normalized, Vector3.up);
         Quaternion newRot = Quaternion.Slerp(transform.rotation, tRot, Time.fixedDeltaTime * rotateSpeed);
 
-        if (_rb && useRigidbody)
-            _rb.MoveRotation(newRot);
-        else
-            transform.rotation = newRot;
+        if (_rb && useRigidbody) _rb.MoveRotation(newRot);
+        else transform.rotation = newRot;
+
+        float dist = to.magnitude;
+
+        // --- 攻撃（距離に入ったら Attack=true） ---
+        if (enableAttack && dist <= attackDistance && Time.time >= _nextAttackTime)
+        {
+            DoAttack();
+            SetAnimSpeed(0f);
+            return;
+        }
 
         // --- 追跡（移動） ---
-        if (!chase) return;
+        if (!chase)
+        {
+            SetAnimSpeed(0f);
+            return;
+        }
 
-        // 距離が近いなら止まる
-        float dist = to.magnitude;
         if (dist <= stopDistance)
         {
             _currentVelocity = Vector3.Lerp(_currentVelocity, Vector3.zero, Time.fixedDeltaTime * acceleration);
             ApplyMove(_currentVelocity);
+            SetAnimSpeed(_currentVelocity.magnitude);
             return;
         }
 
-        // 前方に進む（回転後の forward を使うと「向いた方向へ追う」挙動になる）
         Vector3 desiredVel = transform.forward * moveSpeed;
 
-        // 急に速度が変わらないように加速でならす
         _currentVelocity = Vector3.MoveTowards(
             _currentVelocity,
             desiredVel,
@@ -108,27 +159,46 @@ public class Robotto_Move : MonoBehaviour
         );
 
         ApplyMove(_currentVelocity);
+
+        // アニメへ Speed を渡す（実速度）
+        SetAnimSpeed(_currentVelocity.magnitude);
+    }
+
+    void DoAttack()
+    {
+        _nextAttackTime = Time.time + attackCooldown;
+        _attackEndTime = Time.time + attackLockTime;
+
+        // bool を true にして、attackHoldTime 後に false に戻す
+        SetAttack(true);
+        _attackBoolOffTime = Time.time + attackHoldTime;
+    }
+
+    // Speed をなめらかに変化させて Animator に渡す
+    void SetAnimSpeed(float worldSpeed)
+    {
+        if (!animator) return;
+
+        // 0〜1に正規化したいなら speedNormalize = moveSpeed を入れる
+        float targetSpeed = (speedNormalize > 0f) ? (worldSpeed / speedNormalize) : worldSpeed;
+
+        _animSpeed = Mathf.Lerp(_animSpeed, targetSpeed, 1f - Mathf.Exp(-speedDamp * Time.fixedDeltaTime));
+        animator.SetFloat(speedFloatName, _animSpeed);
+    }
+
+    void SetAttack(bool on)
+    {
+        if (!animator) return;
+        animator.SetBool(attackBoolName, on);
     }
 
     void ApplyMove(Vector3 velocity)
     {
         Vector3 delta = velocity * Time.fixedDeltaTime;
+        if (keepOnGround) delta.y = 0f;
 
-        if (keepOnGround)
-        {
-            // Y方向を変えたくない（段差対応するなら別途接地処理が必要）
-            delta.y = 0f;
-        }
-
-        if (_rb && useRigidbody)
-        {
-            _rb.MovePosition(_rb.position + delta);
-        }
-
-        else
-        {
-            transform.position += delta;
-        }
+        if (_rb && useRigidbody) _rb.MovePosition(_rb.position + delta);
+        else transform.position += delta;
     }
 
     void RecalculateInsideByShape()
@@ -137,7 +207,6 @@ public class Robotto_Move : MonoBehaviour
         Transform foundRoot = null;
 
         int hits = OverlapShapeIntoBuffer();
-
         for (int i = 0; i < hits; i++)
         {
             var c = _buf[i];
@@ -170,6 +239,8 @@ public class Robotto_Move : MonoBehaviour
                 isInside = false;
                 target = null;
                 _currentVelocity = Vector3.zero;
+                SetAnimSpeed(0f);
+                SetAttack(false);
             }
         }
     }
