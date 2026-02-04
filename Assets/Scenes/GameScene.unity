@@ -29874,8 +29874,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 375294825}
     - target: {fileID: 175515315567144744, guid: eef4dd5cc5f379346ba46ec15ae31f32, type: 3}
+      propertyPath: moveSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 175515315567144744, guid: eef4dd5cc5f379346ba46ec15ae31f32, type: 3}
       propertyPath: stopDistance
-      value: 0.1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 175515315567144744, guid: eef4dd5cc5f379346ba46ec15ae31f32, type: 3}
       propertyPath: attackAllowed
@@ -29953,8 +29957,14 @@ PrefabInstance:
       addedObject: {fileID: 375294824}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2769409917255064694, guid: eef4dd5cc5f379346ba46ec15ae31f32, type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 782628385}
+    - targetCorrespondingSourceObject: {fileID: 2769409917255064694, guid: eef4dd5cc5f379346ba46ec15ae31f32, type: 3}
       insertIndex: -1
       addedObject: {fileID: 782628379}
+    - targetCorrespondingSourceObject: {fileID: 2769409917255064694, guid: eef4dd5cc5f379346ba46ec15ae31f32, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 782628381}
     - targetCorrespondingSourceObject: {fileID: 2818740566544470851, guid: eef4dd5cc5f379346ba46ec15ae31f32, type: 3}
       insertIndex: -1
       addedObject: {fileID: 782628380}
@@ -30018,6 +30028,62 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.4119909, y: 2.381853, z: 0.50441486}
   m_Center: {x: -0.00003094417, y: 1.1907663, z: -0.06453374}
+--- !u!114 &782628381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 782628377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be60277f5b370cf49ba6c50bb81fed31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHp: 100
+  currentHp: 100
+--- !u!114 &782628384 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 175515315567144744, guid: eef4dd5cc5f379346ba46ec15ae31f32, type: 3}
+  m_PrefabInstance: {fileID: 782628375}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 782628377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 301f7a79abd3ef44094d0c7dfc5789ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &782628385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 782628377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b77dedf1dae805d40980f465ceaa93e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePoint: {fileID: 1100300507}
+  player: {fileID: 201370938361342507, guid: d287d9480a4d5b349955e729ae757a17, type: 3}
+  gate: {fileID: 782628384}
+  allowShootWhenGateMissing: 0
+  requireLineOfSight: 0
+  viewHalfAngle: 0
+  shootInterval: 0.2
+  damage: 10
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 0
+  hitImpactPrefab: {fileID: 0}
+  tracerPrefab: {fileID: 0}
+  debugLogs: 0
+  drawGizmos: 1
+  showLaserInGame: 1
+  laserColor: {r: 1, g: 0, b: 0, a: 1}
+  laserWidth: 0.02
+  laserMaxDistance: 50
 --- !u!1 &782695557
 GameObject:
   m_ObjectHideFlags: 0
@@ -42959,6 +43025,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3787959570457860102, guid: 51561c5ac6ad94dc2bc464238ad02aa4, type: 3}
   m_PrefabInstance: {fileID: 1099366921}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1100300507 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 27745228177671578, guid: eef4dd5cc5f379346ba46ec15ae31f32, type: 3}
+  m_PrefabInstance: {fileID: 782628375}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1101899170 stripped
 Transform:

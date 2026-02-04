@@ -124,6 +124,7 @@ public class Robotto_Move : MonoBehaviour
         {
             _rb.MovePosition(_rb.position + delta);
         }
+
         else
         {
             transform.position += delta;

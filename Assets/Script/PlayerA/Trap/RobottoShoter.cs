@@ -1,4 +1,4 @@
-/*using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -96,7 +96,7 @@ public class RobottoShoter : MonoBehaviour
         // ★ 他スクリプトの bool が true の時だけ攻撃可能
         if (gate != null)
         {
-            if (!gate.attackAllowed) return false;   // ← tatetto のexternalAttackAllowed を参照
+            if (!gate.isInside) return false;   // ← tatetto のexternalAttackAllowed を参照
         }
         else
         {
@@ -278,4 +278,3 @@ public class RobottoShoter : MonoBehaviour
         }
     }
 }
-*/
