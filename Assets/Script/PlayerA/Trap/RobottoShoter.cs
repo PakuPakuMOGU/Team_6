@@ -1,39 +1,41 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class RobottoShoter : MonoBehaviour
 {
     
-    [Header("QÆ")]
+    [Header("å‚ç…§")]
     public Transform firePoint;
     public Transform player;
 
-    [Header("UŒ‚‹–‰Âi‘¼ƒXƒNƒŠƒvƒg‚Ìbool‚ğŒ©‚éj")]
-    [Tooltip("QÆ‚·‚é‚â‚Â")]
-    public Robotto_Move gate;   // š tatetto ‚Ö‚ÌQÆi•Ï”–¼‚Í gate ‚È‚Ç‚ª•ª‚©‚è‚â‚·‚¢j
+    [SerializeField] private string playerTag = "Player";
 
-    [Tooltip("gate ‚ª–¢İ’è‚Å‚àŒ‚‚Ä‚é‚æ‚¤‚É‚·‚éiƒfƒoƒbƒO—pjB’Êí‚Í false „§")]
+    [Header("æ”»æ’ƒè¨±å¯ï¼ˆä»–ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®boolã‚’è¦‹ã‚‹ï¼‰")]
+    [Tooltip("å‚ç…§ã™ã‚‹ã‚„ã¤")]
+    public Robotto_Move gate;   // â˜… tatetto ã¸ã®å‚ç…§ï¼ˆå¤‰æ•°åã¯ gate ãªã©ãŒåˆ†ã‹ã‚Šã‚„ã™ã„ï¼‰
+
+    [Tooltip("gate ãŒæœªè¨­å®šã§ã‚‚æ’ƒã¦ã‚‹ã‚ˆã†ã«ã™ã‚‹ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰ã€‚é€šå¸¸ã¯ false æ¨å¥¨")]
     public bool allowShootWhenGateMissing = false;
 
-    [Header("”­–CğŒ")]
+    [Header("ç™ºç ²æ¡ä»¶")]
     public bool requireLineOfSight = false;
     [Range(0f, 180f)] public float viewHalfAngle = 0f;
 
-    [Header("ËŒ‚İ’è")]
+    [Header("å°„æ’ƒè¨­å®š")]
     public float shootInterval = 0.2f;
     public int damage = 10;
     public LayerMask hitMask;
 
-    [Header("VFXi”CˆÓj")]
+    [Header("VFXï¼ˆä»»æ„ï¼‰")]
     public GameObject hitImpactPrefab;
     public GameObject tracerPrefab;
 
-    [Header("ƒfƒoƒbƒO")]
+    [Header("ãƒ‡ãƒãƒƒã‚°")]
     public bool debugLogs = false;
     public bool drawGizmos = true;
 
-    [Header("ƒŒ[ƒU[•\¦iGameƒrƒ…[j")]
+    [Header("ãƒ¬ãƒ¼ã‚¶ãƒ¼è¡¨ç¤ºï¼ˆGameãƒ“ãƒ¥ãƒ¼ï¼‰")]
     public bool showLaserInGame = true;
     public Color laserColor = Color.red;
     public float laserWidth = 0.02f;
@@ -54,7 +56,7 @@ public class RobottoShoter : MonoBehaviour
 
         if (!firePoint) firePoint = transform;
 
-        // gate ‚ª–¢w’è‚È‚ç“¯‚¶ƒIƒuƒWƒFƒNƒg‚©‚ç’T‚·i•Ö—˜j
+        // gate ãŒæœªæŒ‡å®šãªã‚‰åŒã˜ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‹ã‚‰æ¢ã™ï¼ˆä¾¿åˆ©ï¼‰
         if (!gate) gate = GetComponent<Robotto_Move>();
 
         _wait = new WaitForSeconds(shootInterval);
@@ -71,7 +73,7 @@ public class RobottoShoter : MonoBehaviour
     {
         if (_loop != null) StopCoroutine(_loop);
 
-        if (_laserLine != null)       // š’Ç‰Á
+        if (_laserLine != null)       // â˜…è¿½åŠ 
             _laserLine.enabled = false;
     }
 
@@ -88,23 +90,23 @@ public class RobottoShoter : MonoBehaviour
         }
     }
 
-    // š p ‚ğÁ‚µ‚Ä³‚µ‚­ bool ‚©‚çn‚ß‚é
+    // â˜… p ã‚’æ¶ˆã—ã¦æ­£ã—ã bool ã‹ã‚‰å§‹ã‚ã‚‹
     bool CanShootNow()
     {
         if (!player || !firePoint) return false;
 
-        // š ‘¼ƒXƒNƒŠƒvƒg‚Ì bool ‚ª true ‚Ì‚¾‚¯UŒ‚‰Â”\
+        // â˜… ä»–ã‚¹ã‚¯ãƒªãƒ—ãƒˆã® bool ãŒ true ã®æ™‚ã ã‘æ”»æ’ƒå¯èƒ½
         if (gate != null)
         {
-            if (!gate.isInside) return false;   // © tatetto ‚ÌexternalAttackAllowed ‚ğQÆ
+            if (!gate.isInside) return false;   // â† tatetto ã®externalAttackAllowed ã‚’å‚ç…§
         }
         else
         {
-            // gate ‚ªİ’è‚³‚ê‚Ä‚È‚¢ê‡‚Ì‹““®
+            // gate ãŒè¨­å®šã•ã‚Œã¦ãªã„å ´åˆã®æŒ™å‹•
             if (!allowShootWhenGateMissing) return false;
         }
 
-        // ‹–ìƒ`ƒFƒbƒNi”CˆÓj
+        // è¦–é‡ãƒã‚§ãƒƒã‚¯ï¼ˆä»»æ„ï¼‰
         if (viewHalfAngle > 0f)
         {
             Vector3 toPlayer = player.position - transform.position;
@@ -119,7 +121,7 @@ public class RobottoShoter : MonoBehaviour
             }
         }
 
-        // ‹üƒ`ƒFƒbƒNi”CˆÓj
+        // è¦–ç·šãƒã‚§ãƒƒã‚¯ï¼ˆä»»æ„ï¼‰
         if (requireLineOfSight && !HasLineOfSight()) return false;
 
         return true;
@@ -143,30 +145,44 @@ public class RobottoShoter : MonoBehaviour
         Vector3 origin = firePoint.position;
         Vector3 dir = firePoint.forward;
 
-        Debug.DrawRay(origin, dir * 50f, Color.red, 0.1f);
-
-        if (Physics.Raycast(origin, dir, out RaycastHit hit, Mathf.Infinity, hitMask, QueryTriggerInteraction.Ignore))
+        if (debugLogs)
         {
-            Transform root = hit.collider.transform.root;
-            if (root.CompareTag("Player"))
+            Debug.Log($"[Shoot] origin={origin} dir={dir} firePoint={firePoint.name}");
+        }
+
+        Debug.DrawRay(origin, dir * 50f, Color.red, 0.2f);
+
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, Mathf.Infinity, hitMask, QueryTriggerInteraction.Collide))
+        {
+            if (debugLogs)
             {
-                var hp = root.GetComponent<Player_HP>() ?? hit.collider.GetComponentInParent<Player_HP>();
-                if (hp != null)
-                {
-                    hp.TakeDamage(damage);
-                    if (debugLogs) Debug.Log("[Damage] Player ‚É“K—p");
-                }
-                else if (debugLogs) Debug.LogWarning("[Damage] Player_HP ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+                Debug.Log($"[Hit] name={hit.collider.name} tag={hit.collider.tag} root={hit.collider.transform.root.name} rootTag={hit.collider.transform.root.tag} layer={LayerMask.LayerToName(hit.collider.gameObject.layer)} dist={hit.distance}");
             }
 
-            if (hitImpactPrefab)
-                Instantiate(hitImpactPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+            Transform root = hit.collider.transform.root;
 
-            SpawnTracer(origin, hit.point);
+            if (root.CompareTag(playerTag))
+            {
+                var hp = root.GetComponent<Player_HP>() ?? hit.collider.GetComponentInParent<Player_HP>();
+
+                if (hp != null)
+                {
+                    if (debugLogs) Debug.Log("[Damage] TakeDamage å‘¼ã³ã¾ã™");
+                    hp.TakeDamage(damage);
+                }
+                else
+                {
+                    if (debugLogs) Debug.LogWarning("[Damage] Player_HP ãŒè¦‹ã¤ã‹ã‚‰ãªã„");
+                }
+            }
+            else
+            {
+                if (debugLogs) Debug.Log("[Hit] Playerã˜ã‚ƒãªã„ç‰©ã«å½“ãŸã£ã¦ã‚‹");
+            }
         }
         else
         {
-            SpawnTracer(origin, origin + dir * 50f);
+            if (debugLogs) Debug.Log("[Hit] ä½•ã«ã‚‚å½“ãŸã£ã¦ãªã„");
         }
     }
 
@@ -187,7 +203,7 @@ public class RobottoShoter : MonoBehaviour
 
     void Update()
     {
-        UpdateLaser(); // šƒQ[ƒ€’†‚ÉŒ©‚¦‚éƒŒ[ƒU[XV
+        UpdateLaser(); // â˜…ã‚²ãƒ¼ãƒ ä¸­ã«è¦‹ãˆã‚‹ãƒ¬ãƒ¼ã‚¶ãƒ¼æ›´æ–°
     }
 
     void UpdateLaser()
@@ -195,7 +211,7 @@ public class RobottoShoter : MonoBehaviour
         if (!showLaserInGame) return;
         if (_laserLine == null || !firePoint) return;
 
-        // šuexternalAttackAllowed true ‚ÅŒ‚‚Ä‚é‚¾‚¯v•\¦
+        // â˜…ã€ŒexternalAttackAllowed true ã§æ’ƒã¦ã‚‹æ™‚ã ã‘ã€è¡¨ç¤º
         bool can = CanShootNow();
         _laserLine.enabled = can;
         if (!can) return;
@@ -240,7 +256,7 @@ public class RobottoShoter : MonoBehaviour
 
         if (_laserLine == null)
         {
-            // tracerPrefab‚ÉLineRenderer‚ª•t‚¢‚Ä‚¢‚é‚È‚ç—¬—p‚Å‚«‚é
+            // tracerPrefabã«LineRendererãŒä»˜ã„ã¦ã„ã‚‹ãªã‚‰æµç”¨ã§ãã‚‹
             if (tracerPrefab)
             {
                 var obj = Instantiate(tracerPrefab, firePoint.position, Quaternion.identity);
@@ -260,12 +276,12 @@ public class RobottoShoter : MonoBehaviour
                 _laserLine = obj.AddComponent<LineRenderer>();
             }
 
-            // Œ©‚½–Úİ’è
+            // è¦‹ãŸç›®è¨­å®š
             _laserLine.positionCount = 2;
             _laserLine.startWidth = laserWidth;
             _laserLine.endWidth = laserWidth;
 
-            // ƒ}ƒeƒŠƒAƒ‹iŠmÀ‚ÉŒ©‚¦‚éUnlitj
+            // ãƒãƒ†ãƒªã‚¢ãƒ«ï¼ˆç¢ºå®Ÿã«è¦‹ãˆã‚‹Unlitï¼‰
             var mat = new Material(Shader.Find("Unlit/Color"));
             mat.color = laserColor;
             _laserLine.material = mat;
@@ -274,7 +290,7 @@ public class RobottoShoter : MonoBehaviour
             _laserLine.endColor = laserColor;
 
             _laserLine.useWorldSpace = true;
-            _laserLine.enabled = false; // Å‰‚ÍOFF
+            _laserLine.enabled = false; // æœ€åˆã¯OFF
         }
     }
 }

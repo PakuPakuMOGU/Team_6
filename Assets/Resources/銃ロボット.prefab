@@ -1012,7 +1012,6 @@ GameObject:
   - component: {fileID: 3995843108987177083}
   - component: {fileID: 5528846278564352600}
   - component: {fileID: 2715263345358466944}
-  - component: {fileID: 8424028019916110444}
   m_Layer: 0
   m_Name: "\u9283\u30ED\u30DC\u30C3\u30C8"
   m_TagString: G_Robo
@@ -1036,7 +1035,6 @@ Transform:
   - {fileID: 2908982736690805689}
   - {fileID: 8500558105325002426}
   - {fileID: 8866353530611349421}
-  - {fileID: 1935300801353098339}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &175515315567144744
@@ -1060,6 +1058,16 @@ MonoBehaviour:
   acceleration: 20
   useRigidbody: 1
   keepOnGround: 1
+  enableAttack: 1
+  attackDistance: 8
+  attackCooldown: 1.2
+  attackHoldTime: 0.6
+  attackLockTime: 0.6
+  animator: {fileID: 2718137493347917597}
+  speedFloatName: Speed
+  attackBoolName: Attack
+  speedDamp: 8
+  speedNormalize: 1
   pollInterval: 0
   playerLayer:
     serializedVersion: 2
@@ -1162,24 +1170,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3.16
+  m_Radius: 8.62
   m_Height: 0
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8424028019916110444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2769409917255064694}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be60277f5b370cf49ba6c50bb81fed31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHp: 100
-  currentHp: 100
 --- !u!1 &2818740566544470851
 GameObject:
   m_ObjectHideFlags: 0
@@ -1652,84 +1646,6 @@ Transform:
   - {fileID: 2283176144204211898}
   m_Father: {fileID: 2518297362569256982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6481344669348960235
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1935300801353098339}
-  - component: {fileID: 8498978874404140251}
-  - component: {fileID: 8969832681495400860}
-  - component: {fileID: 6138142143767148304}
-  m_Layer: 0
-  m_Name: "\u7D22\u6575\u7BC4\u56F2"
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1935300801353098339
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6481344669348960235}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.99913013, z: -0, w: 0.041701242}
-  m_LocalPosition: {x: 0.04576548, y: 0.39915273, z: -0.021238225}
-  m_LocalScale: {x: 0.40322578, y: 0.40322584, z: 0.40322578}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6941196169302074408}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8498978874404140251
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6481344669348960235}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!136 &8969832681495400860
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6481344669348960235}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 18.54
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6138142143767148304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6481344669348960235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd1a8923ec6d49143bfb99a1a348d767, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerTag: Player
 --- !u!1 &6949777789034618647
 GameObject:
   m_ObjectHideFlags: 0

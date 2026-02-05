@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 
 [RequireComponent(typeof(Collider))]
-public class Robotto_Move : MonoBehaviour
+public class Robotto_Move2 : MonoBehaviour
 {
+
     [Header("対象")]
     public Transform player;
 

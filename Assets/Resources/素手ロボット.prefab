@@ -1392,7 +1392,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1340580548277382173}
   - component: {fileID: 1357465363931325055}
-  - component: {fileID: 3156856843278812722}
   - component: {fileID: 1866852751996976119}
   - component: {fileID: 785336945946710066}
   m_Layer: 0
@@ -1446,26 +1445,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3156856843278812722
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4141308214454762201}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 301f7a79abd3ef44094d0c7dfc5789ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 201370938361342507, guid: d287d9480a4d5b349955e729ae757a17, type: 3}
-  detectRadius: 25.38
-  stopDistance: 2
-  attackRange: 2.5
-  moveSpeed: 3.5
-  rotateSpeedDegPerSec: 360
-  attackCooldown: 1
-  stopWhileAttacking: 0
 --- !u!54 &1866852751996976119
 Rigidbody:
   m_ObjectHideFlags: 0
