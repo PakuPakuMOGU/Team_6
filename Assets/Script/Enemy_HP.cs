@@ -41,11 +41,19 @@ public class Enemy_HP : MonoBehaviour
                 Score = Score + 500;
                 ClearFlag++;
                 Destroy(obj, 0.1f);
+
+                foreach (var col in obj.GetComponentsInChildren<Collider>())
+                    col.enabled = false;
+
                 break;
 
             case "G_Robo":
                 Score=Score + 100;
                 Destroy(obj, 0.1f);
+
+                foreach (var col in obj.GetComponentsInChildren<Collider>())
+                    col.enabled = false;
+
                 break;
             case "T_Robo":
                 if (anim != null)
@@ -53,21 +61,37 @@ public class Enemy_HP : MonoBehaviour
                     anim.SetBool("Death", true);
                 }
                 Debug.Log($"{t} ÇÕéÄñSÉAÉjÉÅ Å® îjâÛó\ñÒ");
-                Destroy(obj, 3f);
+
+                foreach (var col in obj.GetComponentsInChildren<Collider>())
+                    col.enabled = false;
+
+                Destroy(obj, 5f);
                 break;
 
             case "Fence2":
                 Destroy(obj, 0.1f);
                 Score = Score + 50;
+
+                foreach (var col in obj.GetComponentsInChildren<Collider>())
+                    col.enabled = false;
+
                 break;
             case "Fence1":
                 Score = Score + 20;
                 Destroy(obj, 0.1f);
+
+                foreach (var col in obj.GetComponentsInChildren<Collider>())
+                    col.enabled = false;
+
                 break;
             case "Land":
                 Debug.Log($"{t} ÇîjâÛ");
                 Score = Score + 100;
                 Destroy(obj, 0.1f);
+
+                foreach (var col in obj.GetComponentsInChildren<Collider>())
+                    col.enabled = false;
+
                 break;
 
             default:
