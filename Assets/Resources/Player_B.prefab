@@ -621,7 +621,7 @@ CharacterController:
   serializedVersion: 3
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
+  m_SlopeLimit: 60
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
@@ -677,7 +677,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 501025824026402176, guid: 2e6d6a89806eece4bafe21a34f9b0f42, type: 2}
   m_audioClip: {fileID: 8300000, guid: b1c475f3d30cb2448bb1b805bb4209eb, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.29
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -965,7 +965,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39df131d30b268e408acab6f422684ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 100
+  maxHp: 1000
   currentHp: 100
 --- !u!4 &201370938361342507 stripped
 Transform:

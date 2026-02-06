@@ -7,53 +7,56 @@ public class Enemy_HP : MonoBehaviour
     [SerializeField] private int maxHp = 100;
     [SerializeField] private int currentHp;
 
-
+    private Animator anim;
 
     private void Awake()
     {
+        anim = GetComponent<Animator>();
         currentHp = maxHp;
     }
 
-    // Robotto1Wepon から呼びたいメソッドをこのシグネチャで用意
+    // Robotto1Wepon から呼びたいメソッド
     public void TakeDamage(int amount)
     {
         currentHp -= amount;
         currentHp = Mathf.Clamp(currentHp, 0, maxHp);
 
-        // HPが0なら死亡処理など
-        if (currentHp == 0)
+        if (currentHp <= 0)
         {
-            kill(gameObject);
+            Kill(gameObject);
         }
     }
 
-    public void kill(GameObject obj)
+    public void Kill(GameObject obj)
     {
         if (obj == null) return;
 
-        // Destroy前に退避（安全）
         string t = obj.tag;
 
         switch (t)
         {
+            case "G_Robo":
+            case "T_Robo":
+                if (anim != null)
+                {
+                    anim.SetBool("Death", true);
+                }
+                Debug.Log($"{t} は死亡アニメ → 破壊予約");
+                Destroy(obj, 5f);
+                break;
+
             case "Fence2":
             case "Fence1":
             case "Land":
             case "S_Robo":
-            case "G_Robo":
-            case "T_Robo":
-            case "B_Tare":
-            case "C_Tare":
-                // 必要ならタグごとの処理
                 Debug.Log($"{t} を破壊");
+                Destroy(obj, 5f);
                 break;
 
             default:
                 Debug.Log($"未対応タグ({t})：とりあえず破壊");
+                Destroy(obj, 5f);
                 break;
         }
-
-        Destroy(obj);
     }
-
 }
