@@ -15,6 +15,7 @@ TagManager:
   - G_Robo
   - B_Tare
   - C_Tare
+  - Sphere
   layers:
   - Default
   - TransparentFX

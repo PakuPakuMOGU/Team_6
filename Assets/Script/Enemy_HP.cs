@@ -6,6 +6,8 @@ public class Enemy_HP : MonoBehaviour
 {
     [SerializeField] private int maxHp = 100;
     [SerializeField] private int currentHp;
+    public int Score;
+    public int ClearFlag;
 
     private Animator anim;
 
@@ -35,27 +37,42 @@ public class Enemy_HP : MonoBehaviour
 
         switch (t)
         {
+            case "Sphere":
+                Score = Score + 500;
+                ClearFlag++;
+                Destroy(obj, 0.1f);
+                break;
+
             case "G_Robo":
+                Score=Score + 100;
+                Destroy(obj, 0.1f);
+                break;
             case "T_Robo":
                 if (anim != null)
                 {
                     anim.SetBool("Death", true);
                 }
                 Debug.Log($"{t} ÇÕéÄñSÉAÉjÉÅ Å® îjâÛó\ñÒ");
-                Destroy(obj, 5f);
+                Destroy(obj, 3f);
                 break;
 
             case "Fence2":
+                Destroy(obj, 0.1f);
+                Score = Score + 50;
+                break;
             case "Fence1":
+                Score = Score + 20;
+                Destroy(obj, 0.1f);
+                break;
             case "Land":
-            case "S_Robo":
                 Debug.Log($"{t} ÇîjâÛ");
-                Destroy(obj, 5f);
+                Score = Score + 100;
+                Destroy(obj, 0.1f);
                 break;
 
             default:
                 Debug.Log($"ñ¢ëŒâûÉ^ÉO({t})ÅFÇ∆ÇËÇ†Ç¶Ç∏îjâÛ");
-                Destroy(obj, 5f);
+                Destroy(obj, 0.1f);
                 break;
         }
     }

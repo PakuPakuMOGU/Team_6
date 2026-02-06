@@ -75,6 +75,7 @@ public class Shot : MonoBehaviour
         // CompareTagの方が安全だけど、switchするならtag文字列で分岐が手軽
         switch (col.tag)
         {
+            case "Sphere":
             case "Fence2":
             case "Fence1":
             case "Land":
