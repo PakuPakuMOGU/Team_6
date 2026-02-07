@@ -121,7 +121,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        if (targetSession.PlayerCount >= targetSession.MaxPlayers)
+        if (targetSession.PlayerCount >= 5)
         {
             maxPlayerView?.WindowView();
             return;
