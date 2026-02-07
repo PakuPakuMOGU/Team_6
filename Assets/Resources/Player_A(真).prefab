@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5505019440730482477}
   - component: {fileID: 7490053827571576405}
+  - component: {fileID: 9040289667732962528}
   m_Layer: 0
   m_Name: "Player_A(\u771F)"
   m_TagString: Untagged
@@ -59,6 +60,18 @@ MonoBehaviour:
   - {fileID: 8621615572832117044}
   - {fileID: 3512976170351608863}
   ForceRemoteRenderTimeframe: 0
+--- !u!114 &9040289667732962528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5099411124636349365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60173a9bc68873f4295349caf0743121, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3900194511417651577
 PrefabInstance:
   m_ObjectHideFlags: 0
