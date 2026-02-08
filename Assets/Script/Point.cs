@@ -6,6 +6,7 @@ using TMPro;
 public class Point : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI textMeshPro;
+    [SerializeField] private AudioSource Sound;
     private int point = 0;
 
     void Start()
@@ -19,6 +20,7 @@ public class Point : MonoBehaviour
 
         this.point += add;
         textMeshPro.text = point.ToString();
+        Sound.Play();
         return true;
     }
 }
