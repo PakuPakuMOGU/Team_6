@@ -31,6 +31,7 @@ public class Enemy_HP : MonoBehaviour
         }
     }
 
+    // オブジェクトを壊した時の処理.
     public void Kill(GameObject obj)
     {
         if (obj == null) return;
@@ -41,6 +42,7 @@ public class Enemy_HP : MonoBehaviour
         {
             case "Sphere":
                 point.Add(500);
+                point.SphereBreak();
                 ClearFlag++;
                 Destroy(obj, 0.1f);
 

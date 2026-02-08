@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Wave : MonoBehaviour
 {
@@ -14,9 +15,8 @@ public class Wave : MonoBehaviour
     [SerializeField] private int intervalBetweenWaves = 60;
     [SerializeField] private View ViewBetweenWave_A;
     [SerializeField] private View ViewBetweenWave_B;
-
-    [Header("ゲーム終了処理")]
-    public Sphere sphere;
+    [SerializeField] private View Win_A;
+    [SerializeField] private View Win_B;
 
     private enum WaveState { Wave1, Interval1, Wave2, Interval2, Wave3, Finished }
     private WaveState currentState = WaveState.Wave1;
@@ -80,14 +80,20 @@ public class Wave : MonoBehaviour
 
             case WaveState.Wave3:
                 if (frameCounter >= wave3Duration)
-                    EndGame();
+                    EndGame_A();
                 break;
 
             case WaveState.Finished:
+                if(Input.GetKeyDown(KeyCode.Escape))
+                {
+                    //_runner.Shutdown();
+                    SceneManager.LoadScene("StartScene");
+                }
                 break;
         }
     }
 
+    // ウェーブ状態変更.
     private void TransitionTo(WaveState nextState)
     {
         currentState = nextState;
@@ -95,10 +101,15 @@ public class Wave : MonoBehaviour
         Debug.Log($"状態遷移: {nextState}");
     }
 
-    private void EndGame()
+    private void EndGame_A()
     {
-        currentState = WaveState.Finished;
-        sphere.GameFinish();
-        Debug.Log("ゲーム終了！");
+        Win_A.WindowView();
+        TransitionTo(WaveState.Finished);
+    }
+
+    public void EndGame_B()
+    {
+        Win_B.WindowView();
+        TransitionTo(WaveState.Finished);
     }
 }
