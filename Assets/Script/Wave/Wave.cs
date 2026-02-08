@@ -86,8 +86,7 @@ public class Wave : MonoBehaviour
             case WaveState.Finished:
                 if(Input.GetKeyDown(KeyCode.Escape))
                 {
-                    //_runner.Shutdown();
-                    SceneManager.LoadScene("StartScene");
+                    End();
                 }
                 break;
         }
@@ -111,5 +110,11 @@ public class Wave : MonoBehaviour
     {
         Win_B.WindowView();
         TransitionTo(WaveState.Finished);
+    }
+
+    public void End()
+    {
+        //_runner.Shutdown();
+        SceneManager.LoadScene("StartScene");
     }
 }
