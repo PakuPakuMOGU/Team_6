@@ -6,13 +6,15 @@ public class Enemy_HP : MonoBehaviour
 {
     [SerializeField] private int maxHp = 100;
     [SerializeField] private int currentHp;
-    public int Score;
     public int ClearFlag;
 
     private Animator anim;
+    private Point point;
 
     private void Awake()
     {
+        var obj = GameObject.Find("Canvas");
+        point = obj.GetComponent<Point>();
         anim = GetComponent<Animator>();
         currentHp = maxHp;
     }
@@ -38,7 +40,7 @@ public class Enemy_HP : MonoBehaviour
         switch (t)
         {
             case "Sphere":
-                Score = Score + 500;
+                point.Add(500);
                 ClearFlag++;
                 Destroy(obj, 0.1f);
 
@@ -48,7 +50,7 @@ public class Enemy_HP : MonoBehaviour
                 break;
 
             case "G_Robo":
-                Score=Score + 100;
+                point.Add(100);
                 Destroy(obj, 0.1f);
 
                 foreach (var col in obj.GetComponentsInChildren<Collider>())
@@ -70,14 +72,14 @@ public class Enemy_HP : MonoBehaviour
 
             case "Fence2":
                 Destroy(obj, 0.1f);
-                Score = Score + 50;
+                point.Add(50);
 
                 foreach (var col in obj.GetComponentsInChildren<Collider>())
                     col.enabled = false;
 
                 break;
             case "Fence1":
-                Score = Score + 20;
+                point.Add(20);
                 Destroy(obj, 0.1f);
 
                 foreach (var col in obj.GetComponentsInChildren<Collider>())
@@ -86,7 +88,7 @@ public class Enemy_HP : MonoBehaviour
                 break;
             case "Land":
                 Debug.Log($"{t} ‚ð”j‰ó");
-                Score = Score + 100;
+                point.Add(100);
                 Destroy(obj, 0.1f);
 
                 foreach (var col in obj.GetComponentsInChildren<Collider>())
