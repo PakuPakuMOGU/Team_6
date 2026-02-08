@@ -1851,6 +1851,16 @@ MonoBehaviour:
   - {x: 300, y: 0, z: 700}
   - {x: 900, y: 0, z: 500}
   - {x: 0, y: -100, z: 0}
+  cameraImage:
+  - {fileID: 4958420888317691893}
+  - {fileID: 7793951352422164665}
+  - {fileID: 7796912924578965668}
+  - {fileID: 2692260506105028591}
+  - {fileID: 6919182833403214712}
+  - {fileID: 4276658362885600162}
+  - {fileID: 7437960223296167270}
+  - {fileID: 8263816380841790516}
+  - {fileID: 3672040880916882656}
 --- !u!4 &3242586675543454781 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1936474553447646532, guid: 1af3bb5e5b632c6459ce46b8c43914e7, type: 3}
