@@ -1440,7 +1440,8 @@ MonoBehaviour:
   intervalBetweenWaves: 60
   ViewBetweenWave_A: {fileID: 1761234936}
   ViewBetweenWave_B: {fileID: 291899867}
-  sphere: {fileID: 119915641}
+  Win_A: {fileID: 50505717}
+  Win_B: {fileID: 469433198}
 --- !u!114 &22195243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1454,7 +1455,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 793648247}
+  SphereNum: 19
   Sound: {fileID: 22195244}
+  wave: {fileID: 0}
 --- !u!82 &22195244
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2727,6 +2730,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3418708187556559481, guid: a157851e6c66e1545ae48d5a470cdc64, type: 3}
   m_PrefabInstance: {fileID: 403563765}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &50505717 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4338089028678273823, guid: 5ca2f4dab88472349b0678eff4865580, type: 3}
+  m_PrefabInstance: {fileID: 909843815}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0408871c41f0aec48a29d9525ad008bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &53486371
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4934,6 +4948,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewScA: {fileID: 119915643}
   viewScB: {fileID: 119915642}
+  finish: 0
+  winATag: 1
 --- !u!114 &119915642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17932,6 +17948,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b28dd70a689b2b649832f43119d5b551, type: 3}
+--- !u!114 &469433198 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2885696033214997872, guid: 5ca2f4dab88472349b0678eff4865580, type: 3}
+  m_PrefabInstance: {fileID: 909843815}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0408871c41f0aec48a29d9525ad008bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &470549550
 PrefabInstance:
   m_ObjectHideFlags: 0
