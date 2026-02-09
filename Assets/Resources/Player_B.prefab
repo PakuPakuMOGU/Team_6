@@ -577,7 +577,7 @@ MonoBehaviour:
   gunshotClip: {fileID: 2642024258282117872}
   echoClip: {fileID: 7841851842134261601}
   GunHit: {fileID: 2642024258282117872}
-  rayDistance: 5
+  rayDistance: 0.3
   damage: 10
 --- !u!114 &5650638524865823062
 MonoBehaviour:
